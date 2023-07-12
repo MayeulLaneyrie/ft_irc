@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/10 16:17:23 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 16:12:12 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void die(const char * fmt, ...) {
 				f = va_arg(args, double);
 				std::cerr << f;
 		}
-		if (++fmt)
+		if (*(++fmt))
 			std::cerr << ": ";
 	}
 	std::cerr << std::endl;

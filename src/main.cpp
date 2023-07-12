@@ -1,42 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Msg.hpp                                            :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/06/25 16:54:29 by mlaneyri         ###   ########.fr       */
+/*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
+/*   Updated: 2023/07/12 16:03:41 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef 
-#define
+#include "utils.hpp"
 
-#include <string>
-#include <iostream>
+int main(int ac, char **av) {
 
-#include <map>
+	if (ac < 3)
+		die("s", "Usage: ./ircserv <port> <password>");
+	for (int i = 0; av[1][i]; ++i)
+		if (av[1][i] < '0' || av[1][i] > '9' || i > 4)
+			die("ssc", "Invalid port value : '", av[1], '\'');
 
-#include <Client.hpp>
+	std::cout << "Hello, World!" << std::endl;
 
-class Msg {
+/*
+	Server serv(atoi(av[1]), av[2]);
 
-	private :
+	return (serv.run());
+*/
+}
 
-		Client * _from;
-		Chan * _to;
-		std::string _payload;
-
-	public :
-
-		Msg( void );
-		Msg();
-		Msg(Msg const & src);
-		~Msg( void );
-
-		Msg&	operator=(Msg const & rhs);
-};
-
-#endif
 

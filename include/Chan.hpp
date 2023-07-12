@@ -1,52 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Chan.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/10 16:24:02 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 16:10:22 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
-
-#include <vector>
+#ifndef CHAN_HPP
+#define CHAN_HPP
 
 #include <string>
 #include <iostream>
 
-#include "Chan.hpp"
+#include <vector>
+
 #include "Client.hpp"
 
-#define OPER_PASS ""
-
-class Server {
+class Chan {
 
 	private :
 
-		int							_port;
-		std::string					_password;
-
-		std::map<std::string, Chan>	_chans;
-		std::map<int, Client>		_clients;
+		std::vector<Client *>	_clients;
+		unsigned int			_modes;
+		std::string				_passwd;
+		std::string				_topic;
+		std::string				_name;
 
 	public :
 
-		server(void);
-		server(int port, std::string password);
-		server(server const & src);
+		Chan(void);
+		Chan(Chan const & src);
+		~Chan(void);
 
-		~server(void);
-
-		server&	operator=(server const & rhs);
-
-		int	run(void); // main loop
-
-		Client const & getClient(int fd) const;
+		Chan&	operator=(Chan const & rhs);
 };
 
 #endif
-
