@@ -3,3 +3,4 @@ ircserv
 .obj
 *.o
 *.d
+*.swp

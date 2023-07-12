@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Chan.cpp                                           :+:      :+:    :+:   */
+/*   network.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 18:01:09 by mlaneyri         ###   ########.fr       */
+/*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
+/*   Updated: 2023/07/12 17:54:12 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Chan.hpp"
+#ifndef NETWORK_HPP
+#define NETWORK_HPP
 
-Chan::Chan(void):
-	_name(""),
-	_mode(0),
-	_passwd(""),
-	_topic("")
-{}
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/epoll.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-Chan::Chan(Chan const & src)
-{
-	*this = src;
-}
+#include <cstdlib>
+#include <cerrno>
+#include <cstdio>
+#include <cstdarg>
+#include <cstring>
 
-Chan::~Chan(void)
-{}
-
-Chan & Chan::operator=(Chan const & rhs)
-{
-	this->_name = rhs._name;
-	this->_mode = rhs._mode;
-	this->_passwd = rhs._passwd;
-	this->_topic = rhs._topic;
-	return (*this);
-}
+#endif

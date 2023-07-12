@@ -6,7 +6,7 @@
 #    By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/15 12:10:07 by mlaneyri          #+#    #+#              #
-#    Updated: 2023/07/12 15:57:48 by mlaneyri         ###   ########.fr        #
+#    Updated: 2023/07/12 17:18:09 by mlaneyri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,8 +34,9 @@ all		:	obj $(NAME)
 -include $(DEP)
 
 $(NAME)	:	$(OBJ)
-			@ echo "\n\e[1mLinking...\e[0m\n"
-			$(CC) $(CFLAGS) -o $(NAME) $(SRC)
+			@ echo "\n\e[3mLinking...\e[0m\n"
+			@ $(CC) $(CFLAGS) -o $(NAME) $(SRC)
+			@ echo "\e[1mDone!\e[0m"
 
 obj		:
 				@ if [ ! -d "./.obj/src" ]; then \
@@ -43,15 +44,17 @@ obj		:
 				fi
 
 .obj/%.o	:	%.cpp
-			@ echo "\n\e[1mCompiling ft_irc...\e[0m\n"
-			$(CC) -o $@ -c $< $(CFLAGS) $(CDEP)
+			@ echo "\e[3mCompiling $<...\e[0m"
+			@ $(CC) -o $@ -c $< $(CFLAGS) $(CDEP)
 
 clean	:
-			$(RM) $(OBJ)
-			$(RM) .obj
+			@ echo "\e[3mCleaning...\e[0m"
+			@ $(RM) $(OBJ)
+			@ $(RM) .obj
 
 fclean	:	clean
-	$(RM) $(NAME)
+			@ echo "\e[3mRemoving $(NAME)...\e[0m"
+			@ $(RM) $(NAME)
 
 re		:	fclean all
 

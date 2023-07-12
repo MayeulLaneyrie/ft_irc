@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 16:09:56 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 17:39:48 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,30 @@
 #include <string>
 #include <iostream>
 
-//#include <vector>
-//#include <map>
+#include <vector>
+#include <map>
 
 #include "Chan.hpp"
 #include "Client.hpp"
 
-#define OPER_PASS "Password"
+#define OPER_PASS "NECPLVSVLTRA"
 
 class Server {
-/*
+
 	private :
 
-		int							_port;
-		std::string					_password;
+		int			_port;
+		std::string	_password;
 
-		std::map<std::string, Chan>	_chans;
-		std::map<int, Client>		_clients;
+		/*
+		 * chans and clients both identified by a unique numeric id 
+		 * established from max_{client_id|chan_id}
+		 */
+		std::map<int, Chan>		_chans;
+		std::map<int, Client>	_clients;
+
+		int	_max_client_id;
+		int _max_chan_id;
 
 	public :
 
@@ -42,12 +49,13 @@ class Server {
 
 		~Server(void);
 
-		Server&	operator=(Server const & rhs);
+		Server & operator=(Server const & rhs);
 
 		int	run(void); // main loop
 
-		Client const & getClient(int fd) const;
-*/
+		Client & getClient(int id);
+		Chan & getChan(int id);
+
 };
 
 #endif
