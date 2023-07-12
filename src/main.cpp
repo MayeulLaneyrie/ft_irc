@@ -6,12 +6,12 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 17:19:21 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 18:46:53 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.hpp"
-#include "Server.hpp"
+#include "Serv.hpp"
 
 int main(int ac, char **av) {
 
@@ -21,7 +21,7 @@ int main(int ac, char **av) {
 		if (av[1][i] < '0' || av[1][i] > '9' || i > 4)
 			die("ssc", "Invalid port value : '", av[1], '\'');
 
-	Server serv(atoi(av[1]), av[2]);
+	Serv serv(atoi(av[1]), av[2]);
 	return (serv.run());
 }
 

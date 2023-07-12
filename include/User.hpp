@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 17:52:03 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 18:47:46 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef USER_HPP
+#define USER_HPP
 
 #include <string>
 #include <iostream>
 
 #include "network.hpp"
 
-class Client {
+class User {
 
 	private :
 
@@ -32,12 +32,12 @@ class Client {
 
 	public :
 
-		Client(void);
-		Client(int fd, int id);
-		Client(Client const & src);
-		~Client(void);
+		User(void);
+		User(int fd, int id);
+		User(User const & src);
+		~User(void);
 
-		Client & operator=(Client const & rhs);
+		User & operator=(User const & rhs);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 16:11:07 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 18:48:36 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@
 #include <string>
 #include <iostream>
 
-#include <map>
-
 #include "Chan.hpp"
-#include "Client.hpp"
+#include "User.hpp"
 
 class Msg {
 
 	private :
 
-		Client * _from;
+		User * _from;
 		Chan * _to;
 		std::string _payload;
 
@@ -35,7 +33,7 @@ class Msg {
 		Msg(Msg const & src);
 		~Msg( void );
 
-		Msg&	operator=(Msg const & rhs);
+		Msg & operator=(Msg const & rhs);
 };
 
 #endif

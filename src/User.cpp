@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.cpp                                         :+:      :+:    :+:   */
+/*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 17:54:28 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/12 18:47:24 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
+#include "User.hpp"
 
-Client::Client(void) :
+User::User(void) :
 	_fd(-1),
 	_id(-1),
 	_name(""),
@@ -20,7 +20,7 @@ Client::Client(void) :
 	_ibuffer("")
 {}
 
-Client::Client(int id, int fd) :
+User::User(int id, int fd) :
 	_fd(fd),
 	_id(id),
 	_name(""),
@@ -28,17 +28,17 @@ Client::Client(int id, int fd) :
 	_ibuffer("")
 {}
 
-Client::Client(Client const & src)
+User::User(User const & src)
 {
 	*this = src;
 }
 
-Client::~Client(void)
+User::~User(void)
 {
 	close(_fd);
 }
 
-Client & Client::operator=(Client const & rhs)
+User & User::operator=(User const & rhs)
 {
 	close(_fd);
 	this->_fd = rhs._fd;
