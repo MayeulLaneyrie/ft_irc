@@ -6,12 +6,12 @@
 #    By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/15 12:10:07 by mlaneyri          #+#    #+#              #
-#    Updated: 2023/07/12 18:44:52 by mlaneyri         ###   ########.fr        #
+#    Updated: 2023/07/13 17:42:02 by mlaneyri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC			=	src/main.cpp \
-				src/die.cpp \
+				src/utils.cpp \
 				src/Serv.cpp \
 				src/User.cpp \
 				src/Chan.cpp \

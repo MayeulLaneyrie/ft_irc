@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 18:47:46 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/13 18:24:04 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,16 @@ class User {
 	private :
 
 		int			_fd;
-		int			_id;
 
-		std::string _name;
 		std::string _nick;
 
 		std::string _ibuffer;
 
+		User(void);
+
 	public :
 
-		User(void);
-		User(int fd, int id);
+		User(int fd);
 		User(User const & src);
 		~User(void);
 

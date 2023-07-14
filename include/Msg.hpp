@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 18:48:36 by mlaneyri         ###   ########.fr       */
+/*   Created: 2023/07/13 16:00:00 by mlaneyri          #+#    #+#             */
+/*   Updated. 2023/07/13 16:00:00 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 #include "Chan.hpp"
 #include "User.hpp"
 
+class Chan;
+
 class Msg {
 
 	private :
 
-		User * _from;
-		Chan * _to;
+		std::string _from;
+		std::string _to;
 		std::string _payload;
 
 	public :

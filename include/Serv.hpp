@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 19:18:45 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/07/13 18:39:49 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@
 #include <string>
 #include <iostream>
 
+#include <signal.h>
+
 #include <map>
 
 #include "network.hpp"
 #include "Chan.hpp"
 #include "User.hpp"
+
+#define MAXEV 16
 
 #define OPER_PASS "NECPLVSVLTRA"
 
@@ -33,38 +37,37 @@ class Serv {
 		int			_port;
 		std::string	_password;
 
-		/*
-		 * chans and users both identified by a unique numeric id 
-		 * established from max_{user_id|chan_id}
-		 */
-		std::map<int, Chan>	_chans;
-		std::map<int, User>	_users;
+		std::map<int, User *> _users; // All users, uniquely indexed by fd
+		std::map<std::string, User *> _registerd; // Only registered users, indexed by nicks
 
-		int	_max_user_id;
-		int _max_chan_id;
+		std::map<std::string, Chan *> _chans;
 
-		int _socket;
+		int	_usercount;
+		int	_chancount;
+
+		struct sockaddr_in _sa;
+		int _sockfd;
+		int _epollfd;
 
 // INTERNAL STUFF  -------------------------------------------------------------
 
-		int setup_socket(void);
+		void _clear(void);
+		int _setup_socket(void);
+		int _setup_epoll(void);
+		int _epoll_register(int fd);
+
+		Serv(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-		Serv(void);
 		Serv(int port, std::string password);
 		Serv(Serv const & src);
 
 		~Serv(void);
 
 		Serv & operator=(Serv const & rhs);
-
-// ACCESSORS -------------------------------------------------------------------
-
-		User & getUser(int id);
-		Chan & getChan(int id);
 
 // OTHER PUBLIC MEMBERS FUNCTIONS ----------------------------------------------
 
