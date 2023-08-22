@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/13 18:40:15 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/22 18:14:04 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ int	Serv::_epoll_register(int fd)
 
 int Serv::run(void)
 {
-	signal(SIGINT, _clear);
 	std::cout << "Server launched!" << std::endl;
 	_setup_socket();
 	_setup_epoll();
@@ -125,7 +124,8 @@ int Serv::run(void)
 
 			if (fd == _sockfd) {
 
-				socklen_t addrlen = sizeof(_sa); // TODO this is dumb
+				socklen_t addrlen = sizeof(_sa);
+
 				if ((fd = accept(_sockfd, (struct sockaddr *) &_sa, &addrlen)) < 0)
 					die("sds", __FILE__, __LINE__, strerror(errno));
 
@@ -134,7 +134,7 @@ int Serv::run(void)
 
 				User * new_user = new User(fd);
 
-				if (_users.count(fd))
+				if (_users.count(fd)) // Somehow, a used fd was reattributed.
 					die("sd", __FILE__, __LINE__);
 				_users[fd] = new_user;
 				std::cout << "A new user joined." << std::endl;
