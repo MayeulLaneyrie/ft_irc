@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/13 18:24:04 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/24 21:46:26 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ class User {
 		int			_fd;
 
 		std::string _nick;
-
 		std::string _ibuffer;
+
+		char		_cbuffer[RECV_BUFF_SIZE];
 
 		User(void);
 
@@ -37,6 +38,11 @@ class User {
 		~User(void);
 
 		User & operator=(User const & rhs);
+
+		/*
+		 * This user sent data to the sevr, let's manage it.
+		 */
+		int do_stuff(void);
 };
 
 #endif

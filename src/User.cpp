@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/13 18:19:20 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/24 22:04:21 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,18 @@ User & User::operator=(User const & rhs)
 	return (*this);
 }
 
-
+int User::do_stuff(void)
+{
+	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
+	
+	if (!len) {
+		std::cout
+			<< "User " << _nick << " (#" << _fd
+			<< ") disconnected from the server"
+			<< std::endl;
+		return (0);
+	}
+	_cbuffer[len] = '\0';
+	std::cout << _cbuffer;
+	return (len);
+}

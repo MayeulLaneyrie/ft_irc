@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/12 17:54:12 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/24 21:34:18 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
+
+#define RECV_BUFF_SIZE 2048
 
 #endif

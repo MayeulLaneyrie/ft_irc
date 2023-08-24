@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/22 18:14:04 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/24 21:46:05 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int Serv::run(void)
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
 
-			if (fd == _sockfd) {
+			if (fd == _sockfd) { // NEW CONNECTION
 
 				socklen_t addrlen = sizeof(_sa);
 
@@ -141,7 +141,12 @@ int Serv::run(void)
 
 			}
 			else {
-
+				if (!_users.count(fd))
+					die("sd", __FILE__, __LINE__);
+				if (!_users[fd]->do_stuff()) {
+					delete _users[fd];
+					_users.erase(fd);
+				}
 			}
 		}
 	}
