@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/24 21:46:26 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/30 17:03:01 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 
 #include "network.hpp"
 
+#define REGISTER_PASS 4
+#define REGISTER_NICK 2
+#define REGISTER_USER 1
+
 class User {
 
 	private :
@@ -27,9 +31,14 @@ class User {
 		std::string _nick;
 		std::string _ibuffer;
 
+		int			_register_status;
+
 		char		_cbuffer[RECV_BUFF_SIZE];
 
 		User(void);
+
+		int _is_command_complete(void);
+		void _exec_command(void);
 
 	public :
 
@@ -40,7 +49,7 @@ class User {
 		User & operator=(User const & rhs);
 
 		/*
-		 * This user sent data to the sevr, let's manage it.
+		 * This user sent data to the servr, let's manage it.
 		 */
 		int do_stuff(void);
 };

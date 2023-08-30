@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/24 21:46:05 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/30 16:06:10 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ int Serv::run(void)
 				if (_users.count(fd)) // Somehow, a used fd was reattributed.
 					die("sd", __FILE__, __LINE__);
 				_users[fd] = new_user;
+				_usercount++;
 				std::cout << "A new user joined." << std::endl;
 
 			}
@@ -146,6 +147,7 @@ int Serv::run(void)
 				if (!_users[fd]->do_stuff()) {
 					delete _users[fd];
 					_users.erase(fd);
+					_usercount--;
 				}
 			}
 		}
