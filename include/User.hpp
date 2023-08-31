@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/30 17:03:01 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:56:55 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ class User {
 
 		User(void);
 
-		int _is_command_complete(void);
 		void _exec_command(void);
 
 	public :
@@ -48,9 +47,6 @@ class User {
 
 		User & operator=(User const & rhs);
 
-		/*
-		 * This user sent data to the servr, let's manage it.
-		 */
 		int do_stuff(void);
 };
 
