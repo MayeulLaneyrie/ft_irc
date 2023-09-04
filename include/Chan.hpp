@@ -21,6 +21,7 @@
 #include "User.hpp"
 #include "Msg.hpp"
 
+class User;
 class Msg;
 
 class Chan {
@@ -44,7 +45,7 @@ class Chan {
 
 		Chan & operator=(Chan const & rhs);
 
-		int send(Msg const & msg);
+		int chan_send(Msg const & msg);
 };
 
 #endif

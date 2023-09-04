@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/22 17:08:24 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:30:17 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Serv {
 		int	_usercount;
 		int	_chancount;
 
-		struct sockaddr_in _sa;
+		struct sockaddr_in6 _sa;
 		int _sockfd;
 		int _epollfd;
 

@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/31 11:45:57 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:31:33 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ void Serv::_clear(void)
 
 int Serv::_setup_socket(void)
 {
-	_sa.sin_family = AF_INET;
-	_sa.sin_port = htons(6667);
-	_sa.sin_addr.s_addr = htonl(INADDR_ANY);
+	_sa.sin6_family = AF_INET6;
+	_sa.sin6_port = htons(6667);
+	_sa.sin6_addr = in6addr_any;
 
-	if ((_sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK , 0)) < 0)
+	if ((_sockfd = socket(AF_INET6, SOCK_STREAM | SOCK_NONBLOCK , 0)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
 	if (bind(_sockfd, (struct sockaddr *) &_sa, sizeof(_sa)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
@@ -144,7 +144,7 @@ int Serv::run(void)
 			else {
 				if (!_users.count(fd))
 					die("sd", __FILE__, __LINE__);
-				if (!_users[fd]->do_stuff()) {
+				if (!_users[fd]->user_recv()) {
 					delete _users[fd];
 					_users.erase(fd);
 					_usercount--;

@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/08/31 12:49:58 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/08/31 17:36:37 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ void User::_exec_command(void)
 {
 	size_t cmd_len = _ibuffer.find("\r\n");
 
-	if (cmd_len == std::string::npos)
-		return ;
-
 	std::string command = _ibuffer.substr(0, cmd_len);
 
 	_ibuffer.erase(0, cmd_len + 2);
@@ -64,7 +61,7 @@ void User::_exec_command(void)
 
 // PUBLIC STUFF ----------------------------------------------------------------
 
-int User::do_stuff(void)
+int User::user_recv(void)
 {
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
@@ -79,10 +76,13 @@ int User::do_stuff(void)
 	_cbuffer[len] = '\0';
 	_ibuffer.append(_cbuffer);
 
-	if (_ibuffer.find("\r\n") == std::string::npos)
-		std::cout << _cbuffer << " ..." << std::endl;
-
-	_exec_command();
+	while (_ibuffer.find("\r\n") != std::string::npos)
+		_exec_command();
 
 	return (len);
+}
+
+int User::user_send(std::string const & s)
+{
+	return (send(_fd, s.c_str(), s.size(), 0));
 }

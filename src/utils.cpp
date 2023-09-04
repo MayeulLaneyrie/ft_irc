@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   die.cpp                                            :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/07/13 17:41:27 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/01 16:57:12 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,14 @@ void setsock_nonblock(int fd) {
 		die("sds", __FILE__, __LINE__, strerror(errno));
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
+}
+
+std::string extract_cmd(std::string & s)
+{
+	size_t cmd_end = s.find(" ");
+	if (cmd_end == std::string::npos)
+		cmd_end = s.size();
+	std::string cmd = s.substr(0, cmd_end);
+	s.erase(0, cmd_end + 1);
+	return (cmd);
 }
