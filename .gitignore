@@ -4,3 +4,4 @@ ircserv
 *.o
 *.d
 *.swp
+.vscode

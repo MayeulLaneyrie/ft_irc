@@ -20,7 +20,7 @@ SRC			=	src/main.cpp \
 NAME		=	ircserv
 
 CC			=	c++
-CFLAGS		=	-Wall -Wextra -Werror -Iinclude -std=c++98#-g3 -fsanitize=address
+CFLAGS		=	-Iinclude -std=c++98 -Wall -Wextra -Werror #-g3 -fsanitize=address
 CDEP		=	-MMD
 
 RM			=    rm -rf

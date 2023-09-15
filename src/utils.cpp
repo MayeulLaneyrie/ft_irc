@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 16:16:34 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/01 16:57:12 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:29:57 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,15 @@ std::string extract_cmd(std::string & s)
 	std::string cmd = s.substr(0, cmd_end);
 	s.erase(0, cmd_end + 1);
 	return (cmd);
+}
+
+int sed(std::string & s, std::string const & from, std::string const & to)
+{
+	size_t pos = s.find(from);
+	if (pos != std::string::npos) {
+		s.erase(pos, from.size());
+		s.insert(pos, to);
+		return (1);
+	}
+	return (0);
 }

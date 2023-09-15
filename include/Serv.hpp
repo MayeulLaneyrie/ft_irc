@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/04 17:30:17 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/05 14:20:31 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ class Serv {
 
 		Serv & operator=(Serv const & rhs);
 
-// OTHER PUBLIC MEMBERS FUNCTIONS ----------------------------------------------
+// OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		int	run(void); // main loop
 		

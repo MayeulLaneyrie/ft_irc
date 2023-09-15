@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/01 16:57:37 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:29:45 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void die(const char * fmt, ...);
 void setsock_nonblock(int fd);
 
 std::string extract_cmd(std::string & s);
+
+int sed(std::string & s, std::string const & from, std::string const & to);
 
 #endif
 
