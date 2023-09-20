@@ -25,7 +25,7 @@ void die(const char * fmt, ...);
 
 void setsock_nonblock(int fd);
 
-std::string extract_cmd(std::string & s);
+std::string extract_first_word(std::string & s);
 
 int sed(std::string & s, std::string const & from, std::string const & to);
 

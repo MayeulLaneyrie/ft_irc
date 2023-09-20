@@ -14,11 +14,12 @@
 
 // COPLIEN ---------------------------------------------------------------------
 
-User::User(int fd) :
+User::User(Serv * serv, int fd) :
 	_fd(fd),
 	_nick(""),
 	_ibuffer(""),
-	_register_status(0)
+	_register_status(0),
+	_serv(serv)
 {}
 
 User::User(User const & src)
@@ -45,7 +46,7 @@ User & User::operator=(User const & rhs)
 
 void User::_exec_command(void)
 {
-	// TODO: the following has to go static some way or another
+	// TODO: the following will have to go static some way or another
 	std::map<std::string, int> cmd_map;
 
 	cmd_map["PASS"] = CMD_PASS;
@@ -53,29 +54,49 @@ void User::_exec_command(void)
 	cmd_map["USER"] = CMD_USER;
 	cmd_map["PING"] = CMD_PING;
 
-	size_t cmd_len = _ibuffer.find("\r\n");
-	std::string command = _ibuffer.substr(0, cmd_len);
-	_ibuffer.erase(0, cmd_len + 2);
+	// Extraction of the first message of the string
+	size_t msg_len = _ibuffer.find("\r\n");
+	std::string msg_str = _ibuffer.substr(0, msg_len);
+	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << ':' << _nick << " (#" << _fd << "): [ " << command << " ]" << std::endl;
+	std::cout << ':' << getNick() << " [ " << msg_str << " ]" << std::endl;
 
-	std::string cmd_str = extract_cmd(command);
-	switch (cmd_map[cmd_str]) {
+	Msg cmd(this, msg_str);
+	switch (cmd_map[cmd.getCmd()]) {
+		case (CMD_PASS):
+			if (cmd.getPayload().empty())
+				rpl(461, "PASS");
+			else if (_register_status & REGISTER_OK)
+				rpl(462);
+			else if (_serv->checkPass(cmd.getPayload()))
+				_register_status |= REGISTER_PASS;
+			else
+				_register_status |= REGISTER_MISM;
+			return ;
 		case (CMD_USER):
 			rpl(1);
 			rpl(2);
 			rpl(3);
 			rpl(4);
-			break;
+			return ;
+		case (CMD_NICK):
+			return ;
 		case (CMD_PING):
 			user_send("PONG ircserv\r\n");
-			break;
+			return ;
 	}
 }
 
 // ACCESSORS -------------------------------------------------------------------
 
-std::string User::getNick(void) const { return (_nick); }
+std::string User::getNick(void) const
+{
+	if (!_nick.empty())
+		return (_nick);
+	std::ostringstream oss("");
+	oss << "FD#" << _fd;
+	return (oss.str());
+}
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
@@ -109,6 +130,6 @@ int User::user_recv(void)
 
 int User::user_send(std::string const & s) const
 {
-	std::cout << "To: " << _nick << " (#" << _fd << "): " << s;
+	std::cout << "To: " << getNick() << ": " << s;
 	return (send(_fd, s.c_str(), s.size(), 0));
 }

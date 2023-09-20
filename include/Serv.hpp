@@ -26,7 +26,12 @@
 
 #define MAXEV 16
 
+#define SERVER_NAME "ircserv"
+
 #define OPER_PASS "NECPLVSVLTRA"
+
+class User;
+class Chan;
 
 class Serv {
 
@@ -72,6 +77,8 @@ class Serv {
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		int	run(void); // main loop
+
+		int checkPass(std::string const & s) const;
 		
 };
 

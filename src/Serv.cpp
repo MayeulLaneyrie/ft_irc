@@ -132,7 +132,7 @@ int Serv::run(void)
 				setsock_nonblock(fd);
 				_epoll_register(fd);
 
-				User * new_user = new User(fd);
+				User * new_user = new User(this, fd);
 
 				if (_users.count(fd)) // Somehow, a used fd was reattributed.
 					die("sd", __FILE__, __LINE__);
@@ -156,4 +156,7 @@ int Serv::run(void)
 	return (0);
 }
 
-
+int Serv::checkPass(std::string const & s) const
+{
+	return (s == _password);
+}

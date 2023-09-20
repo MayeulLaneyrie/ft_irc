@@ -24,15 +24,13 @@
 #include "network.hpp"
 #include "utils.hpp"
 
+#define REGISTER_MISM 8
+
 #define REGISTER_PASS 4
 #define REGISTER_NICK 2
 #define REGISTER_USER 1
 
-#define RPL_WELCOME ":Welcome to the {nw} Network, {n}[!{u}@{h}]"
-#define RPL_YOURHOST ":Your host is {sn}, running version {v}"
-#define RPL_CREATED ":This server was created {dt}"
-#define RPL_MYINFO "{sn} {v} {aum} {acm}"
-//#define RPL_ISUPPORT ":"
+#define REGISTER_OK 7
 
 #define CMD_PASS 0
 #define CMD_NICK 1
@@ -41,6 +39,7 @@
 
 class Chan;
 class Msg;
+class Serv;
 
 class User {
 
@@ -59,6 +58,8 @@ class User {
 
 		std::map<std::string, Chan *> _chans;
 
+		Serv *		_serv;
+
 // INTERNAL STUFF --------------------------------------------------------------
 
 		User(void);
@@ -68,20 +69,26 @@ class User {
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-		User(int fd);
+		User(Serv * serv, int fd);
 		User(User const & src);
 		~User(void);
 
 		User & operator=(User const & rhs);
 
-// ACCESSORS
+// ACCESSORS -------------------------------------------------------------------
 
 		std::string getNick(void) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
+		/*
+		 * Send a reply to this user
+		 */
 		int rpl(int num, std::string const & p1 = "", std::string const & p2 = "");
 
+		/*
+		 * This user has send us some data. Let's do what has to be done.
+		 */
 		int user_recv(void);
 		int user_send(std::string const & s) const;
 };

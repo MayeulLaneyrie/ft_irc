@@ -22,6 +22,19 @@ Msg::Msg(User * contact, std::string const & pref, std::string const & cmd, std:
 	_contact(contact)
 {}
 
+Msg::Msg(User * contact, std::string const & s)
+{
+	_payload = s;
+	_contact = contact;
+	if (_payload.empty())
+		return ;
+	if (_payload[0] == ':') {
+		_prefix = extract_first_word(_payload);
+		_prefix.erase(0, 1);
+	}
+	_cmd = extract_first_word(_payload);
+}
+
 std::map<int, std::string> gen_rpl_map(void)
 {
 	std::map<int, std::string> ret;
@@ -30,6 +43,9 @@ std::map<int, std::string> gen_rpl_map(void)
 	ret[2] = RPL_YOURHOST;
 	ret[3] = RPL_CREATED;
 	ret[4] = RPL_MYINFO;
+
+	ret[461] = ERR_NEEDMOREPARAMS;
+	ret[462] = ERR_ALREADYREGISTERED;
 
 	return (ret);
 }
@@ -47,10 +63,10 @@ Msg::Msg(int num, User * contact, std::string const & p1, std::string const & p2
 	vars["{u}"] = "user";
 	vars["{h}"] = "host";
 	vars["{nw}"] = "network";
-	vars["{sn}"] = "server_name";
+	vars["{sn}"] = SERVER_NAME;
 	vars["{dt}"] = "datetime";
 	vars["{v}"] = "0.42";
-	vars["{aum}"] = "*";
+	vars["{aum}"] = ".";
 	vars["{acm}"] = "itkol";
 	vars["{1}"] = p1;
 	vars["{2}"] = p2;
@@ -65,7 +81,7 @@ Msg::Msg(int num, User * contact, std::string const & p1, std::string const & p2
 	rpl_cmd << std::setw(3) << std::setfill('0') << num;
 	
 	_contact = contact;
-	_prefix = ":ircserv";
+	_prefix = ":"SERVER_NAME;
 	_cmd = rpl_cmd.str();
 	_payload = rpl_string;
 }
@@ -73,12 +89,29 @@ Msg::Msg(int num, User * contact, std::string const & p1, std::string const & p2
 Msg::~Msg()
 {}
 
+// ACCESSORS -------------------------------------------------------------------
+
+std::string Msg::getPrefix(void) const { return (_prefix); }
+std::string Msg::getCmd(void) const { return (_cmd); }
+std::string Msg::getPayload(void) const { return (_payload); }
+
+User * Msg::getContact(void) const { return (_contact); }
+
+// OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
+
 std::string Msg::str(void)
 {
 	std::ostringstream oss("");
 
 	oss << _prefix << ' ' << _cmd << ' ' << _payload << "\r\n";
 	return (oss.str());
+}
+
+std::vector<std::string> Msg::payloadAsVector(void) const
+{
+	std::vector<std::string> ret;
+
+	return (ret);
 }
 
 int Msg::msg_send(void)
