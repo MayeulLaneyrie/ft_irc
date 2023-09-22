@@ -47,8 +47,8 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[3] = RPL_CREATED;
 	ret[4] = RPL_MYINFO;
 
+	ret[433] = ERR_NICKNAMEINUSE;
 	ret[451] = ERR_NOTREGISTERED;
-
 	ret[461] = ERR_NEEDMOREPARAMS;
 	ret[462] = ERR_ALREADYREGISTERED;
 
@@ -120,7 +120,10 @@ void Msg::_regen_str(void)
 {
 	std::ostringstream oss("");
 
-	oss << _prefix << ' ' << _cmd << ' ' << _payload << "\r\n";
+	if (_prefix.empty())
+		oss << _cmd << ' ' << _payload << "\r\n";
+	else
+		oss << _prefix << ' ' << _cmd << ' ' << _payload << "\r\n";
 	_as_str = oss.str();
 }
 

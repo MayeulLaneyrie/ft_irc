@@ -50,7 +50,7 @@ int	User::_register_cmd(Msg cmd, int cmd_id)
 		case (CMD_PASS): // ----------------------------------------------------
 			if (cmd.getPayload().empty())
 				rpl(461, "PASS");
-			else if (_reg_status & REG_OK)
+			else if (_reg_status == REG_OK)
 				rpl(462);
 			else if (_serv->checkPass(cmd.getPayload()))
 				_reg_status |= REG_PASS;
@@ -76,6 +76,7 @@ int	User::_register_cmd(Msg cmd, int cmd_id)
 			rpl(2);
 			rpl(3);
 			rpl(4);
+			_reg_status |= REG_USER;
 			break ;
 	}
 	return (0);
