@@ -23,6 +23,7 @@
 #include "network.hpp"
 #include "Chan.hpp"
 #include "User.hpp"
+#include "utils.hpp"
 
 #define MAXEV 16
 
@@ -39,13 +40,13 @@ class Serv {
 
 // SERVER DATA -----------------------------------------------------------------
 
-		int			_port;
-		std::string	_password;
+		int	_port;
+		str	_password;
 
 		std::map<int, User *> _users; // All users, uniquely indexed by fd
-		std::map<std::string, User *> _registerd; // Only registered users, indexed by nicks
+		std::map<str, User *> _registerd; // Only registered users, indexed by nicks
 
-		std::map<std::string, Chan *> _chans;
+		std::map<str, Chan *> _chans;
 
 		int	_usercount;
 		int	_chancount;
@@ -67,19 +68,25 @@ class Serv {
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-		Serv(int port, std::string password);
+		Serv(int port, str password);
 		Serv(Serv const & src);
 
 		~Serv(void);
 
 		Serv & operator=(Serv const & rhs);
 
+// ACCESSORS -------------------------------------------------------------------
+
+		User * getUserByNick(str const & nick);
+
+
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		int	run(void); // main loop
 
-		int checkPass(std::string const & s) const;
-		
+		int checkPass(str const & s) const;
+
+		void setAsRegisterd(User * user);
 };
 
 #endif

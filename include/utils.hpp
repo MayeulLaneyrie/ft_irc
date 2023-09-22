@@ -15,19 +15,23 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "network.hpp"
 
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+typedef std::string str;
+typedef std::vector<str> str_vec;
+
 void die(const char * fmt, ...);
 
 void setsock_nonblock(int fd);
 
-std::string extract_first_word(std::string & s);
+str extract_first_word(str & s);
 
-int sed(std::string & s, std::string const & from, std::string const & to);
+int sed(str & s, str const & from, str const & to);
 
 #endif
 

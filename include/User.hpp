@@ -24,13 +24,13 @@
 #include "network.hpp"
 #include "utils.hpp"
 
-#define REGISTER_MISM 8
+#define REG_MISM 8
 
-#define REGISTER_PASS 4
-#define REGISTER_NICK 2
-#define REGISTER_USER 1
+#define REG_PASS 4
+#define REG_NICK 2
+#define REG_USER 1
 
-#define REGISTER_OK 7
+#define REG_OK 7
 
 #define CMD_PASS 0
 #define CMD_NICK 1
@@ -47,23 +47,25 @@ class User {
 
 // USER DATA -------------------------------------------------------------------
 
-		int			_fd;
+		int		_fd;
 
-		std::string _nick;
+		str 	_nick;
 		
-		std::string _ibuffer;
-		char		_cbuffer[RECV_BUFF_SIZE];
+		str		_ibuffer;
+		char	_cbuffer[RECV_BUFF_SIZE];
 
-		int			_register_status;
+		int		_reg_status;
 
-		std::map<std::string, Chan *> _chans;
+		std::map<str, Chan *> _chans;
 
-		Serv *		_serv;
+		Serv *	_serv;
 
 // INTERNAL STUFF --------------------------------------------------------------
 
 		User(void);
-		void _exec_command(void);
+
+		int	_register_cmd(Msg msg, int cmd_id);
+		int _exec_command(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
@@ -77,20 +79,20 @@ class User {
 
 // ACCESSORS -------------------------------------------------------------------
 
-		std::string getNick(void) const;
+		str getNick(void) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		/*
 		 * Send a reply to this user
 		 */
-		int rpl(int num, std::string const & p1 = "", std::string const & p2 = "");
+		int rpl(int num, str const & p1 = "", str const & p2 = "");
 
 		/*
 		 * This user has send us some data. Let's do what has to be done.
 		 */
 		int user_recv(void);
-		int user_send(std::string const & s) const;
+		int user_send(Msg const & msg) const;
 };
 
 #endif

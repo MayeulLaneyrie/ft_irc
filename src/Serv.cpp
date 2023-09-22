@@ -104,6 +104,15 @@ int	Serv::_epoll_register(int fd)
 	return (0);
 }
 
+// ACCESSORS -------------------------------------------------------------------
+
+User * Serv::getUserByNick(str const & nick)
+{
+	if (_registerd.count(nick))
+		return (_registerd[nick]);
+	return (NULL);
+}
+
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 int Serv::run(void)
@@ -145,6 +154,7 @@ int Serv::run(void)
 				if (!_users.count(fd))
 					die("sd", __FILE__, __LINE__);
 				if (!_users[fd]->user_recv()) {
+					_registerd.erase(_users[fd]->getNick());
 					delete _users[fd];
 					_users.erase(fd);
 					_usercount--;
@@ -159,4 +169,9 @@ int Serv::run(void)
 int Serv::checkPass(std::string const & s) const
 {
 	return (s == _password);
+}
+
+void Serv::setAsRegisterd(User * user)
+{
+	_registerd[user->getNick()] = user;
 }
