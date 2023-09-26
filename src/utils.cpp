@@ -76,3 +76,12 @@ int sed(std::string & s, std::string const & from, std::string const & to)
 	}
 	return (0);
 }
+
+void handler(int x)
+{
+	(void)x;
+	std::cout
+		<< "\n\e[1mSIGINT has been caught, the server will now stop.\e[0m"
+		<< std::endl;
+	g_stop = 1;
+}

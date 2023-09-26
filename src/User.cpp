@@ -69,14 +69,21 @@ int	User::_register_cmd(Msg cmd, int cmd_id)
 			else {
 				_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
 				_serv->setAsRegisterd(this);
+				_reg_status |= REG_NICK;
+				if (_reg_status & REG_USER) {
+					rpl(1); rpl(2); rpl(3); rpl(4);
+				}
 			}
 			break ;
 		case (CMD_USER): // ----------------------------------------------------
-			rpl(1);
-			rpl(2);
-			rpl(3);
-			rpl(4);
-			_reg_status |= REG_USER;
+			str_vec arg = cmd.payloadAsVector(4);
+			if (arg.size() != 4) 
+				rpl(461, "USER");
+			else if (_reg_status == REG_OK)
+				rpl(462);
+			else {
+				_reg_status |= REG_USER;
+			}
 			break ;
 	}
 	return (0);
@@ -87,6 +94,7 @@ int User::_exec_command(void)
 	// TODO: the following will have to go static some way or another
 	std::map<str, int> cmd_map;
 
+	cmd_map[""] = CMD_NULL;
 	cmd_map["PASS"] = CMD_PASS;
 	cmd_map["NICK"] = CMD_NICK;
 	cmd_map["USER"] = CMD_USER;
@@ -97,13 +105,13 @@ int User::_exec_command(void)
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << ':' << getNick() << " [ " << msg_str << " ]" << std::endl;
+	std::cout << "\e[1m" << getNick() << " ->\e[0m " << msg_str << std::endl;
 
 	Msg cmd(this, msg_str);
 	int cmd_id = cmd_map[cmd.getCmd()];
 	if (cmd_id <= CMD_USER)
 		return (_register_cmd(cmd, cmd_id));
-	if (!(_reg_status & REG_OK)) {
+	if (_reg_status != REG_OK) {
 		rpl(451);
 		return (0);
 	}	
@@ -129,6 +137,10 @@ str User::getNick(void) const
 	oss << "FD#" << _fd;
 	return (oss.str());
 }
+
+str User::getUsername(void) const { return (_username); };
+
+Serv * User::getServ(void) const { return (_serv); }
 
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
@@ -160,6 +172,6 @@ int User::user_recv(void)
 
 int User::user_send(Msg const & msg) const
 {
-	std::cout << "To: " << getNick() << ": " << msg.getStr();
+	std::cout << "\e[1m" << getNick() << " <-\e[0m " << msg.getStr();
 	return (send(_fd, msg.getStr().c_str(), msg.getStr().size(), 0));
 }

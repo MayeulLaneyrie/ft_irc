@@ -13,6 +13,9 @@
 #include "utils.hpp"
 #include "Serv.hpp"
 
+
+int	g_stop = 0;
+
 int main(int ac, char **av) {
 
 	if (ac < 3)

@@ -67,13 +67,13 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 	rpl_string += rpl_map[num];
 
 	vars["{n}"] = contact->getNick();
-	vars["{u}"] = "user";
+	vars["{u}"] = contact->getUsername();
 	vars["{h}"] = "host";
 	vars["{nw}"] = "network";
 	vars["{sn}"] = SERVER_NAME;
-	vars["{dt}"] = "datetime";
-	vars["{v}"] = "0.42";
-	vars["{aum}"] = ".";
+	vars["{dt}"] = contact->getServ()->getDatetime();
+	vars["{v}"] = "0.0";
+	vars["{aum}"] = "o";
 	vars["{acm}"] = "itkol";
 	vars["{1}"] = p1;
 	vars["{2}"] = p2;

@@ -41,6 +41,7 @@ Serv & Serv::operator=(Serv const & rhs) {
 	_clear();
 	_port = rhs._port;
 	_password = rhs._password;
+	_datetime = rhs._datetime;
 	_usercount = rhs._usercount;
 	_chancount = rhs._chancount;
 	_chans = rhs._chans;
@@ -62,15 +63,19 @@ void Serv::_clear(void)
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it)
 		delete chan_it->second;
 
-	close(_epollfd);
-	close(_sockfd);
+	if (_epollfd >= 0)
+		close(_epollfd);
+	if (_sockfd >= 0)
+		close(_sockfd);
 }
 
 int Serv::_setup_socket(void)
 {
 	_sa.sin6_family = AF_INET6;
-	_sa.sin6_port = htons(6667);
+	_sa.sin6_port = htons(_port);
 	_sa.sin6_addr = in6addr_any;
+	_sa.sin6_flowinfo = 0;
+	_sa.sin6_scope_id = 0;
 
 	if ((_sockfd = socket(AF_INET6, SOCK_STREAM | SOCK_NONBLOCK , 0)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
@@ -104,6 +109,18 @@ int	Serv::_epoll_register(int fd)
 	return (0);
 }
 
+void Serv::_set_datetime(void)
+{
+	time_t curr_time;
+	tm * curr_tm;
+	char date_s[100];
+	
+	time(&curr_time);
+	curr_tm = localtime(&curr_time);
+	strftime(date_s, 50, "%Y/%m/%d %H:%M:%S", curr_tm);
+	_datetime = str(date_s);
+}
+
 // ACCESSORS -------------------------------------------------------------------
 
 User * Serv::getUserByNick(str const & nick)
@@ -113,20 +130,31 @@ User * Serv::getUserByNick(str const & nick)
 	return (NULL);
 }
 
+str Serv::getDatetime(void) const { return (_datetime); }
+
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
+
+extern int g_stop;
 
 int Serv::run(void)
 {
-	std::cout << "Server launched!" << std::endl;
 	_setup_socket();
 	_setup_epoll();
+
+	_set_datetime();
+	signal(SIGINT, handler);
+	std::cout	<< "\e[1mServer launched:\e[0m " << _datetime << std::endl
+				<< "\e[1mListening on port:\e[0m " << _port << std::endl;
 
 	while (1) {
 		int nfds;
 		struct epoll_event evts[MAXEV];
 
-		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0)
+		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 && !g_stop)
 			die("sds", __FILE__, __LINE__, strerror(errno));
+
+		if (g_stop)
+			return (1);
 		
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
@@ -147,8 +175,9 @@ int Serv::run(void)
 					die("sd", __FILE__, __LINE__);
 				_users[fd] = new_user;
 				_usercount++;
-				std::cout << "A new user joined." << std::endl;
-
+				std::cout
+					<< "\e[1m" << new_user->getNick()
+					<< " (temp. nick) joined.\e[0m" << std::endl;
 			}
 			else {
 				if (!_users.count(fd))

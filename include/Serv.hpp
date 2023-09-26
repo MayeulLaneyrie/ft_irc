@@ -16,6 +16,8 @@
 #include <string>
 #include <iostream>
 
+#include <ctime>
+
 #include <signal.h>
 
 #include <map>
@@ -43,6 +45,8 @@ class Serv {
 		int	_port;
 		str	_password;
 
+		str _datetime;
+
 		std::map<int, User *> _users; // All users, uniquely indexed by fd
 		std::map<str, User *> _registerd; // Only registered users, indexed by nicks
 
@@ -57,15 +61,16 @@ class Serv {
 
 // INTERNAL STUFF  -------------------------------------------------------------
 
-		void _clear(void);
+
 		int _setup_socket(void);
 		int _setup_epoll(void);
 		int _epoll_register(int fd);
+		void _set_datetime(void);
 
 		Serv(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
-
+		void _clear(void);
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
 		Serv(int port, str password);
@@ -79,6 +84,7 @@ class Serv {
 
 		User * getUserByNick(str const & nick);
 
+		str getDatetime(void) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 

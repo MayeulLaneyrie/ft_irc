@@ -32,10 +32,11 @@
 
 #define REG_OK 7
 
-#define CMD_PASS 0
-#define CMD_NICK 1
-#define CMD_USER 2
-#define CMD_PING 3
+#define CMD_NULL 0
+#define CMD_PASS 1
+#define CMD_NICK 2
+#define CMD_USER 3
+#define CMD_PING 4
 
 class Chan;
 class Msg;
@@ -49,7 +50,9 @@ class User {
 
 		int		_fd;
 
-		str 	_nick;
+		str		_nick;
+		str		_username;
+		str		_realname;
 		
 		str		_ibuffer;
 		char	_cbuffer[RECV_BUFF_SIZE];
@@ -80,6 +83,9 @@ class User {
 // ACCESSORS -------------------------------------------------------------------
 
 		str getNick(void) const;
+		str getUsername(void) const;
+
+		Serv * getServ(void) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
