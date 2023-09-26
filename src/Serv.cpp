@@ -56,8 +56,10 @@ Serv & Serv::operator=(Serv const & rhs) {
 void Serv::_clear(void)
 {
 	std::map<int, User *>::iterator user_it;
-	for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
+	for (user_it = _users.begin(); user_it != _users.end(); ++user_it) {
+		user_it->second->error(":Server shutdown, bye bye!");
 		delete user_it->second;
+	}
 
 	std::map<std::string, Chan *>::iterator chan_it;
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it)

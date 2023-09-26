@@ -94,6 +94,8 @@ class User {
 		 */
 		int rpl(int num, str const & p1 = "", str const & p2 = "");
 
+		int error(str const & msg);
+
 		/*
 		 * This user has send us some data. Let's do what has to be done.
 		 */

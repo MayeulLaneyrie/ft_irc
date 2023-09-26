@@ -47,44 +47,68 @@ User & User::operator=(User const & rhs)
 int	User::_register_cmd(Msg cmd, int cmd_id)
 {
 	switch (cmd_id) {
+
 		case (CMD_PASS): // ----------------------------------------------------
+
 			if (cmd.getPayload().empty())
-				rpl(461, "PASS");
-			else if (_reg_status == REG_OK)
-				rpl(462);
-			else if (_serv->checkPass(cmd.getPayload()))
+				return (rpl(461, "PASS"));
+
+			if (_reg_status == REG_OK)
+				return (rpl(462));
+
+			if (_serv->checkPass(cmd.getPayload()))
 				_reg_status |= REG_PASS;
 			else
 				_reg_status |= REG_MISM;
 			break ;
+
 		case (CMD_NICK): // ----------------------------------------------------
+
 			if (cmd.getPayload().empty())
-				rpl(461, "NICK");
-			else if (_reg_status & REG_USER && !(_reg_status & REG_PASS)) {
-				user_send(Msg(this, "", "ERROR", ":Access denied"));
-				return (1);
+				return (rpl(461, "NICK"));
+
+			if (_reg_status & REG_USER && _reg_status & REG_MISM)
+				return (error(":Access denied, wrong password"));
+			if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
+				return (error(":Access denied, password wasn't provided"));
+
+			if (_serv->getUserByNick(cmd.getPayload()))
+				return (rpl(433, cmd.getPayload()));
+
+			_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
+			_serv->setAsRegisterd(this);
+			_reg_status |= REG_NICK;
+
+			if (_reg_status & REG_USER) {
+				rpl(1); rpl(2); rpl(3); rpl(4);
 			}
-			else if (_serv->getUserByNick(cmd.getPayload()))
-				rpl(433, cmd.getPayload());
-			else {
-				_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
-				_serv->setAsRegisterd(this);
-				_reg_status |= REG_NICK;
-				if (_reg_status & REG_USER) {
-					rpl(1); rpl(2); rpl(3); rpl(4);
-				}
-			}
+
 			break ;
+
 		case (CMD_USER): // ----------------------------------------------------
+
 			str_vec arg = cmd.payloadAsVector(4);
 			if (arg.size() != 4) 
-				rpl(461, "USER");
-			else if (_reg_status == REG_OK)
-				rpl(462);
-			else {
-				_reg_status |= REG_USER;
+				return (rpl(461, "USER"));
+
+			if (_reg_status == REG_OK)
+				return (rpl(462));
+
+			if (_reg_status & REG_NICK && _reg_status & REG_MISM)
+				return (error(":Access denied, wrong password"));
+			if (_reg_status & REG_NICK && !(_reg_status & REG_PASS))
+				return (error(":Access denied, password wasn't provided"));
+
+			_username = arg[0];
+			_realname = arg[3];
+			_reg_status |= REG_USER;
+
+			if (_reg_status & REG_NICK) {
+				rpl(1); rpl(2); rpl(3); rpl(4);
 			}
+
 			break ;
+
 	}
 	return (0);
 }
@@ -116,13 +140,17 @@ int User::_exec_command(void)
 		return (0);
 	}	
 	switch (cmd_id) {
+
 		case (CMD_PING): // ----------------------------------------------------
+
 			str_vec arg = cmd.payloadAsVector(1);
 			if (!arg.size())
-				rpl(461, "PING");
-			else
-				user_send(Msg(this, ":"SERVER_NAME, "PONG", str(":") + arg[0]));
+				return (rpl(461, "PING"));
+
+			user_send(Msg(this, ":"SERVER_NAME, "PONG", str(":") + arg[0]));
+
 			break ;
+
 	}
 	return (0);
 }
@@ -148,7 +176,14 @@ int User::rpl(int num, str const & p1, str const & p2)
 {
 	Msg rpl(num, this, p1, p2);
 
-	return (rpl.msg_send());	
+	rpl.msg_send();
+	return (0);
+}
+
+int User::error(str const & msg)
+{
+	user_send(Msg(this, "", "ERROR", msg));
+	return (1);
 }
 
 int User::user_recv(void)
