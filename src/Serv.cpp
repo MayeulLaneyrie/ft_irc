@@ -136,8 +136,6 @@ str Serv::getDatetime(void) const { return (_datetime); }
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
-extern int g_stop;
-
 int Serv::run(void)
 {
 	_setup_socket();

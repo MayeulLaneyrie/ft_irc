@@ -44,8 +44,31 @@ User & User::operator=(User const & rhs)
 
 // INTERNAL STUFF ==============================================================
 
-int	User::_register_cmd(Msg cmd, int cmd_id)
+int User::_exec_command(void)
 {
+	// TODO: the following will have to go static some way or another
+	std::map<str, int> cmd_map;
+
+	cmd_map[""] = CMD_NULL;
+	cmd_map["PASS"] = CMD_PASS;
+	cmd_map["NICK"] = CMD_NICK;
+	cmd_map["USER"] = CMD_USER;
+	cmd_map["PING"] = CMD_PING;
+
+	// Extraction of the first message of the string
+	size_t msg_len = _ibuffer.find("\r\n");
+	str msg_str = _ibuffer.substr(0, msg_len);
+	_ibuffer.erase(0, msg_len + 2);
+
+	std::cout << "\e[1m" << getNick() << " ->\e[0m " << msg_str << std::endl;
+
+	Msg cmd(this, msg_str);
+
+	int cmd_id = cmd_map[cmd.getCmd()];
+
+	if (_reg_status != REG_OK && cmd_id > CMD_USER)
+		return (rpl(451));
+
 	switch (cmd_id) {
 
 		case (CMD_PASS): // ----------------------------------------------------
@@ -86,7 +109,7 @@ int	User::_register_cmd(Msg cmd, int cmd_id)
 			break ;
 
 		case (CMD_USER): // ----------------------------------------------------
-
+			{
 			str_vec arg = cmd.payloadAsVector(4);
 			if (arg.size() != 4) 
 				return (rpl(461, "USER"));
@@ -106,40 +129,8 @@ int	User::_register_cmd(Msg cmd, int cmd_id)
 			if (_reg_status & REG_NICK) {
 				rpl(1); rpl(2); rpl(3); rpl(4);
 			}
-
+			}
 			break ;
-
-	}
-	return (0);
-}
-
-int User::_exec_command(void)
-{
-	// TODO: the following will have to go static some way or another
-	std::map<str, int> cmd_map;
-
-	cmd_map[""] = CMD_NULL;
-	cmd_map["PASS"] = CMD_PASS;
-	cmd_map["NICK"] = CMD_NICK;
-	cmd_map["USER"] = CMD_USER;
-	cmd_map["PING"] = CMD_PING;
-
-	// Extraction of the first message of the string
-	size_t msg_len = _ibuffer.find("\r\n");
-	str msg_str = _ibuffer.substr(0, msg_len);
-	_ibuffer.erase(0, msg_len + 2);
-
-	std::cout << "\e[1m" << getNick() << " ->\e[0m " << msg_str << std::endl;
-
-	Msg cmd(this, msg_str);
-	int cmd_id = cmd_map[cmd.getCmd()];
-	if (cmd_id <= CMD_USER)
-		return (_register_cmd(cmd, cmd_id));
-	if (_reg_status != REG_OK) {
-		rpl(451);
-		return (0);
-	}	
-	switch (cmd_id) {
 
 		case (CMD_PING): // ----------------------------------------------------
 
@@ -147,7 +138,7 @@ int User::_exec_command(void)
 			if (!arg.size())
 				return (rpl(461, "PING"));
 
-			user_send(Msg(this, ":"SERVER_NAME, "PONG", str(":") + arg[0]));
+			user_send(Msg(this, ":" SERVER_NAME, "PONG", str(":") + arg[0]));
 
 			break ;
 
@@ -191,7 +182,9 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		std::cout << "User " << getNick() << " disconnected from the server." << std::endl;
+		std::cout
+			<< "\e[1mUser " << getNick() << " disconnected from the server.\e[0m"
+			<< std::endl;
 		return (0);
 	}
 

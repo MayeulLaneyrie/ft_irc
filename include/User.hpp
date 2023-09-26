@@ -67,7 +67,6 @@ class User {
 
 		User(void);
 
-		int	_register_cmd(Msg msg, int cmd_id);
 		int _exec_command(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P

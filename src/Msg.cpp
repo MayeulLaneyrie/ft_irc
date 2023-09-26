@@ -88,7 +88,7 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 	rpl_cmd << std::setw(3) << std::setfill('0') << num;
 	
 	_contact = contact;
-	_prefix = ":"SERVER_NAME;
+	_prefix = ":" SERVER_NAME;
 	_cmd = rpl_cmd.str();
 	_payload = rpl_string;
 
