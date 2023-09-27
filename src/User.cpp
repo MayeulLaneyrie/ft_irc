@@ -47,13 +47,13 @@ User & User::operator=(User const & rhs)
 int User::_exec_command(void)
 {
 	// TODO: the following will have to go static some way or another
-	std::map<str, int> cmd_map;
+	std::map<str, ft_cmd> cmd_map;
 
-	cmd_map[""] = CMD_NULL;
-	cmd_map["PASS"] = CMD_PASS;
-	cmd_map["NICK"] = CMD_NICK;
-	cmd_map["USER"] = CMD_USER;
-	cmd_map["PING"] = CMD_PING;
+	cmd_map[""]		= &User::_cmd_VOID;
+	cmd_map["PASS"] = &User::_cmd_PASS;
+	cmd_map["NICK"] = &User::_cmd_NICK;
+	cmd_map["USER"] = &User::_cmd_USER;
+	cmd_map["PING"] = &User::_cmd_PING;
 
 	// Extraction of the first message of the string
 	size_t msg_len = _ibuffer.find("\r\n");
@@ -64,85 +64,91 @@ int User::_exec_command(void)
 
 	Msg cmd(this, msg_str);
 
-	int cmd_id = cmd_map[cmd.getCmd()];
+	if (_reg_status != REG_OK
+			&& cmd.getCmd() != "PASS"
+			&& cmd.getCmd() != "NICK"
+			&& cmd.getCmd() != "USER")
+			return (rpl(451));
 
-	if (_reg_status != REG_OK && cmd_id > CMD_USER)
-		return (rpl(451));
+	return ((this->*cmd_map[cmd.getCmd()])(cmd));
+}
 
-	switch (cmd_id) {
+int User::_cmd_VOID(Msg & cmd) // ----------------------------------------- VOID
+{
+	(void)cmd;
+	return (0);
+}
 
-		case (CMD_PASS): // ----------------------------------------------------
+int User::_cmd_PASS(Msg & cmd) // ----------------------------------------- PASS
+{
+	if (cmd.getPayload().empty())
+		return (rpl(461, "PASS"));
 
-			if (cmd.getPayload().empty())
-				return (rpl(461, "PASS"));
+	if (_reg_status == REG_OK)
+		return (rpl(462));
 
-			if (_reg_status == REG_OK)
-				return (rpl(462));
+	if (_serv->checkPass(cmd.getPayload()))
+		_reg_status |= REG_PASS;
+	else
+		_reg_status |= REG_MISM;
+	return (0);
+}
 
-			if (_serv->checkPass(cmd.getPayload()))
-				_reg_status |= REG_PASS;
-			else
-				_reg_status |= REG_MISM;
-			break ;
+int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
+{
+	if (cmd.getPayload().empty())
+		return (rpl(461, "NICK"));
 
-		case (CMD_NICK): // ----------------------------------------------------
+	if (_reg_status & REG_USER && _reg_status & REG_MISM)
+		return (error(":Access denied, wrong password"));
+	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
+		return (error(":Access denied, password wasn't provided"));
 
-			if (cmd.getPayload().empty())
-				return (rpl(461, "NICK"));
+	if (_serv->getUserByNick(cmd.getPayload()))
+		return (rpl(433, cmd.getPayload()));
 
-			if (_reg_status & REG_USER && _reg_status & REG_MISM)
-				return (error(":Access denied, wrong password"));
-			if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
-				return (error(":Access denied, password wasn't provided"));
+	_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
+	_serv->setAsRegisterd(this);
+	_reg_status |= REG_NICK;
 
-			if (_serv->getUserByNick(cmd.getPayload()))
-				return (rpl(433, cmd.getPayload()));
-
-			_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
-			_serv->setAsRegisterd(this);
-			_reg_status |= REG_NICK;
-
-			if (_reg_status & REG_USER) {
-				rpl(1); rpl(2); rpl(3); rpl(4);
-			}
-
-			break ;
-
-		case (CMD_USER): // ----------------------------------------------------
-			{
-			str_vec arg = cmd.payloadAsVector(4);
-			if (arg.size() != 4) 
-				return (rpl(461, "USER"));
-
-			if (_reg_status == REG_OK)
-				return (rpl(462));
-
-			if (_reg_status & REG_NICK && _reg_status & REG_MISM)
-				return (error(":Access denied, wrong password"));
-			if (_reg_status & REG_NICK && !(_reg_status & REG_PASS))
-				return (error(":Access denied, password wasn't provided"));
-
-			_username = arg[0];
-			_realname = arg[3];
-			_reg_status |= REG_USER;
-
-			if (_reg_status & REG_NICK) {
-				rpl(1); rpl(2); rpl(3); rpl(4);
-			}
-			}
-			break ;
-
-		case (CMD_PING): // ----------------------------------------------------
-
-			str_vec arg = cmd.payloadAsVector(1);
-			if (!arg.size())
-				return (rpl(461, "PING"));
-
-			user_send(Msg(this, ":" SERVER_NAME, "PONG", str(":") + arg[0]));
-
-			break ;
-
+	if (_reg_status & REG_USER) {
+		rpl(1); rpl(2); rpl(3); rpl(4);
 	}
+	return (0);
+}
+
+int User::_cmd_USER(Msg & cmd) // ----------------------------------------- USER
+{
+	str_vec arg = cmd.payloadAsVector(4);
+	if (arg.size() != 4) 
+	return (rpl(461, "USER"));
+
+	if (_reg_status == REG_OK)
+		return (rpl(462));
+
+	if (_reg_status & REG_NICK && _reg_status & REG_MISM)
+		return (error(":Access denied, wrong password"));
+	if (_reg_status & REG_NICK && !(_reg_status & REG_PASS))
+		return (error(":Access denied, password wasn't provided"));
+
+	_username = arg[0];
+	_realname = arg[3];
+	_reg_status |= REG_USER;
+
+	if (_reg_status & REG_NICK) {
+		rpl(1); rpl(2); rpl(3); rpl(4);
+	}
+	return (0);
+}
+
+int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
+{
+	str_vec arg = cmd.payloadAsVector(1);
+	if (!arg.size())
+		return (rpl(461, "PING"));
+
+	user_send(Msg(this, ":" SERVER_NAME, "PONG", str(":") + arg[0]));
+
 	return (0);
 }
 

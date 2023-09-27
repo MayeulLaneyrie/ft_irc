@@ -46,6 +46,8 @@ class User {
 
 	private : // PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE
 
+		typedef	int (User::*ft_cmd)(Msg &);
+
 // USER DATA -------------------------------------------------------------------
 
 		int		_fd;
@@ -68,6 +70,12 @@ class User {
 		User(void);
 
 		int _exec_command(void);
+
+	int _cmd_VOID(Msg & cmd);
+	int _cmd_PASS(Msg & cmd);
+	int _cmd_NICK(Msg & cmd);
+	int _cmd_USER(Msg & cmd);
+	int _cmd_PING(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
