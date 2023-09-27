@@ -44,16 +44,21 @@ User & User::operator=(User const & rhs)
 
 // INTERNAL STUFF ==============================================================
 
-int User::_exec_command(void)
+std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 {
-	// TODO: the following will have to go static some way or another
-	std::map<str, ft_cmd> cmd_map;
+	std::map<str, ft_cmd> ret;
 
-	cmd_map[""]		= &User::_cmd_VOID;
-	cmd_map["PASS"] = &User::_cmd_PASS;
-	cmd_map["NICK"] = &User::_cmd_NICK;
-	cmd_map["USER"] = &User::_cmd_USER;
-	cmd_map["PING"] = &User::_cmd_PING;
+	ret[""]		= &User::_cmd_VOID;
+	ret["PASS"] = &User::_cmd_PASS;
+	ret["NICK"] = &User::_cmd_NICK;
+	ret["USER"] = &User::_cmd_USER;
+	ret["PING"] = &User::_cmd_PING;
+	return (ret);
+}
+
+int User::_exec_cmd(void)
+{
+	static std::map<str, ft_cmd> cmd_map = _gen_cmd_map();
 
 	// Extraction of the first message of the string
 	size_t msg_len = _ibuffer.find("\r\n");
@@ -198,7 +203,7 @@ int User::user_recv(void)
 	_ibuffer.append(_cbuffer);
 
 	while (_ibuffer.find("\r\n") != str::npos) {
-		if (_exec_command()) {
+		if (_exec_cmd()) {
 			len = 0;
 			break ;
 		}

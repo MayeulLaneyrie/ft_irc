@@ -70,13 +70,15 @@ class User {
 
 		User(void);
 
-		int _exec_command(void);
+		std::map<str, ft_cmd> _gen_cmd_map(void);
 
-	int _cmd_VOID(Msg & cmd);
-	int _cmd_PASS(Msg & cmd);
-	int _cmd_NICK(Msg & cmd);
-	int _cmd_USER(Msg & cmd);
-	int _cmd_PING(Msg & cmd);
+		int _exec_cmd(void);
+
+		int _cmd_VOID(Msg & cmd);
+		int _cmd_PASS(Msg & cmd);
+		int _cmd_NICK(Msg & cmd);
+		int _cmd_USER(Msg & cmd);
+		int _cmd_PING(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 

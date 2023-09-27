@@ -124,6 +124,41 @@ void Serv::_set_datetime(void)
 	_datetime = str(date_s);
 }
 
+void Serv::_new_connection(void)
+{
+	int fd;
+
+	socklen_t addrlen = sizeof(_sa);
+
+	if ((fd = accept(_sockfd, (struct sockaddr *) &_sa, &addrlen)) < 0)
+		die("sds", __FILE__, __LINE__, strerror(errno));
+
+	setsock_nonblock(fd);
+	_epoll_register(fd);
+
+	User * new_user = new User(this, fd);
+
+	if (_users.count(fd)) // Somehow, a used fd was reattributed.
+		die("sd", __FILE__, __LINE__);
+	_users[fd] = new_user;
+	_usercount++;
+	std::cout
+		<< "\e[1m" << new_user->getNick()
+		<< " (temp. nick) joined.\e[0m" << std::endl;
+}
+
+void Serv::_user_manage(int fd)
+{
+	if (!_users.count(fd))
+		die("sd", __FILE__, __LINE__);
+	if (_users[fd]->user_recv())
+		return ;
+	_registerd.erase(_users[fd]->getNick());
+	delete _users[fd];
+	_users.erase(fd);
+	_usercount--;
+}
+
 // ACCESSORS -------------------------------------------------------------------
 
 User * Serv::getUserByNick(str const & nick)
@@ -160,39 +195,12 @@ int Serv::run(void)
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
 
-			if (fd == _sockfd) { // NEW CONNECTION
-
-				socklen_t addrlen = sizeof(_sa);
-
-				if ((fd = accept(_sockfd, (struct sockaddr *) &_sa, &addrlen)) < 0)
-					die("sds", __FILE__, __LINE__, strerror(errno));
-
-				setsock_nonblock(fd);
-				_epoll_register(fd);
-
-				User * new_user = new User(this, fd);
-
-				if (_users.count(fd)) // Somehow, a used fd was reattributed.
-					die("sd", __FILE__, __LINE__);
-				_users[fd] = new_user;
-				_usercount++;
-				std::cout
-					<< "\e[1m" << new_user->getNick()
-					<< " (temp. nick) joined.\e[0m" << std::endl;
-			}
-			else {
-				if (!_users.count(fd))
-					die("sd", __FILE__, __LINE__);
-				if (!_users[fd]->user_recv()) {
-					_registerd.erase(_users[fd]->getNick());
-					delete _users[fd];
-					_users.erase(fd);
-					_usercount--;
-				}
-			}
+			if (fd == _sockfd)
+				_new_connection();
+			else
+				_user_manage(fd);
 		}
 	}
-
 	return (0);
 }
 

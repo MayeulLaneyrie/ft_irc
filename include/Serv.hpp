@@ -61,16 +61,22 @@ class Serv {
 
 // INTERNAL STUFF  -------------------------------------------------------------
 
+		void _clear(void);
 
 		int _setup_socket(void);
 		int _setup_epoll(void);
+
 		int _epoll_register(int fd);
+
 		void _set_datetime(void);
+
+		void _new_connection(void);
+		void _user_manage(int fd);
 
 		Serv(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
-		void _clear(void);
+
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
 		Serv(int port, str password);
