@@ -197,15 +197,28 @@ int User::user_recv(void)
 	_cbuffer[len] = '\0';
 	_ibuffer.append(_cbuffer);
 
-	while (_ibuffer.find("\r\n") != str::npos)
-		if (_exec_command())
-			return (0);
-
+	while (_ibuffer.find("\r\n") != str::npos) {
+		if (_exec_command()) {
+			len = 0;
+			break ;
+		}
+	}
+	flush();
 	return (len);
 }
 
-int User::user_send(Msg const & msg) const
+int User::user_send(Msg const & msg, int flushnow)
 {
 	std::cout << "\e[1m" << getNick() << " <-\e[0m " << msg.getStr();
-	return (send(_fd, msg.getStr().c_str(), msg.getStr().size(), 0));
+	_obuffer += msg.getStr();
+	if (flushnow)
+		return (flush());
+	return (0);
+}
+
+int	User::flush(void)
+{
+	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), 0);
+	_obuffer.clear();
+	return (ret);
 }

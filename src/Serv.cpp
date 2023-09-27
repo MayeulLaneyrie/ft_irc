@@ -58,6 +58,7 @@ void Serv::_clear(void)
 	std::map<int, User *>::iterator user_it;
 	for (user_it = _users.begin(); user_it != _users.end(); ++user_it) {
 		user_it->second->error(":Server shutdown, bye bye!");
+		user_it->second->flush();
 		delete user_it->second;
 	}
 

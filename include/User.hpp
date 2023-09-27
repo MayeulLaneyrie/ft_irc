@@ -56,6 +56,7 @@ class User {
 		str		_username;
 		str		_realname;
 		
+		str		_obuffer;
 		str		_ibuffer;
 		char	_cbuffer[RECV_BUFF_SIZE];
 
@@ -107,7 +108,9 @@ class User {
 		 * This user has send us some data. Let's do what has to be done.
 		 */
 		int user_recv(void);
-		int user_send(Msg const & msg) const;
+		int user_send(Msg const & msg, int flushnow = 0);
+
+		int	flush(void);
 };
 
 #endif
