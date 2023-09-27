@@ -28,11 +28,13 @@
 #define RPL_CREATED ":This server was created {dt}"
 #define RPL_MYINFO "{sn} {v} {aum} {acm}"
 
+#define ERR_UNKNOWNCOMMAND "{1} :Unknown command"
+#define ERR_NONICKNAMEGIVEN ":No nickname given"
+#define ERR_ERRONEUSNICKNAME "{1} :Erroneus nickname"
+#define ERR_NICKNAMEINUSE "{1} :Nickname is already in use"
 #define ERR_NOTREGISTERED ":You have not registered"
-
 #define ERR_NEEDMOREPARAMS "{1} :Not enough parameters"
 #define ERR_ALREADYREGISTERED ":You may not reregister"
-#define ERR_NICKNAMEINUSE "{1} :Nickname is already in use"
 
 class Chan;
 class User;
@@ -74,7 +76,7 @@ class Msg {
 		/*
 		 * Construct RPL message
 		 */
-		Msg(int num, User * contact, str const & p1, str const & p2);
+		Msg(int num, User * contact, str const & p1);
 
 		Msg(Msg const & src);
 

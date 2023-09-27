@@ -73,7 +73,10 @@ int User::_exec_cmd(void)
 			&& cmd.getCmd() != "PASS"
 			&& cmd.getCmd() != "NICK"
 			&& cmd.getCmd() != "USER")
-			return (rpl(451));
+		return (rpl(451));
+	
+	if (!cmd_map.count(cmd.getCmd()) && _reg_status == REG_OK)
+		return (rpl(421, cmd.getCmd()));
 
 	return ((this->*cmd_map[cmd.getCmd()])(cmd));
 }
@@ -101,18 +104,24 @@ int User::_cmd_PASS(Msg & cmd) // ----------------------------------------- PASS
 
 int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 {
-	if (cmd.getPayload().empty())
-		return (rpl(461, "NICK"));
+	str nick = cmd.getPayload();
+	if (nick.empty())
+		return (rpl(431));
 
 	if (_reg_status & REG_USER && _reg_status & REG_MISM)
 		return (error(":Access denied, wrong password"));
 	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
 		return (error(":Access denied, password wasn't provided"));
 
-	if (_serv->getUserByNick(cmd.getPayload()))
-		return (rpl(433, cmd.getPayload()));
+	if (nick[0] == ':')
+		nick.erase(0, 1);
 
-	_nick = cmd.getPayload(); // TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
+	// TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
+
+	if (_serv->getUserByNick(nick))
+		return (rpl(433, nick));
+
+	_nick = nick;
 	_serv->setAsRegisterd(this);
 	_reg_status |= REG_NICK;
 
@@ -174,9 +183,9 @@ Serv * User::getServ(void) const { return (_serv); }
 
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
-int User::rpl(int num, str const & p1, str const & p2)
+int User::rpl(int num, str const & p1)
 {
-	Msg rpl(num, this, p1, p2);
+	Msg rpl(num, this, p1);
 
 	rpl.msg_send();
 	return (0);

@@ -102,7 +102,7 @@ class User {
 		/*
 		 * Send a reply to this user
 		 */
-		int rpl(int num, str const & p1 = "", str const & p2 = "");
+		int rpl(int num, str const & p1 = "");
 
 		int error(str const & msg);
 

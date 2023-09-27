@@ -47,6 +47,9 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[3] = RPL_CREATED;
 	ret[4] = RPL_MYINFO;
 
+	ret[421] = ERR_UNKNOWNCOMMAND;
+	ret[431] = ERR_NONICKNAMEGIVEN;
+	ret[432] = ERR_ERRONEUSNICKNAME;
 	ret[433] = ERR_NICKNAMEINUSE;
 	ret[451] = ERR_NOTREGISTERED;
 	ret[461] = ERR_NEEDMOREPARAMS;
@@ -55,7 +58,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	return (ret);
 }
 
-Msg::Msg(int num, User * contact, str const & p1, str const & p2)
+Msg::Msg(int num, User * contact, str const & p1)
 {
 
 	static std::map<int, str> rpl_map = _gen_rpl_map();
@@ -76,7 +79,6 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 	vars["{aum}"] = "o";
 	vars["{acm}"] = "itkol";
 	vars["{1}"] = p1;
-	vars["{2}"] = p2;
 
 	std::map<str const, str>::const_iterator it;
 
