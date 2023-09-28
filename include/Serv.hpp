@@ -98,7 +98,9 @@ class Serv {
 
 		int checkPass(str const & s) const;
 
-		void setAsRegisterd(User * user);
+		void registerUser(User * user);
+
+		void unregisterUser(User * user);
 };
 
 #endif

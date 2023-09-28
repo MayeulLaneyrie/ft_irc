@@ -65,7 +65,10 @@ int User::_exec_cmd(void)
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << "\e[1m" << getNick() << " ->\e[0m " << msg_str << std::endl;
+	if (msg_str.empty())
+		return (0);
+
+	std::cout << "\e[1;42;30m" << getNick() << " >\e[0m " << msg_str << std::endl;
 
 	Msg cmd(this, msg_str);
 
@@ -116,18 +119,24 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	if (nick[0] == ':')
 		nick.erase(0, 1);
 
-	std::cout << "[ " << nick << " ]" << std::endl;
-	if (nick.find('#') != str::npos
+	if (nick == _nick)
+		return (0);
+
+	if (nick.size() > 16
+			|| nick.find('#') != str::npos
 			|| nick.find(':') != str::npos
-			|| nick.find(' ') != str::npos
-			|| nick.size() > 16)
+			|| nick.find(' ') != str::npos)
 		return (rpl(432, nick));
 
 	if (_serv->getUserByNick(nick))
 		return (rpl(433, nick));
 
+	_serv->unregisterUser(this);
 	_nick = nick;
-	_serv->setAsRegisterd(this);
+	_serv->registerUser(this);
+
+	if (_reg_status & REG_NICK)
+		return (0);
 	_reg_status |= REG_NICK;
 
 	if (_reg_status & REG_USER) {
@@ -166,7 +175,9 @@ int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
 	if (!arg.size())
 		return (rpl(461, "PING"));
 
-	user_send(Msg(this, ":" SERVER_NAME, "PONG", str(":") + arg[0]));
+	user_send(
+		Msg(this, ":" SERVER_NAME, "PONG", str(SERVER_NAME) + " :" + arg[0])
+	);
 
 	return (0);
 }
@@ -178,7 +189,7 @@ str User::getNick(void) const
 	if (!_nick.empty())
 		return (_nick);
 	std::ostringstream oss("");
-	oss << "FD#" << _fd;
+	oss << "TMP#" << _fd;
 	return (oss.str());
 }
 
@@ -207,9 +218,7 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		std::cout
-			<< "\e[1mUser " << getNick() << " disconnected from the server.\e[0m"
-			<< std::endl;
+		std::cout << "\e[1;42;30m" << getNick() << " left.\e[0m" << std::endl;
 		return (0);
 	}
 
@@ -218,6 +227,7 @@ int User::user_recv(void)
 
 	while (_ibuffer.find("\r\n") != str::npos) {
 		if (_exec_cmd()) {
+			std::cout << "\e[1;44;30m" << getNick() << " has to leave.\e[0m" << std::endl;
 			len = 0;
 			break ;
 		}
@@ -228,7 +238,7 @@ int User::user_recv(void)
 
 int User::user_send(Msg const & msg, int flushnow)
 {
-	std::cout << "\e[1m" << getNick() << " <-\e[0m " << msg.getStr();
+	std::cout << "\e[1;44;30m" << getNick() << " <\e[0m " << msg.getStr();
 	_obuffer += msg.getStr();
 	if (flushnow)
 		return (flush());

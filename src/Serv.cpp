@@ -143,8 +143,7 @@ void Serv::_new_connection(void)
 	_users[fd] = new_user;
 	_usercount++;
 	std::cout
-		<< "\e[1m" << new_user->getNick()
-		<< " (temp. nick) joined.\e[0m" << std::endl;
+		<< "\e[1;42;30m" << new_user->getNick() << " joined.\e[0m" << std::endl;
 }
 
 void Serv::_user_manage(int fd)
@@ -179,8 +178,8 @@ int Serv::run(void)
 
 	_set_datetime();
 	signal(SIGINT, handler);
-	std::cout	<< "\e[1mServer launched:\e[0m " << _datetime << std::endl
-				<< "\e[1mListening on port:\e[0m " << _port << std::endl;
+	std::cout	<< "\e[1;43;30mServer launched:\e[0m " << _datetime << std::endl
+				<< "\e[1;43;30mListening on port:\e[0m " << _port << std::endl;
 
 	while (1) {
 		int nfds;
@@ -209,7 +208,12 @@ int Serv::checkPass(std::string const & s) const
 	return (s == _password);
 }
 
-void Serv::setAsRegisterd(User * user)
+void Serv::registerUser(User * user)
 {
 	_registerd[user->getNick()] = user;
+}
+
+void Serv::unregisterUser(User * user)
+{
+	_registerd.erase(user->getNick());
 }

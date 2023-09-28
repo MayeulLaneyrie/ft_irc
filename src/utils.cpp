@@ -17,28 +17,17 @@ void die(const char * fmt, ...) {
 	va_start(args, fmt);
 
 	int d;
-	char c;
 	char *s;
-	double f;
 
+	std::cerr << "\e[1;41;30mFATAL ERROR:\e[0m ";
 	while (*fmt) {
-		switch (*fmt) {
-			case 'd':
-				d = va_arg(args, int);
-				std::cerr << d;
-				break ;
-			case 'c':
-				d = va_arg(args, int);
-				c = d;
-				std::cerr << c;
-				break ;
-			case 's':
-				s = va_arg(args, char *);
-				std::cerr << s;
-				break ;
-			case 'f':
-				f = va_arg(args, double);
-				std::cerr << f;
+		if (*fmt == 'd') {
+			d = va_arg(args, int);
+			std::cerr << d;
+		}
+		else if (*fmt == 's') {
+			s = va_arg(args, char *);
+			std::cerr << s;
 		}
 		if (*(++fmt))
 			std::cerr << ": ";
@@ -81,7 +70,7 @@ void handler(int x)
 {
 	(void)x;
 	std::cout
-		<< "\n\e[1mSIGINT has been caught, the server will now stop.\e[0m"
+		<< "\n\e[1;41;30mSIGINT has been caught, the server will now stop.\e[0m"
 		<< std::endl;
 	g_stop = 1;
 }

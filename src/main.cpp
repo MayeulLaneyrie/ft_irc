@@ -22,7 +22,7 @@ int main(int ac, char **av) {
 		die("s", "Usage: ./ircserv <port> <password>");
 	for (int i = 0; av[1][i]; ++i)
 		if (av[1][i] < '0' || av[1][i] > '9' || i > 4)
-			die("ssc", "Invalid port value : '", av[1], '\'');
+			die("ss", "Invalid port value", av[1]);
 
 	Serv serv(atoi(av[1]), av[2]);
 	return (serv.run());
