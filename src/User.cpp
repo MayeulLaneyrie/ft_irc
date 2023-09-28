@@ -116,7 +116,12 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	if (nick[0] == ':')
 		nick.erase(0, 1);
 
-	// TODO: CHECK IF THE NICK IS ACTUALLY VALID !!!
+	std::cout << "[ " << nick << " ]" << std::endl;
+	if (nick.find('#') != str::npos
+			|| nick.find(':') != str::npos
+			|| nick.find(' ') != str::npos
+			|| nick.size() > 16)
+		return (rpl(432, nick));
 
 	if (_serv->getUserByNick(nick))
 		return (rpl(433, nick));
