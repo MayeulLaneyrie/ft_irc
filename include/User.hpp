@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/12 17:07:41 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/28 17:54:48 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,14 @@ class User {
 
 		int _exec_cmd(void);
 
+		/*
+		 * Here are all the command implementations. They are all located in
+		 * cmds.cpp. They all take a Msg & as parameter, which has to contain
+		 * the parsed command to execute. They each return 0 if, whatever
+		 * happened when executing the command, the user should not be
+		 * disconnected, and 1 if something happened, which has to lead to user
+		 * disconnection (eg. wrong password).
+		 */
 		int _cmd_VOID(Msg & cmd);
 		int _cmd_PASS(Msg & cmd);
 		int _cmd_NICK(Msg & cmd);
