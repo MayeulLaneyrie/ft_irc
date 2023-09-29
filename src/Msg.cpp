@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/13 12:35:21 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 12:56:29 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ Msg::Msg(int num, User * contact, str const & p1)
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();
-	vars["{h}"] = "host";
-	vars["{nw}"] = "network";
 	vars["{sn}"] = SERVER_NAME;
 	vars["{dt}"] = contact->getServ()->getDatetime();
 	vars["{v}"] = "0.0";

@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:00:00 by mlaneyri          #+#    #+#             */
-/*   Updated. 2023/07/13 16:00:00 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:33:57 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include "Serv.hpp"
 #include "utils.hpp"
 
-#define RPL_WELCOME ":Welcome to the {nw} Network, {n}[!{u}@{h}]"
+#define RPL_WELCOME ":Welcome to the 42paris.fr IRC Network, {n}[!{u}@whatever]"
 #define RPL_YOURHOST ":Your host is {sn}, running version {v}"
 #define RPL_CREATED ":This server was created {dt}"
 #define RPL_MYINFO "{sn} {v} {aum} {acm}"

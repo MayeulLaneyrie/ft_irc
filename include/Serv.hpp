@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/05 14:20:31 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:00:59 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 
 #define SERVER_NAME "ircserv"
 
+#define OPER_NAME "LVDOVICVS"
 #define OPER_PASS "NECPLVSVLTRA"
 
 class User;

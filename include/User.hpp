@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/28 17:54:48 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:24:49 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ class User {
 		int _cmd_NICK(Msg & cmd);
 		int _cmd_USER(Msg & cmd);
 		int _cmd_PING(Msg & cmd);
+		int _cmd_QUIT(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 

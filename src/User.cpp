@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/28 17:55:35 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:32:14 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["NICK"] = &User::_cmd_NICK;
 	ret["USER"] = &User::_cmd_USER;
 	ret["PING"] = &User::_cmd_PING;
+	ret["PONG"] = &User::_cmd_VOID;
+	ret["QUIT"] = &User::_cmd_QUIT;
 	return (ret);
 }
 
@@ -120,7 +122,7 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		std::cout << "\e[1;42;30m" << getNick() << " left.\e[0m" << std::endl;
+		std::cout << "\e[1;45;30m" << getNick() << " left.\e[0m" << std::endl;
 		return (0);
 	}
 
@@ -129,7 +131,7 @@ int User::user_recv(void)
 
 	while (_ibuffer.find("\r\n") != str::npos) {
 		if (_exec_cmd()) {
-			std::cout << "\e[1;44;30m" << getNick() << " shall be disconnected.\e[0m" << std::endl;
+			std::cout << "\e[1;45;30m" << getNick() << " shall be disconnected.\e[0m" << std::endl;
 			len = 0;
 			break ;
 		}

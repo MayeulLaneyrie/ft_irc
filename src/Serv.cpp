@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/04 17:31:33 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:32:03 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void Serv::_new_connection(void)
 	_users[fd] = new_user;
 	_usercount++;
 	std::cout
-		<< "\e[1;42;30m" << new_user->getNick() << " joined.\e[0m" << std::endl;
+		<< "\e[1;46;30m" << new_user->getNick() << " joined.\e[0m" << std::endl;
 }
 
 void Serv::_user_manage(int fd)

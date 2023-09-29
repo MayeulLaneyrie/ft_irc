@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 17:50:45 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/28 17:54:53 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/09/29 13:28:13 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,16 @@ int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
 	);
 
 	return (0);
+}
+
+int User::_cmd_QUIT(Msg & cmd) // ----------------------------------------- QUIT
+{
+	str reason = cmd.getPayload();
+
+	if (reason.empty())
+		reason = "Client exited";
+	if (reason[0] == ':')
+		reason.erase(0, 1);
+	error(str(":Okay, bye: (") + _username + "@whatever) [" + reason + ']');
+	return (1);
 }

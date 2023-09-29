@@ -6,33 +6,33 @@
 #    By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/15 12:10:07 by mlaneyri          #+#    #+#              #
-#    Updated: 2023/09/28 17:56:38 by mlaneyri         ###   ########.fr        #
+#    Updated: 2023/09/28 18:01:44 by mlaneyri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC			=	src/main.cpp \
-				src/utils.cpp \
-				src/Serv.cpp \
-				src/User.cpp \
-				src/Chan.cpp \
-				src/Msg.cpp \
-				src/cmds.cpp
+SRC		=	src/main.cpp \
+			src/utils.cpp \
+			src/Serv.cpp \
+			src/User.cpp \
+			src/Chan.cpp \
+			src/Msg.cpp \
+			src/cmds.cpp
 
-NAME		=	ircserv
+NAME	=	ircserv
 
-CC			=	c++
-CFLAGS		=	-Iinclude -std=c++98 -Wall -Wextra -Werror #-g3 -fsanitize=address
-CDEP		=	-MMD
+CC		=	c++
+CFLAGS	=	-Iinclude -std=c++98 -Wall -Wextra -Werror #-g3 -fsanitize=address
+CDEP	=	-MMD
 
-RM			=    rm -rf
+RM		=	rm -rf
 
-OBJ		=    $(SRC:%.cpp=.obj/%.o)
+OBJ		=	$(SRC:%.cpp=.obj/%.o)
 
-DEP		=    $(SRC:%.cpp=.obj/%.d)
+DEP		=	$(SRC:%.cpp=.obj/%.d)
 
 all		:	obj $(NAME)
 
--include $(DEP)
+-include	$(DEP)
 
 $(NAME)	:	$(OBJ)
 			@ echo "\n\e[3mLinking...\e[0m\n"
@@ -40,9 +40,9 @@ $(NAME)	:	$(OBJ)
 			@ echo "\e[1mDone!\e[0m"
 
 obj		:
-				@ if [ ! -d "./.obj/src" ]; then \
-					mkdir -p .obj/src; \
-				fi
+			@ if [ ! -d "./.obj/src" ]; then \
+				mkdir -p .obj/src; \
+			fi
 
 .obj/%.o	:	%.cpp
 			@ echo "\e[3mCompiling $<...\e[0m"
