@@ -39,18 +39,13 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	if (nick.empty())
 		return (rpl(431));
 
-	if (_reg_status & REG_USER && _reg_status & REG_MISM)
-		return (error(":Access denied, wrong password"));
-	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
-		return (error(":Access denied, password wasn't provided"));
-
 	if (nick[0] == ':')
 		nick.erase(0, 1);
 
-	if (nick == _nick)
+	if (_reg_status & REG_NICK && nick == _nick)
 		return (0);
 
-	if (nick.size() > 16
+	if (nick.size() > 16 || nick.empty()
 			|| nick.find('#') != str::npos
 			|| nick.find(':') != str::npos
 			|| nick.find(' ') != str::npos)
@@ -58,6 +53,11 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 
 	if (_serv->getUserByNick(nick))
 		return (rpl(433, nick));
+
+	if (_reg_status & REG_USER && _reg_status & REG_MISM)
+		return (error(":Access denied, wrong password"));
+	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
+		return (error(":Access denied, password wasn't provided"));
 
 	_serv->unregisterUser(this);
 	_nick = nick;
@@ -77,7 +77,7 @@ int User::_cmd_USER(Msg & cmd) // ----------------------------------------- USER
 {
 	str_vec arg = cmd.payloadAsVector(4);
 	if (arg.size() != 4) 
-	return (rpl(461, "USER"));
+		return (rpl(461, "USER"));
 
 	if (_reg_status == REG_OK)
 		return (rpl(462));

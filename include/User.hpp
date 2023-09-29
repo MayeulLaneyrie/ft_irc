@@ -17,7 +17,9 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+
 #include <map>
+#include <set>
 
 #include "Chan.hpp"
 #include "Msg.hpp"
@@ -70,7 +72,8 @@ class User {
 
 		User(void);
 
-		std::map<str, ft_cmd> _gen_cmd_map(void);
+		static std::map<str, ft_cmd> _gen_cmd_map(void);
+		static std::set<str> _gen_prereg_set(void);
 
 		int _exec_cmd(void);
 

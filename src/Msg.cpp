@@ -61,13 +61,16 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 Msg::Msg(int num, User * contact, str const & p1)
 {
 
-	static std::map<int, str> rpl_map = _gen_rpl_map();
+	static const std::map<int, str> rpl_map = _gen_rpl_map();
 
 	std::map<str, str> vars;
 
 	str rpl_string(contact->getNick());
 	rpl_string += ' ';
-	rpl_string += rpl_map[num];
+	if (!rpl_map.count(num))
+		rpl_string += ":This reply hasn't been implemented yet :/";
+	else
+		rpl_string += rpl_map.at(num);
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();

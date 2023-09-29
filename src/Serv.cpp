@@ -74,6 +74,7 @@ void Serv::_clear(void)
 
 int Serv::_setup_socket(void)
 {
+	int optval = 1;
 	_sa.sin6_family = AF_INET6;
 	_sa.sin6_port = htons(_port);
 	_sa.sin6_addr = in6addr_any;
@@ -81,6 +82,8 @@ int Serv::_setup_socket(void)
 	_sa.sin6_scope_id = 0;
 
 	if ((_sockfd = socket(AF_INET6, SOCK_STREAM | SOCK_NONBLOCK , 0)) < 0)
+		die("sds", __FILE__, __LINE__, strerror(errno));
+	if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
 	if (bind(_sockfd, (struct sockaddr *) &_sa, sizeof(_sa)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));

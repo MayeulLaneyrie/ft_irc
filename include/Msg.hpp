@@ -55,7 +55,7 @@ class Msg {
 
 		void _regen_str(void);
 
-		std::map<int, str> _gen_rpl_map(void);
+		static std::map<int, str> _gen_rpl_map(void);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 

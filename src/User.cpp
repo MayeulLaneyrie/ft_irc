@@ -49,41 +49,51 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	std::map<str, ft_cmd> ret;
 
 	ret[""]		= &User::_cmd_VOID;
+	ret["CAP"]	= &User::_cmd_VOID;
+	ret["PONG"] = &User::_cmd_VOID;
 	ret["PASS"] = &User::_cmd_PASS;
 	ret["NICK"] = &User::_cmd_NICK;
 	ret["USER"] = &User::_cmd_USER;
 	ret["PING"] = &User::_cmd_PING;
-	ret["PONG"] = &User::_cmd_VOID;
 	ret["QUIT"] = &User::_cmd_QUIT;
+	return (ret);
+}
+
+std::set<str> User::_gen_prereg_set(void)
+{
+	std::set<str> ret;
+
+	ret.insert("");
+	ret.insert("CAP");
+	ret.insert("PASS");
+	ret.insert("NICK");
+	ret.insert("USER");
+	ret.insert("QUIT");
+
 	return (ret);
 }
 
 int User::_exec_cmd(void)
 {
-	static std::map<str, ft_cmd> cmd_map = _gen_cmd_map();
+	static const std::map<str, ft_cmd> cmd_map = _gen_cmd_map();
+	static const std::set<str> prereg_set = _gen_prereg_set();
 
-	// Extraction of the first message of the string
 	size_t msg_len = _ibuffer.find("\r\n");
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	if (msg_str.empty())
-		return (0);
-
 	std::cout << "\e[1;42;30m" << getNick() << " >\e[0m " << msg_str << std::endl;
 
-	Msg cmd(this, msg_str);
+	Msg cmd_msg(this, msg_str);
+	str cmd = cmd_msg.getCmd();
 
-	if (_reg_status != REG_OK
-			&& cmd.getCmd() != "PASS"
-			&& cmd.getCmd() != "NICK"
-			&& cmd.getCmd() != "USER")
+	if (_reg_status != REG_OK && !prereg_set.count(cmd))
 		return (rpl(451));
-	
-	if (!cmd_map.count(cmd.getCmd()) && _reg_status == REG_OK)
-		return (rpl(421, cmd.getCmd()));
 
-	return ((this->*cmd_map[cmd.getCmd()])(cmd));
+	if (!cmd_map.count(cmd))
+		return (rpl(421, cmd));
+
+	return (this->*cmd_map.at(cmd))(cmd_msg);
 }
 
 // ACCESSORS ===================================================================
