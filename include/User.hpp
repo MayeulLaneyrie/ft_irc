@@ -91,6 +91,8 @@ class User {
 		int _cmd_USER(Msg & cmd);
 		int _cmd_PING(Msg & cmd);
 		int _cmd_QUIT(Msg & cmd);
+		int _cmd_PRIVMSG(Msg & cmd);
+	//	int _cmd_NOTICE(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 

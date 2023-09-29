@@ -28,6 +28,7 @@
 #define RPL_CREATED ":This server was created {dt}"
 #define RPL_MYINFO "{sn} {v} {aum} {acm}"
 
+#define ERR_NOSUCHNICK "{1} :No such nick/channel"
 #define ERR_UNKNOWNCOMMAND "{1} :Unknown command"
 #define ERR_NONICKNAMEGIVEN ":No nickname given"
 #define ERR_ERRONEUSNICKNAME "{1} :Erroneus nickname"
@@ -96,7 +97,7 @@ class Msg {
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
-		str_vec payloadAsVector(int ac) const;
+		str_vec payloadAsVector(int ac, int requireColon = 0) const;
 
 		int msg_send(void) const;
 };

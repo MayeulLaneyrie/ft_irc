@@ -56,6 +56,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["USER"] = &User::_cmd_USER;
 	ret["PING"] = &User::_cmd_PING;
 	ret["QUIT"] = &User::_cmd_QUIT;
+	ret["MODE"] = &User::_cmd_VOID;
+	ret["PRIVMSG"] = &User::_cmd_PRIVMSG;
 	return (ret);
 }
 
@@ -161,6 +163,8 @@ int User::user_send(Msg const & msg, int flushnow)
 
 int	User::flush(void)
 {
+	if (_obuffer.empty())
+		return (0);
 	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), 0);
 	_obuffer.clear();
 	return (ret);

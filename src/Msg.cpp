@@ -47,6 +47,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[3] = RPL_CREATED;
 	ret[4] = RPL_MYINFO;
 
+	ret[401] = ERR_NOSUCHNICK;
 	ret[421] = ERR_UNKNOWNCOMMAND;
 	ret[431] = ERR_NONICKNAMEGIVEN;
 	ret[432] = ERR_ERRONEUSNICKNAME;
@@ -64,8 +65,8 @@ Msg::Msg(int num, User * contact, str const & p1)
 	static const std::map<int, str> rpl_map = _gen_rpl_map();
 
 	std::map<str, str> vars;
-
 	str rpl_string(contact->getNick());
+
 	rpl_string += ' ';
 	if (!rpl_map.count(num))
 		rpl_string += ":This reply hasn't been implemented yet :/";
@@ -142,7 +143,7 @@ str Msg::getStr(void) const { return (_as_str); }
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
-str_vec Msg::payloadAsVector(int ac) const
+str_vec Msg::payloadAsVector(int ac, int requireColon) const
 {
 	str_vec ret;
 	str tmp = _payload;
@@ -151,6 +152,8 @@ str_vec Msg::payloadAsVector(int ac) const
 		ret.push_back(extract_first_word(tmp));
 	if (tmp.size() && tmp[0] == ':')
 		ret.push_back(tmp.erase(0, 1));
+	else if (tmp.size() && !requireColon)
+		ret.push_back(tmp);
 	else if (tmp.size())
 		ret.push_back(extract_first_word(tmp));
 	return (ret);

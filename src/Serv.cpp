@@ -141,8 +141,6 @@ void Serv::_new_connection(void)
 
 	User * new_user = new User(this, fd);
 
-	if (_users.count(fd)) // Somehow, a used fd was reattributed.
-		die("sd", __FILE__, __LINE__);
 	_users[fd] = new_user;
 	_usercount++;
 	std::cout
@@ -151,14 +149,15 @@ void Serv::_new_connection(void)
 
 void Serv::_user_manage(int fd)
 {
-	if (!_users.count(fd))
-		die("sd", __FILE__, __LINE__);
-	if (_users[fd]->user_recv())
-		return ;
-	_registerd.erase(_users[fd]->getNick());
-	delete _users[fd];
-	_users.erase(fd);
-	_usercount--;
+	if (!_users[fd]->user_recv()) {
+		_registerd.erase(_users[fd]->getNick());
+		delete _users[fd];
+		_users.erase(fd);
+		_usercount--;
+	}
+	std::map<int, User *>::iterator it;
+	for (it = _users.begin(); it != _users.end(); ++it)
+		it->second->flush();
 }
 
 // ACCESSORS -------------------------------------------------------------------
