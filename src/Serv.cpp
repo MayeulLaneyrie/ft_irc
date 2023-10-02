@@ -187,12 +187,13 @@ int Serv::run(void)
 		int nfds;
 		struct epoll_event evts[MAXEV];
 
-		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 && !g_stop)
-			die("sds", __FILE__, __LINE__, strerror(errno));
+		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0) {
+			if (errno == EINTR)
+				return (1);
+			else
+				die("sds", __FILE__, __LINE__, strerror(errno));
+		}
 
-		if (g_stop)
-			return (1);
-		
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
 

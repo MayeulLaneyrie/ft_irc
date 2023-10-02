@@ -72,5 +72,4 @@ void handler(int x)
 	std::cout
 		<< "\n\e[1;41;30mSIGINT has been caught, the server will now stop.\e[0m"
 		<< std::endl;
-	g_stop = 1;
 }

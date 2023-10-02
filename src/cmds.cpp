@@ -38,7 +38,7 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 {
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
-		return (rpl(431));
+		return (rpl(431, "NICK"));
 
 	if (_reg_status & REG_NICK && arg[0] == _nick)
 		return (0);

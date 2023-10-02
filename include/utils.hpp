@@ -22,8 +22,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-extern int g_stop;
-
 typedef std::string str;
 typedef std::vector<str> str_vec;
 
