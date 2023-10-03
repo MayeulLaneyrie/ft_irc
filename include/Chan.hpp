@@ -28,24 +28,29 @@ class Chan {
 
 	private :
 
-		std::map<std::string, User *>	_users; // indexed by their nicks
+		std::map<str, User *>	_users; // indexed by their nicks
 		
-		std::string		_name;
 		unsigned int	_mode;
-		std::string		_passwd;
-		std::string		_topic;
+		str		_name;
+		str		_passwd;
+		str		_topic;
 
 		Chan(void);
 
 	public :
 
-		Chan(std::string name);
+		Chan(str name);
 		Chan(Chan const & src);
 		~Chan(void);
 
 		Chan & operator=(Chan const & rhs);
 
 		int chan_send(Msg const & msg);
+
+		int addUser(User & user);
+		int rmUser(User const & user);
+		User * getUser(str nick) const;
+
 };
 
 #endif

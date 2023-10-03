@@ -42,19 +42,19 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 {
 	std::map<int, str> ret;
 
-	ret[1] = RPL_WELCOME;
-	ret[2] = RPL_YOURHOST;
-	ret[3] = RPL_CREATED;
-	ret[4] = RPL_MYINFO;
+	ret[RPL_WELCOME] = ":Welcome to the 42paris.fr IRC Network, {n}[!{u}@whatever]";
+	ret[RPL_YOURHOST] = ":Your host is {sn}, running version {v}";
+	ret[RPL_CREATED] = ":This server was created {dt}";
+	ret[RPL_MYINFO] = "{sn} {v} {aum} {acm}";
 
-	ret[401] = ERR_NOSUCHNICK;
-	ret[421] = ERR_UNKNOWNCOMMAND;
-	ret[431] = ERR_NONICKNAMEGIVEN;
-	ret[432] = ERR_ERRONEUSNICKNAME;
-	ret[433] = ERR_NICKNAMEINUSE;
-	ret[451] = ERR_NOTREGISTERED;
-	ret[461] = ERR_NEEDMOREPARAMS;
-	ret[462] = ERR_ALREADYREGISTERED;
+	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
+	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
+	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
+	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
+	ret[ERR_NICKNAMEINUSE] = "{1} :Nickname is already in use";
+	ret[ERR_NOTREGISTERED] = ":You have not registered";
+	ret[ERR_NEEDMOREPARAMS] = "{1} :Not enough parameters";
+	ret[ERR_ALREADYREGISTERED] = ":You may not reregister";
 
 	return (ret);
 }

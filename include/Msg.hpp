@@ -23,19 +23,19 @@
 #include "Serv.hpp"
 #include "utils.hpp"
 
-#define RPL_WELCOME ":Welcome to the 42paris.fr IRC Network, {n}[!{u}@whatever]"
-#define RPL_YOURHOST ":Your host is {sn}, running version {v}"
-#define RPL_CREATED ":This server was created {dt}"
-#define RPL_MYINFO "{sn} {v} {aum} {acm}"
+#define RPL_WELCOME 1
+#define RPL_YOURHOST 2
+#define RPL_CREATED 3
+#define RPL_MYINFO 4
 
-#define ERR_NOSUCHNICK "{1} :No such nick/channel"
-#define ERR_UNKNOWNCOMMAND "{1} :Unknown command"
-#define ERR_NONICKNAMEGIVEN ":No nickname given"
-#define ERR_ERRONEUSNICKNAME "{1} :Erroneus nickname"
-#define ERR_NICKNAMEINUSE "{1} :Nickname is already in use"
-#define ERR_NOTREGISTERED ":You have not registered"
-#define ERR_NEEDMOREPARAMS "{1} :Not enough parameters"
-#define ERR_ALREADYREGISTERED ":You may not reregister"
+#define ERR_NOSUCHNICK 401
+#define ERR_UNKNOWNCOMMAND 421
+#define ERR_NONICKNAMEGIVEN 431
+#define ERR_ERRONEUSNICKNAME 432
+#define ERR_NICKNAMEINUSE 433
+#define ERR_NOTREGISTERED 451
+#define ERR_NEEDMOREPARAMS 461
+#define ERR_ALREADYREGISTERED 462
 
 class Chan;
 class User;
@@ -77,7 +77,7 @@ class Msg {
 		/*
 		 * Construct RPL message
 		 */
-		Msg(int num, User * contact, str const & p1);
+		Msg(int num, User * contact, str const & p1 = 0);
 
 		Msg(Msg const & src);
 

@@ -22,10 +22,10 @@ int User::_cmd_PASS(Msg & cmd) // ----------------------------------------- PASS
 {
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
-		return (rpl(461, "PASS"));
+		return (rpl(ERR_NEEDMOREPARAMS, "PASS"));
 
 	if (_reg_status == REG_OK)
-		return (rpl(462));
+		return (rpl(ERR_ALREADYREGISTERED));
 
 	if (_serv->checkPass(arg[0]))
 		_reg_status |= REG_PASS;
@@ -38,7 +38,7 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 {
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
-		return (rpl(431, "NICK"));
+		return (rpl(ERR_NONICKNAMEGIVEN));
 
 	if (_reg_status & REG_NICK && arg[0] == _nick)
 		return (0);
@@ -47,10 +47,10 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 			|| arg[0].find('#') != str::npos
 			|| arg[0].find(':') != str::npos
 			|| arg[0].find(' ') != str::npos)
-		return (rpl(432, arg[0]));
+		return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
 
 	if (_serv->getUserByNick(arg[0]))
-		return (rpl(433, arg[0]));
+		return (rpl(ERR_NICKNAMEINUSE, arg[0]));
 
 	if (_reg_status & REG_USER && _reg_status & REG_MISM)
 		return (error(":Access denied, wrong password"));
@@ -66,7 +66,10 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	_reg_status |= REG_NICK;
 
 	if (_reg_status & REG_USER) {
-		rpl(1); rpl(2); rpl(3); rpl(4);
+		rpl(RPL_WELCOME);
+		rpl(RPL_YOURHOST);
+		rpl(RPL_CREATED);
+		rpl(RPL_MYINFO);
 	}
 	return (0);
 }
@@ -75,10 +78,10 @@ int User::_cmd_USER(Msg & cmd) // ----------------------------------------- USER
 {
 	str_vec arg = cmd.payloadAsVector(4, 1);
 	if (arg.size() != 4) 
-		return (rpl(461, "USER"));
+		return (rpl(ERR_NEEDMOREPARAMS, "USER"));
 
 	if (_reg_status == REG_OK)
-		return (rpl(462));
+		return (rpl(ERR_ALREADYREGISTERED));
 
 	if (_reg_status & REG_NICK && _reg_status & REG_MISM)
 		return (error(":Access denied, wrong password"));
@@ -90,7 +93,10 @@ int User::_cmd_USER(Msg & cmd) // ----------------------------------------- USER
 	_reg_status |= REG_USER;
 
 	if (_reg_status & REG_NICK) {
-		rpl(1); rpl(2); rpl(3); rpl(4);
+		rpl(RPL_WELCOME);
+		rpl(RPL_YOURHOST);
+		rpl(RPL_CREATED);
+		rpl(RPL_MYINFO);
 	}
 	return (0);
 }
@@ -99,7 +105,7 @@ int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
 {
 	str_vec arg = cmd.payloadAsVector(1, 1);
 	if (arg.empty())
-		return (rpl(461, "PING"));
+		return (rpl(ERR_NEEDMOREPARAMS, "PING"));
 
 	user_send(
 		Msg(this, ":" SERVER_NAME, "PONG", str(SERVER_NAME) + " :" + arg[0])
@@ -122,11 +128,11 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 {
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() != 2)
-		return (rpl(461, "PRIVMSG"));
+		return (rpl(ERR_NEEDMOREPARAMS, "PRIVMSG"));
 	
 	User * target = _serv->getUserByNick(arg[0]);
 	if (!target)
-		return (rpl(401, arg[0]));
+		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
 	Msg privmsg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]);
 	privmsg.msg_send();

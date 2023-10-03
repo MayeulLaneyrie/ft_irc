@@ -13,8 +13,8 @@
 #include "Chan.hpp"
 
 Chan::Chan(void):
-	_name(""),
 	_mode(0),
+	_name(""),
 	_passwd(""),
 	_topic("")
 {}
@@ -34,4 +34,32 @@ Chan & Chan::operator=(Chan const & rhs)
 	this->_passwd = rhs._passwd;
 	this->_topic = rhs._topic;
 	return (*this);
+}
+
+int Chan::chan_send(Msg const & msg)
+{
+	std::map<str, User *>::iterator it = _users.begin();
+
+	for (it = _users.begin(); it != _users.end(); ++it)
+		it->second->user_send(msg);
+	return (0);
+}
+
+int Chan::addUser(User & user)
+{
+	_users[user.getNick()] = &user;
+	return (0);
+}
+
+int Chan::rmUser(User const & user)
+{
+	_users.erase(user.getNick());
+	return (0);
+}
+
+User * Chan::getUser(str nick) const
+{
+	if (_users.count(nick))
+		return (_users.at(nick));
+	return (NULL);
 }

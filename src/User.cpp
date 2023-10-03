@@ -90,10 +90,10 @@ int User::_exec_cmd(void)
 	str cmd = cmd_msg.getCmd();
 
 	if (_reg_status != REG_OK && !prereg_set.count(cmd))
-		return (rpl(451));
+		return (rpl(ERR_NOTREGISTERED));
 
 	if (!cmd_map.count(cmd))
-		return (rpl(421, cmd));
+		return (rpl(ERR_UNKNOWNCOMMAND, cmd));
 
 	return (this->*cmd_map.at(cmd))(cmd_msg);
 }
