@@ -50,7 +50,6 @@ class Serv {
 
 		std::map<int, User *> _users; // All users, uniquely indexed by fd
 		std::map<str, User *> _registerd; // Only registered users, indexed by nicks
-		std::set<User *> _operators;
 
 		std::map<str, Chan *> _chans;
 
@@ -102,15 +101,12 @@ class Serv {
 
 		void registerUser(User * user);
 		void unregisterUser(User * user);
+		void killUser(User * user);
 
 		Chan * addChan(str name);
-		
+
 		void rmChan(str name);
 		Chan * getChan(str name) const;
-
-		void addOp(User * user);
-		void rmOp(User * user);
-		int isOp(User * user);
 };
 
 #endif

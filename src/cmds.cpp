@@ -74,7 +74,7 @@ int User::_cmd_NICK(Msg & cmd)
 		return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
 
 	static const std::set<char> badchar_set = _gen_badchar_set();
-	
+
 	for (str::iterator it = arg[0].begin(); it != arg[0].end(); ++it)
 		if (badchar_set.count(*it) || *it < 20 || *it > 126)
 			return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
@@ -164,7 +164,39 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
-	Msg privmsg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]);
-	privmsg.msg_send();
+	user_send(Msg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
+	return (0);
+}
+
+int User::_cmd_OPER(Msg & cmd) // ----------------------------------------- OPER
+{
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() != 2)
+		return (rpl(ERR_NEEDMOREPARAMS, "OPER"));
+	if (arg[0] != OPER_NAME)
+		return (rpl(ERR_NOOPERHOST));
+	if (arg[1] != OPER_PASS)
+		return (rpl(ERR_PASSWDMISMATCH));
+	_is_op = 1;
+	user_send(Msg(this, ":" SERVER_NAME, "MODE", _nick + ":+o"));
+	return (rpl(RPL_YOUREOPER));
+}
+
+int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
+{
+	if (!_is_op)
+		return (rpl(ERR_NOPRIVILEGES));
+
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() != 2)
+		return (rpl(ERR_NEEDMOREPARAMS, "KILL"));
+
+	User * target = _serv->getUserByNick(arg[0]);
+	if (!target)
+		return (rpl(ERR_NOSUCHNICK, arg[0]));
+
+	user_send(Msg(target, str(":") + _nick, "KILL", arg[0] + " :" + arg[1]));
+	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + "(" + arg[1] + ")))");
+	_serv->killUser(target);
 	return (0);
 }

@@ -19,6 +19,7 @@ User::User(Serv * serv, int fd) :
 	_nick(""),
 	_ibuffer(""),
 	_reg_status(0),
+	_is_op(0),
 	_serv(serv)
 {}
 
@@ -109,7 +110,9 @@ str User::getNick(void) const
 	return (oss.str());
 }
 
-str User::getUsername(void) const { return (_username); };
+str User::getUsername(void) const { return (_username); }
+
+int User::getFd(void) const { return (_fd); }
 
 Serv * User::getServ(void) const { return (_serv); }
 

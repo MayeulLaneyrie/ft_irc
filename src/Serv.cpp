@@ -149,13 +149,8 @@ void Serv::_new_connection(void)
 
 void Serv::_user_manage(int fd)
 {
-	if (!_users[fd]->user_recv()) {
-		_registerd.erase(_users[fd]->getNick());
-		_operators.erase(_users[fd]);
-		delete _users[fd];
-		_users.erase(fd);
-		_usercount--;
-	}
+	if (!_users[fd]->user_recv())
+		killUser(_users[fd]);
 	std::map<int, User *>::iterator it;
 	for (it = _users.begin(); it != _users.end(); ++it)
 		it->second->flush();
@@ -213,6 +208,15 @@ void Serv::registerUser(User * user) { _registerd[user->getNick()] = user; }
 
 void Serv::unregisterUser(User * user) { _registerd.erase(user->getNick()); }
 
+void Serv::killUser(User * user)
+{
+	user->flush();
+	_registerd.erase(user->getNick());
+	delete user;
+	_users.erase(user->getFd());
+	_usercount--;
+}
+
 Chan * Serv::addChan(str name)
 {
 	_chans[name] = new Chan(name);
@@ -227,9 +231,3 @@ Chan * Serv::getChan(str name) const
 		return (_chans.at(name));
 	return (NULL);
 }
-
-void Serv::addOp(User * user) { _operators.insert(user); }
-
-void Serv::rmOp(User * user) { _operators.erase(user); }
-
-int Serv::isOp(User * user) { return (_operators.count(user)); }

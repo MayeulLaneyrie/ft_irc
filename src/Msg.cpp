@@ -46,6 +46,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_YOURHOST] = ":Your host is {sn}, running version {v}";
 	ret[RPL_CREATED] = ":This server was created {dt}";
 	ret[RPL_MYINFO] = "{sn} {v} o itkol";
+	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
@@ -55,6 +56,9 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[ERR_NOTREGISTERED] = ":You have not registered";
 	ret[ERR_NEEDMOREPARAMS] = "{1} :Not enough parameters";
 	ret[ERR_ALREADYREGISTERED] = ":You may not reregister";
+	ret[ERR_PASSWDMISMATCH] = ":Password incorrect";
+	ret[ERR_NOPRIVILEGES] = ":Permission Denied- You're not an IRC operator";
+	ret[ERR_NOOPERHOST] = ":Invalid oper credentials";
 
 	return (ret);
 }
@@ -86,7 +90,7 @@ Msg::Msg(int num, User * contact, str const & p1)
 	std::ostringstream rpl_cmd("");
 	rpl_cmd << std::setw(3) << std::setfill('0') << num;
 	_cmd = rpl_cmd.str();
-	
+
 	_contact = contact;
 	_prefix = ":" SERVER_NAME;
 	_payload = rpl_string;

@@ -63,6 +63,7 @@ class User {
 		char	_cbuffer[RECV_BUFF_SIZE];
 
 		int		_reg_status;
+		int		_is_op;
 
 		std::map<str, Chan *> _chans;
 
@@ -95,6 +96,8 @@ class User {
 		int _cmd_QUIT(Msg & cmd);
 		int _cmd_PRIVMSG(Msg & cmd);
 	//	int _cmd_NOTICE(Msg & cmd);
+		int _cmd_OPER(Msg & cmd);
+		int _cmd_KILL(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
@@ -110,6 +113,7 @@ class User {
 
 		str getNick(void) const;
 		str getUsername(void) const;
+		int getFd(void) const;
 
 		Serv * getServ(void) const;
 
