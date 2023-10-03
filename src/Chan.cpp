@@ -12,9 +12,9 @@
 
 #include "Chan.hpp"
 
-Chan::Chan(void):
+Chan::Chan(str name) :
 	_mode(0),
-	_name(""),
+	_name(name),
 	_passwd(""),
 	_topic("")
 {}

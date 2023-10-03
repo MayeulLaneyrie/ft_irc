@@ -151,6 +151,7 @@ void Serv::_user_manage(int fd)
 {
 	if (!_users[fd]->user_recv()) {
 		_registerd.erase(_users[fd]->getNick());
+		_operators.erase(_users[fd]);
 		delete _users[fd];
 		_users.erase(fd);
 		_usercount--;
@@ -206,17 +207,29 @@ int Serv::run(void)
 	return (0);
 }
 
-int Serv::checkPass(std::string const & s) const
+int Serv::checkPass(std::string const & s) const { return (s == _password); }
+
+void Serv::registerUser(User * user) { _registerd[user->getNick()] = user; }
+
+void Serv::unregisterUser(User * user) { _registerd.erase(user->getNick()); }
+
+Chan * Serv::addChan(str name)
 {
-	return (s == _password);
+	_chans[name] = new Chan(name);
+	return (_chans[name]);
 }
 
-void Serv::registerUser(User * user)
+void Serv::rmChan(str name) { _chans.erase(name); }
+
+Chan * Serv::getChan(str name) const
 {
-	_registerd[user->getNick()] = user;
+	if (_chans.count(name))
+		return (_chans.at(name));
+	return (NULL);
 }
 
-void Serv::unregisterUser(User * user)
-{
-	_registerd.erase(user->getNick());
-}
+void Serv::addOp(User * user) { _operators.insert(user); }
+
+void Serv::rmOp(User * user) { _operators.erase(user); }
+
+int Serv::isOp(User * user) { return (_operators.count(user)); }
