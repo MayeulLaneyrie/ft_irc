@@ -164,7 +164,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
-	user_send(Msg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
+	target->user_send(Msg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
 	return (0);
 }
 
@@ -178,7 +178,7 @@ int User::_cmd_OPER(Msg & cmd) // ----------------------------------------- OPER
 	if (arg[1] != OPER_PASS)
 		return (rpl(ERR_PASSWDMISMATCH));
 	_is_op = 1;
-	user_send(Msg(this, ":" SERVER_NAME, "MODE", _nick + ":+o"));
+	user_send(Msg(this, ":" SERVER_NAME, "MODE", _nick + ": +o"));
 	return (rpl(RPL_YOUREOPER));
 }
 
@@ -195,8 +195,8 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
-	user_send(Msg(target, str(":") + _nick, "KILL", arg[0] + " :" + arg[1]));
-	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + "(" + arg[1] + ")))");
+	target->user_send(Msg(target, str(":") + _nick, "KILL", arg[0] + " :" + arg[1]));
+	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + " (" + arg[1] + ")))");
 	_serv->killUser(target);
 	return (0);
 }

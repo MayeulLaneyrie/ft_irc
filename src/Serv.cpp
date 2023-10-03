@@ -212,8 +212,8 @@ void Serv::killUser(User * user)
 {
 	user->flush();
 	_registerd.erase(user->getNick());
-	delete user;
 	_users.erase(user->getFd());
+	delete user;
 	_usercount--;
 }
 
