@@ -59,6 +59,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["QUIT"] = &User::_cmd_QUIT;
 	ret["MODE"] = &User::_cmd_VOID;
 	ret["PRIVMSG"] = &User::_cmd_PRIVMSG;
+	ret["OPER"] = &User::_cmd_OPER;
+	ret["KILL"] = &User::_cmd_KILL;
 	return (ret);
 }
 
