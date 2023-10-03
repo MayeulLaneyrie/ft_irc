@@ -77,6 +77,8 @@ class User {
 
 		int _exec_cmd(void);
 
+		static std::set<char> _gen_badchar_set(void);
+
 		/*
 		 * Here are all the command implementations. They are all located in
 		 * cmds.cpp. They all take a Msg & as parameter, which has to contain

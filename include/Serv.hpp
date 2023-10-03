@@ -31,8 +31,8 @@
 
 #define SERVER_NAME "ircserv"
 
-#define OPER_NAME "LVDOVICVS"
-#define OPER_PASS "NECPLVSVLTRA"
+#define OPER_NAME "LeBoss"
+#define OPER_PASS "NECPLUSULTRA"
 
 class User;
 class Chan;

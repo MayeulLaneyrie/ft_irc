@@ -105,7 +105,7 @@ str User::getNick(void) const
 	if (!_nick.empty())
 		return (_nick);
 	std::ostringstream oss("");
-	oss << "TMP#" << _fd;
+	oss << "TMP." << _fd;
 	return (oss.str());
 }
 

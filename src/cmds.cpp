@@ -34,7 +34,28 @@ int User::_cmd_PASS(Msg & cmd) // ----------------------------------------- PASS
 	return (0);
 }
 
-int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
+// ------------------------------------------------------------------------ NICK
+
+std::set<char> User::_gen_badchar_set(void)
+{
+	std::set<char> ret;
+
+	ret.insert(' ');
+	ret.insert(',');
+	ret.insert('*');
+	ret.insert('?');
+	ret.insert('!');
+	ret.insert('.');
+	ret.insert('@');
+	ret.insert(':');
+	ret.insert('$');
+	ret.insert('#');
+	ret.insert('&');
+	
+	return (ret);
+}
+
+int User::_cmd_NICK(Msg & cmd)
 {
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
@@ -43,11 +64,20 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	if (_reg_status & REG_NICK && arg[0] == _nick)
 		return (0);
 
-	if (arg[0].size() > 16 || arg[0].empty()
-			|| arg[0].find('#') != str::npos
-			|| arg[0].find(':') != str::npos
-			|| arg[0].find(' ') != str::npos)
+	/*
+	 * Rules:
+	 *	- The nick has to be at most 9 chars long (and at least one, duh).
+	 *	- The nick has to contain only printable ASCII chars.
+	 *	- The nick shall not contain bad chars (as defined in _gen_badchar_set(), see higher).
+	 */
+	if (arg[0].size() > 9 || arg[0].empty())
 		return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
+
+	static const std::set<char> badchar_set = _gen_badchar_set();
+	
+	for (str::iterator it = arg[0].begin(); it != arg[0].end(); ++it)
+		if (badchar_set.count(*it) || *it < 20 || *it > 126)
+			return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
 
 	if (_serv->getUserByNick(arg[0]))
 		return (rpl(ERR_NICKNAMEINUSE, arg[0]));

@@ -45,7 +45,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_WELCOME] = ":Welcome to the 42paris.fr IRC Network, {n}[!{u}@whatever]";
 	ret[RPL_YOURHOST] = ":Your host is {sn}, running version {v}";
 	ret[RPL_CREATED] = ":This server was created {dt}";
-	ret[RPL_MYINFO] = "{sn} {v} {aum} {acm}";
+	ret[RPL_MYINFO] = "{sn} {v} o itkol";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
@@ -65,9 +65,8 @@ Msg::Msg(int num, User * contact, str const & p1)
 	static const std::map<int, str> rpl_map = _gen_rpl_map();
 
 	std::map<str, str> vars;
-	str rpl_string(contact->getNick());
+	str rpl_string = contact->getNick() + ' ';
 
-	rpl_string += ' ';
 	if (!rpl_map.count(num))
 		rpl_string += ":This reply hasn't been implemented yet :/";
 	else
@@ -77,23 +76,19 @@ Msg::Msg(int num, User * contact, str const & p1)
 	vars["{u}"] = contact->getUsername();
 	vars["{sn}"] = SERVER_NAME;
 	vars["{dt}"] = contact->getServ()->getDatetime();
-	vars["{v}"] = "0.0";
-	vars["{aum}"] = "o";
-	vars["{acm}"] = "itkol";
+	vars["{v}"] = "0.42";
 	vars["{1}"] = p1;
 
-	std::map<str const, str>::const_iterator it;
-
+	std::map<str, str>::const_iterator it;
 	for (it = vars.begin(); it != vars.end(); ++it)
 		sed(rpl_string, it->first, it->second);
 
 	std::ostringstream rpl_cmd("");
-
 	rpl_cmd << std::setw(3) << std::setfill('0') << num;
+	_cmd = rpl_cmd.str();
 	
 	_contact = contact;
 	_prefix = ":" SERVER_NAME;
-	_cmd = rpl_cmd.str();
 	_payload = rpl_string;
 
 	_regen_str();
