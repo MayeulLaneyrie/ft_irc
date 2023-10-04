@@ -146,14 +146,17 @@ str_vec Msg::payloadAsVector(int ac, int requireColon) const
 
 	for (int i = 1; i < ac && tmp.size(); ++i)
 		ret.push_back(extract_first_word(tmp));
+
 	if (!tmp.size())
 		return (ret);
+
 	if (tmp[0] == ':')
 		ret.push_back(tmp.erase(0, 1));
 	else if (!requireColon)
 		ret.push_back(tmp);
 	else
 		ret.push_back(extract_first_word(tmp));
+
 	return (ret);
 }
 

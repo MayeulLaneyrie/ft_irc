@@ -118,6 +118,11 @@ int User::getFd(void) const { return (_fd); }
 
 Serv * User::getServ(void) const { return (_serv); }
 
+int	User::isFullyRegistered(void) const
+{
+	return (_reg_status == REG_OK && !(_reg_status & REG_MISM));
+}
+
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
 int User::rpl(int num, str const & p1)

@@ -147,6 +147,8 @@ class User {
 
 		Serv * getServ(void) const;
 
+		int	isFullyRegistered(void) const;
+
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		/*

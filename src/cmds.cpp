@@ -161,7 +161,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		return (rpl(ERR_NEEDMOREPARAMS, "PRIVMSG"));
 	
 	User * target = _serv->getUserByNick(arg[0]);
-	if (!target)
+	if (!target || !target->isFullyRegistered())
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
 	target->user_send(Msg(target, str(":") + _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
