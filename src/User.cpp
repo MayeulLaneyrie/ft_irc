@@ -87,7 +87,7 @@ int User::_exec_cmd(void)
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << "\e[1;42;30m" << getNick() << " >\e[0m " << msg_str << std::endl;
+	std::cout << C_GREEN << getNick() << " >" C_R_ << msg_str << std::endl;
 
 	Msg cmd_msg(this, msg_str);
 	str cmd = cmd_msg.getCmd();
@@ -139,27 +139,28 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		std::cout << "\e[1;45;30m" << getNick() << " left.\e[0m" << std::endl;
-		return (0);
+		std::cout << C_MAGENTA << getNick() << " left." C_R << std::endl;
+		return (1);
 	}
 
 	_cbuffer[len] = '\0';
 	_ibuffer.append(_cbuffer);
 
+	int exit = 0;
 	while (_ibuffer.find("\r\n") != str::npos) {
 		if (_exec_cmd()) {
-			std::cout << "\e[1;45;30m" << getNick() << " shall be disconnected.\e[0m" << std::endl;
-			len = 0;
+			std::cout << C_MAGENTA << getNick() << " shall be disconnected." C_R << std::endl;
+			exit = 1;
 			break ;
 		}
 	}
 	flush();
-	return (len);
+	return (exit);
 }
 
 int User::user_send(Msg const & msg, int flushnow)
 {
-	std::cout << "\e[1;44;30m" << getNick() << " <\e[0m " << msg.getStr();
+	std::cout << C_BLUE << getNick() << " <" C_R_ << msg.getStr();
 	_obuffer += msg.getStr();
 	if (flushnow)
 		return (flush());

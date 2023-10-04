@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef UTILS_HPP
+#define UTILS_HPP
+
 #include <cstdlib>
 #include <cstdarg>
 
@@ -19,12 +22,23 @@
 
 #include "network.hpp"
 
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#define C_RED		"\e[1;41;30m"
+#define C_GREEN		"\e[1;42;30m"
+#define C_YELLOW	"\e[1;43;30m"
+#define C_BLUE		"\e[1;44;30m"
+#define C_MAGENTA	"\e[1;45;30m"
+#define C_CYAN		"\e[1;46;30m"
+#define C_R			"\e[0m"
+#define C_R_		"\e[0m "
 
 typedef std::string str;
 typedef std::vector<str> str_vec;
 
+/*
+ * Exits the program, displaying a formatted error message. Parameters might be
+ * int or char*, they will all be displayed, separated by ": ". fmt MUST only
+ * contain 's' or 'd' characters, to specify which parameters are int or char*
+ */
 void die(const char * fmt, ...);
 
 void setsock_nonblock(int fd);

@@ -143,13 +143,12 @@ void Serv::_new_connection(void)
 
 	_users[fd] = new_user;
 	_usercount++;
-	std::cout
-		<< "\e[1;46;30m" << new_user->getNick() << " joined.\e[0m" << std::endl;
+	std::cout << C_CYAN << new_user->getNick() << " joined." C_R << std::endl;
 }
 
 void Serv::_user_manage(int fd)
 {
-	if (!_users[fd]->user_recv())
+	if (_users[fd]->user_recv())
 		killUser(_users[fd]);
 	std::map<int, User *>::iterator it;
 	for (it = _users.begin(); it != _users.end(); ++it)
@@ -176,8 +175,8 @@ int Serv::run(void)
 
 	_set_datetime();
 	signal(SIGINT, handler);
-	std::cout	<< "\e[1;43;30mServer launched:\e[0m " << _datetime << std::endl
-				<< "\e[1;43;30mListening on port:\e[0m " << _port << std::endl;
+	std::cout	<< C_YELLOW "Server launched:" C_R_ << _datetime << std::endl
+				<< C_YELLOW "Listening on port:" C_R_ << _port << std::endl;
 
 	while (1) {
 		int nfds;

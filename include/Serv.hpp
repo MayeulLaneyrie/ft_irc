@@ -101,6 +101,7 @@ class Serv {
 
 		void registerUser(User * user);
 		void unregisterUser(User * user);
+		
 		void killUser(User * user);
 
 		Chan * addChan(str name);

@@ -19,7 +19,7 @@ void die(const char * fmt, ...) {
 	int d;
 	char *s;
 
-	std::cerr << "\e[1;41;30mFATAL ERROR:\e[0m ";
+	std::cerr << C_RED "FATAL ERROR:" C_R_;
 	while (*fmt) {
 		if (*fmt == 'd') {
 			d = va_arg(args, int);
@@ -70,6 +70,6 @@ void handler(int x)
 {
 	(void)x;
 	std::cout
-		<< "\n\e[1;41;30mSIGINT has been caught, the server will now stop.\e[0m"
+		<< C_RED "\nSIGINT has been caught, the server will now stop." C_R
 		<< std::endl;
 }

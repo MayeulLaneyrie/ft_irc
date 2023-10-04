@@ -26,19 +26,17 @@
 #include "network.hpp"
 #include "utils.hpp"
 
-#define REG_MISM 8
+// _reg_status bits significations:
 
-#define REG_PASS 4
-#define REG_NICK 2
-#define REG_USER 1
+#define REG_MISM 8 // cmd PASS has been called with a wrong password
 
-#define REG_OK 7
+#define REG_PASS 4 // cmd PASS has been successfully called
+#define REG_NICK 2 // cmd NICK ...
+#define REG_USER 1 // cmd USER ...
 
-#define CMD_NULL 0
-#define CMD_PASS 1
-#define CMD_NICK 2
-#define CMD_USER 3
-#define CMD_PING 4
+#define REG_OK 7 // All registrations cmds have been successfully called.
+// If _reg_status == REG_OK and the REG_MISM bit isn't set to 1, the user is
+// fully registered.
 
 class Chan;
 class Msg;
@@ -58,10 +56,23 @@ class User {
 		str		_username;
 		str		_realname;
 		
+		/*
+		 * output and input buffers. All input is bufferized to manage the
+		 * case of partial command (which imply that a msg might require
+		 * multiple calls to read()). All output is bufferized to avoid having
+		 * more than one call to send for each epoll loop.
+		 * _cbuffer is just the buffer used with recv().
+		 */
 		str		_obuffer;
 		str		_ibuffer;
 		char	_cbuffer[RECV_BUFF_SIZE];
 
+		/*
+		 * _reg_status: bitset to indicate what conditions have been yet
+		 * fulfilled during the registration process. See the REG_XXXX macros
+		 * defined above.
+		 * _is_op: boolean, self-explanatory.
+		 */
 		int		_reg_status;
 		int		_is_op;
 
@@ -73,20 +84,35 @@ class User {
 
 		User(void);
 
+		/*
+		 * Tables used in _exec_cmd()
+		 */
 		static std::map<str, ft_cmd> _gen_cmd_map(void);
 		static std::set<str> _gen_prereg_set(void);
 
+		/*
+		 * Extract a message from _ibuffer, parses it and then executes it.
+		 * Returns 1 if it is then required to close this user's connection.
+		 */
 		int _exec_cmd(void);
 
+		/*
+		 * Returns a set of all the users sharing a chan with this one.
+		 * This is used to broadcast QUIT msgs to them when required.
+		 */
+		std::set<User *> _in_shared_chans(void);
+
+		/*
+		 * Table of forbidden characters in a nick, used by _cmd_NICK() and
+		 * implemented right next to it.
+		 */
 		static std::set<char> _gen_badchar_set(void);
 
 		/*
 		 * Here are all the command implementations. They are all located in
 		 * cmds.cpp. They all take a Msg & as parameter, which has to contain
-		 * the parsed command to execute. They each return 0 if, whatever
-		 * happened when executing the command, the user should not be
-		 * disconnected, and 1 if something happened, which has to lead to user
-		 * disconnection (eg. wrong password).
+		 * the parsed command to execute. They all return 1 if the user's
+		 * connection must be closed.
 		 */
 		int _cmd_VOID(Msg & cmd);
 		int _cmd_PASS(Msg & cmd);
@@ -95,7 +121,7 @@ class User {
 		int _cmd_PING(Msg & cmd);
 		int _cmd_QUIT(Msg & cmd);
 		int _cmd_PRIVMSG(Msg & cmd);
-	//	int _cmd_NOTICE(Msg & cmd);
+	//	int _cmd_NOTICE(Msg & cmd); This will just be a copy of PRIVMSG without the rpls
 		int _cmd_OPER(Msg & cmd);
 		int _cmd_KILL(Msg & cmd);
 
@@ -111,6 +137,10 @@ class User {
 
 // ACCESSORS -------------------------------------------------------------------
 
+		/*
+		 * That one does a bit more than just returning _nick: if no nick has
+		 * been set yet, it returns a temporary nick in the form TMP.{fd}.
+		 */
 		str getNick(void) const;
 		str getUsername(void) const;
 		int getFd(void) const;
@@ -120,18 +150,41 @@ class User {
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		/*
-		 * Send a reply to this user
+		 * Send a reply to this user, see the macros defined in Msg.hpp. Always
+		 * returns 0, so it is possible in a _cmd_XXXX() to just
+		 * return (rpl(ERR_WHATEVER)); p1 is an optionnal argument that may be
+		 * required by some rpls (see Msg.cpp/_gen_rpl_map(), all messages
+		 * that contains a "{1}" variable require p1 to be set). In the future,
+		 * some rpls might require a second parametric argument (i.e. if some
+		 * data is found to be quite awful to retrieve from the rpl constructor
+		 * of Msg). In this case, a second parameter called p2 might be added.
 		 */
 		int rpl(int num, str const & p1 = "");
 
+		/*
+		 * Send an error to this user, always returns 1, so it is possible in a
+		 * _cmd_XXXX() to just return (error(":You did bad thing, bye."));
+		 */
 		int error(str const & msg);
 
 		/*
 		 * This user has send us some data. Let's do what has to be done.
+		 * (Adding that data to the input buffer, and calling _exec_cmd() on it
+		 * for every complete msg line it contains).
+		 * Returns 0
 		 */
 		int user_recv(void);
+
+		/*
+		 * Adds msg at the end of the user's output buffer. If flushnow is set
+		 * to 1, it is then immediatly flushed. The reason for this buffering is
+		 * to avoid having more than 1 call to send() for each epoll loop.
+		 */
 		int user_send(Msg const & msg, int flushnow = 0);
 
+		/*
+		 * send() the output buffer (_obuffer) to the user, then clear it.
+		 */
 		int	flush(void);
 };
 

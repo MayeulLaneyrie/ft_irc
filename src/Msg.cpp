@@ -12,9 +12,6 @@
 
 #include "Msg.hpp"
 
-Msg::Msg(void)
-{}
-
 Msg::Msg(User * contact, str const & pref, str const & cmd, str const & payld) :
 	_prefix(pref),
 	_cmd(cmd),
@@ -149,11 +146,13 @@ str_vec Msg::payloadAsVector(int ac, int requireColon) const
 
 	for (int i = 1; i < ac && tmp.size(); ++i)
 		ret.push_back(extract_first_word(tmp));
-	if (tmp.size() && tmp[0] == ':')
+	if (!tmp.size())
+		return (ret);
+	if (tmp[0] == ':')
 		ret.push_back(tmp.erase(0, 1));
-	else if (tmp.size() && !requireColon)
+	else if (!requireColon)
 		ret.push_back(tmp);
-	else if (tmp.size())
+	else
 		ret.push_back(extract_first_word(tmp));
 	return (ret);
 }
