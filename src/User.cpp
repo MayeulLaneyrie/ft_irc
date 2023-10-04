@@ -61,6 +61,7 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["PRIVMSG"] = &User::_cmd_PRIVMSG;
 	ret["OPER"] = &User::_cmd_OPER;
 	ret["KILL"] = &User::_cmd_KILL;
+	ret["JOIN"] = &User::_cmd_JOIN;
 	return (ret);
 }
 

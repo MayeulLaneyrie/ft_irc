@@ -54,6 +54,9 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[ERR_NEEDMOREPARAMS] = "{1} :Not enough parameters";
 	ret[ERR_ALREADYREGISTERED] = ":You may not reregister";
 	ret[ERR_PASSWDMISMATCH] = ":Password incorrect";
+	ret[ERR_CHANNELISFULL] = "{1} :Cannot join channel (+l)";
+	ret[ERR_INVITEONLYCHAN] = "{1} :Cannot join channel (+i)";
+	ret[ERR_BADCHANNELKEY] = "{1} :Cannot join channel (+k)";
 	ret[ERR_NOPRIVILEGES] = ":Permission Denied- You're not an IRC operator";
 	ret[ERR_NOOPERHOST] = ":Invalid oper credentials";
 
@@ -89,7 +92,7 @@ Msg::Msg(int num, User * contact, str const & p1)
 	_cmd = rpl_cmd.str();
 
 	_contact = contact;
-	_prefix = ":" SERVER_NAME;
+	_prefix = SERVER_NAME;
 	_payload = rpl_string;
 
 	_regen_str();
@@ -123,7 +126,7 @@ void Msg::_regen_str(void)
 	if (_prefix.empty())
 		oss << _cmd << ' ' << _payload << "\r\n";
 	else
-		oss << _prefix << ' ' << _cmd << ' ' << _payload << "\r\n";
+		oss << ':' << _prefix << ' ' << _cmd << ' ' << _payload << "\r\n";
 	_as_str = oss.str();
 }
 
