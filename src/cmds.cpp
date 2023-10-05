@@ -87,9 +87,15 @@ int User::_cmd_NICK(Msg & cmd)
 	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
 		return (error(":Access denied, password wasn't provided"));
 
-	_serv->unregisterUser(this);
+	std::cout << C_CYAN << getNick() << " --> " << arg[0] << C_R << std::endl;
+
+	_serv->renameUser(this, arg[0]);
+
+	std::map<str, Chan *>::iterator it;
+	for (it = _chans.begin(); it != _chans.end(); ++it)
+		it->second->renameUser(this, arg[0]);
+
 	_nick = arg[0];
-	_serv->registerUser(this);
 
 	if (_reg_status & REG_NICK)
 		return (0);
@@ -160,11 +166,22 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	if (arg.size() != 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "PRIVMSG"));
 	
-	User * target = _serv->getUserByNick(arg[0]);
-	if (!target || !target->isFullyRegistered())
-		return (rpl(ERR_NOSUCHNICK, arg[0]));
+	std::set<str> names;
+	while (!arg[0].empty())
+		names.insert(extract_first_word(arg[0], ','));
+	std::set<str>::iterator it;
 
-	target->user_send(Msg(target, _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
+	for (it = names.begin(); it != names.end(); ++it) {
+		User * user_target = _serv->getUserByNick(*it);
+		Chan * chan_target = _serv->getChan(*it);
+
+		if (user_target && user_target->isFullyRegistered())
+			user_target->user_send(Msg(user_target, _nick, "PRIVMSG", *it + " :" + arg[1]));
+		else if(chan_target)
+			chan_target->chan_send(Msg(NULL, _nick, "PRIVMSG", *it + " :" + arg[1]));
+		else
+			rpl(ERR_NOSUCHNICK, *it);
+	}
 	return (0);
 }
 
@@ -198,6 +215,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	target->user_send(Msg(target, _nick, "KILL", arg[0] + " :" + arg[1]));
 	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + " (" + arg[1] + ")))");
 	_serv->killUser(target);
+	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;
 	return (0);
 }
 

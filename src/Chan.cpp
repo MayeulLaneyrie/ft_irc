@@ -55,9 +55,11 @@ void Chan::addUser(User & user)
 	_usercount++;
 }
 
-void Chan::rmUser(User const & user)
+void Chan::rmUser(User & user)
 {
 	_users.erase(user.getNick());
+	_operators.erase(&user);
+	_invited.erase(&user);
 	_usercount--;
 }
 
@@ -66,6 +68,11 @@ User * Chan::getUser(str nick) const
 	if (_users.count(nick))
 		return (_users.at(nick));
 	return (NULL);
+}
+
+void Chan::renameUser(User * user, str to) {
+	_users.erase(user->getNick());
+	_users[to] = user;
 }
 
 std::map<str, User *>::const_iterator Chan::begin(void) const

@@ -34,7 +34,7 @@ class Chan {
 
 	private :
 
-		std::map<str, User *>	_users; // indexed by their nicks
+		std::map<str, User *> _users; // indexed by their nicks
 		std::set<User *> _operators;
 		std::set<User *> _invited; 
 
@@ -59,8 +59,9 @@ class Chan {
 		int chan_send(Msg const & msg);
 
 		void addUser(User & user);
-		void rmUser(User const & user);
+		void rmUser(User & user);
 		User * getUser(str nick) const;
+		void renameUser(User * user, str to);
 
 		std::map<str, User *>::const_iterator begin(void) const;
 		std::map<str, User *>::const_iterator end(void) const;
