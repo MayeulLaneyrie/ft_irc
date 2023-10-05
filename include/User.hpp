@@ -88,7 +88,10 @@ class User {
 		 * Tables used in _exec_cmd()
 		 */
 		static std::map<str, ft_cmd> _gen_cmd_map(void);
+		static const std::map<str, ft_cmd> _cmd_map;
+
 		static std::set<str> _gen_prereg_set(void);
+		static const std::set<str> _prereg_set;
 
 		/*
 		 * Extract a message from _ibuffer, parses it and then executes it.

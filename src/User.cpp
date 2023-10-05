@@ -68,6 +68,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	return (ret);
 }
 
+const std::map<str, User::ft_cmd> User::_cmd_map = User::_gen_cmd_map();
+
 std::set<str> User::_gen_prereg_set(void)
 {
 	std::set<str> ret;
@@ -82,11 +84,10 @@ std::set<str> User::_gen_prereg_set(void)
 	return (ret);
 }
 
+const std::set<str> User::_prereg_set = User::_gen_prereg_set();
+
 int User::_exec_cmd(void)
 {
-	static const std::map<str, ft_cmd> cmd_map = _gen_cmd_map();
-	static const std::set<str> prereg_set = _gen_prereg_set();
-
 	size_t msg_len = _ibuffer.find("\r\n");
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
@@ -96,13 +97,13 @@ int User::_exec_cmd(void)
 	Msg cmd_msg(msg_str);
 	str cmd = cmd_msg.getCmd();
 
-	if (_reg_status != REG_OK && !prereg_set.count(cmd))
+	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
 		return (rpl(ERR_NOTREGISTERED));
 
-	if (!cmd_map.count(cmd))
+	if (!_cmd_map.count(cmd))
 		return (rpl(ERR_UNKNOWNCOMMAND, cmd));
 
-	return (this->*cmd_map.at(cmd))(cmd_msg);
+	return (this->*_cmd_map.at(cmd))(cmd_msg);
 }
 
 // ACCESSORS ===================================================================
