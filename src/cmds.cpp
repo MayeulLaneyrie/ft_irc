@@ -241,23 +241,42 @@ int User::_cmd_INVITE(Msg & cmd) //---------------------------------------- INVI
 	Chan *channel = _serv->getChan(arg[1]);
 	if (!channel)
 		return (rpl(ERR_NOSUCHCHANNEL, arg[1]));
-	if (!channel->getUser(arg[0]))
+	if (!channel->getUser(_nick))
 		return (rpl(ERR_NOTONCHANNEL, arg[1]));
-	if (channel->checkMode(MODE_I) && !channel->isOperator(target))
+	if (channel->checkMode(MODE_I) && !channel->isOperator(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
 	if (channel->getUser(arg[0]))
 		return (rpl(ERR_USERONCHANNEL, arg[0] + " " + arg[1]));
 	channel->invite(target);
+	//target_sendMsg(...)
 	return (0);
 	//check canal vers lequel on invite existe ERR_NOSUCHCHANNEL (403) (at least one user is on it)
-	
-	//personne envoyant le message est dans ce chan ERR_NOTONCHANNEL (442)
-
-	// si chan en invite only seul un operateur peut inviter ERR_CHANOPRIVSNEEDED (482)
-	
-	//check user inviter n'est pas deja dans le chan ERR_USERONCHANNEL (443)
-
 	//envoyer l'invitation et l'ajouter a la liste des membres inviter RPL_INVITING (341)
+}
+
+int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------TOPIC
+{
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() < 1)
+		return (rpl(ERR_NEEDMOREPARAMS, "TOPIC"));
+	Chan *channel = _serv->getChan(arg[0]);
+	if (!channel)
+		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	if (!channel->getUser(this->_nick))
+		return (rpl(ERR_NOTONCHANNEL, arg[0]));
+	if (arg.size == 1)
+	{
+		if (channel->getTopic())
+			return (rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic())); // RPL_TOPICWHOTIME also need to be send
+		return(rpl(RPL_NOTOPIC,arg[0]);
+	}
+
+	// 1 ou deux arguments (channel) (sujet du channel)
+	//voir ou changer le topic du chan(si sujet du chan preciser)
+	//client pas sur le chan ERR_NOTONCHANNEL (442) 
+	//si topic protected et client veut le changer ERR_CHANOPRIVSNEEDED (482)
+	//tous les user du chan recoivent les changements de topic
+	//RPL_TOPIC (332) et RPL_TOPICWHOTIME (333)
 }
 /*
 int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
@@ -287,13 +306,4 @@ int User::_cmd_WHOIS(Msg & cmd) //----------------------------------------------
 	RPL_AWAY (301)
 	
 }
-
-int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------TOPIC
-{
-	// 1 ou deux arguments (channel) (sujet du channel)
-	//voir ou changer le topic du chan(si sujet du chan preciser)
-	//client pas sur le chan ERR_NOTONCHANNEL (442) 
-	//si topic protected et client veut le changer ERR_CHANOPRIVSNEEDED (482)
-	//tous les user du chan recoivent les changements de topic
-	//RPL_TOPIC (332) et RPL_TOPICWHOTIME (333)
-}*/
+*/

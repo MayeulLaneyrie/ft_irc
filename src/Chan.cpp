@@ -131,6 +131,15 @@ void Chan::setMode(unsigned int mode, int val)
 		_mode &= (~mode);
 }
 
+void Chan::setTopic(str topic)
+{
+	_topic = topic;
+}
+str Chan::getTopic(void) const
+{
+	return (_topic);
+}
+
 int Chan::isFull(void)
 {
 	return (_usercount >= _usermax);

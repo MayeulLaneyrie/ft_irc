@@ -79,6 +79,9 @@ class Chan {
 		unsigned int checkMode(unsigned int mode);
 		void setMode(unsigned int mode, int val);
 
+		void setTopic(str topic);
+		str getTopic(void) const;
+
 		int isFull(void);
 };
 
