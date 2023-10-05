@@ -140,11 +140,11 @@ class Msg {
 
 // ACCESSORS -------------------------------------------------------------------
 
-		str getPrefix(void) const;
-		str getCmd(void) const;
-		str getPayload(void) const;
+		str getPrefix( void ) const;
+		str getCmd( void ) const;
+		str getPayload( void ) const;
 
-		str getStr(void) const;
+		str getStr( void ) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 

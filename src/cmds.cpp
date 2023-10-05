@@ -190,6 +190,29 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	return (0);
 }
 
+int User::_cmd_NOTICE(Msg & cmd) // ------------------------------------- NOTICE
+{
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() != 2)
+		return (0);
+	
+	std::set<str> names;
+	while (!arg[0].empty())
+		names.insert(extract_first_word(arg[0], ','));
+	std::set<str>::iterator it;
+
+	for (it = names.begin(); it != names.end(); ++it) {
+		User * user_target = _serv->getUserByNick(*it);
+		Chan * chan_target = _serv->getChan(*it);
+
+		if (user_target && user_target->isFullyRegistered())
+			user_target->user_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]));
+		else if(chan_target)
+			chan_target->chan_send(this, Msg(_nick, "NOTICE", *it + " :" + arg[1]));
+	}
+	return (0);
+}
+
 int User::_cmd_OPER(Msg & cmd) // ----------------------------------------- OPER
 {
 	str_vec arg = cmd.payloadAsVector(2);
@@ -219,7 +242,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 
 	target->user_send(Msg(_nick, "KILL", arg[0] + " :" + arg[1]));
 	target->broadcast(Msg(arg[0], "QUIT", ":(Killed (" + _nick + " (" + arg[1] + ")))"));
-	target->error(":Closing Link: " SERVER_NAME " (Killed (" + _nick + " (" + arg[1] + ")))");
+	target->error(":Closing Link: " SERVER_NAME " :(Killed (" + _nick + " (" + arg[1] + ")))");
 
 	_serv->killUser(target);
 	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;

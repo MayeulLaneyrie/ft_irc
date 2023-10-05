@@ -115,7 +115,7 @@ class User {
 		int _cmd_PING(Msg & cmd);
 		int _cmd_QUIT(Msg & cmd);
 		int _cmd_PRIVMSG(Msg & cmd);
-	//	int _cmd_NOTICE(Msg & cmd); This will just be a copy of PRIVMSG without the rpls
+		int _cmd_NOTICE(Msg & cmd);
 		int _cmd_OPER(Msg & cmd);
 		int _cmd_KILL(Msg & cmd);
 		int _cmd_JOIN(Msg & cmd);
