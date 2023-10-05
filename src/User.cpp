@@ -92,7 +92,7 @@ int User::_exec_cmd(void)
 
 	std::cout << C_GREEN << getNick() << " >" C_R_ << "{ " << msg_str << " }" << std::endl;
 
-	Msg cmd_msg(this, msg_str);
+	Msg cmd_msg(msg_str);
 	str cmd = cmd_msg.getCmd();
 
 	if (_reg_status != REG_OK && !prereg_set.count(cmd))
@@ -102,21 +102,6 @@ int User::_exec_cmd(void)
 		return (rpl(ERR_UNKNOWNCOMMAND, cmd));
 
 	return (this->*cmd_map.at(cmd))(cmd_msg);
-}
-
-std::set<User *> User::_in_shared_chans(void)
-{
-	std::set<User *> ret;
-	std::map<str, Chan *>::const_iterator chan_it;
-	std::map<str, User *>::const_iterator user_it;
-
-	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it) {
-		Chan * chan = chan_it->second;
-
-		for (user_it = chan->begin(); user_it != chan->end(); ++user_it)
-			ret.insert(user_it->second);
-	}
-	return (ret);
 }
 
 // ACCESSORS ===================================================================
@@ -150,16 +135,34 @@ int	User::isFullyRegistered(void) const {
 
 int User::rpl(int num, str const & p1)
 {
-	Msg rpl(num, this, p1);
-
-	rpl.msg_send();
+	user_send(Msg(num, this, p1));
 	return (0);
 }
 
 int User::error(str const & msg)
 {
-	user_send(Msg(this, "", "ERROR", msg));
+	user_send(Msg("", "ERROR", msg));
 	return (1);
+}
+
+void User::broadcast(Msg const & msg)
+{
+	std::set<User *> contacts;
+
+	std::map<str, Chan *>::const_iterator chan_it;
+	std::map<str, User *>::const_iterator user_it;
+	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it) {
+		Chan * chan = chan_it->second;
+
+		for (user_it = chan->begin(); user_it != chan->end(); ++user_it)
+			contacts.insert(user_it->second);
+	}
+
+	contacts.erase(this);
+
+	std::set<User *>::iterator it;
+	for (it = contacts.begin(); it != contacts.end(); ++it)
+		(*it)->user_send(msg);
 }
 
 int User::user_recv(void)
@@ -167,6 +170,7 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
+		broadcast(Msg(_nick, "QUIT", ":Connection closed"));
 		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
 		return (1);
 	}

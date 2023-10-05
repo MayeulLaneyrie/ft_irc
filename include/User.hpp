@@ -97,12 +97,6 @@ class User {
 		int _exec_cmd(void);
 
 		/*
-		 * Returns a set of all the users sharing a chan with this one.
-		 * This is used to broadcast QUIT msgs to them when required.
-		 */
-		std::set<User *> _in_shared_chans(void);
-
-		/*
 		 * Table of forbidden characters in a nick, used by _cmd_NICK() and
 		 * implemented right next to it.
 		 */
@@ -170,6 +164,12 @@ class User {
 		 * _cmd_XXXX() to just return (error(":You did bad thing, bye."));
 		 */
 		int error(str const & msg);
+
+		/*
+		 * Sends a message all the users sharing a chan with this one.
+		 * This is used to broadcast QUIT msgs to them when required.
+		 */
+		void broadcast(Msg const & msg);
 
 		/*
 		 * This user has send us some data. Let's do what has to be done.

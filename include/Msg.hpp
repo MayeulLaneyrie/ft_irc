@@ -86,8 +86,6 @@ class Msg {
 		 */
 		str _as_str;
 
-		User * _contact; // either be the emitter or the target of the message.
-
 // INTERNAL STUFF --------------------------------------------------------------
 
 		/*
@@ -113,13 +111,13 @@ class Msg {
 		/*
 		 * Construct message by explicitly specifying all informations
 		 */
-		Msg(User * contact, str const & pref, str const & cmd, str const & payld);
+		Msg(str const & pref, str const & cmd, str const & payld);
 
 		/*
 		 * Construct message from a yet unparsed string. This one is used when
 		 * we need to parse a message line received from a user.
 		 */
-		Msg(User * contact, str const & s);
+		Msg(str const & s);
 
 		/*
 		 * Construct a RPL message. The prefix will be the SERVER_NAME, the
@@ -146,8 +144,6 @@ class Msg {
 		str getCmd(void) const;
 		str getPayload(void) const;
 
-		User * getContact(void) const;
-
 		str getStr(void) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
@@ -173,10 +169,6 @@ class Msg {
 		 */
 		str_vec payloadAsVector(int ac, int requireColon = 0) const;
 
-		/*
-		 * Send the msg to the contact.
-		 */
-		int msg_send(void) const;
 };
 
 #endif

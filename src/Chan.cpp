@@ -43,12 +43,12 @@ Chan & Chan::operator=(Chan const & rhs)
 	return (*this);
 }
 
-int Chan::chan_send(Msg const & msg)
+int Chan::chan_send(User * source, Msg const & msg)
 {
 	std::map<str, User *>::iterator it = _users.begin();
 
 	for (it = _users.begin(); it != _users.end(); ++it)
-		if (it->second != msg.getContact())
+		if (it->second != source)
 			it->second->user_send(msg);
 	return (0);
 }

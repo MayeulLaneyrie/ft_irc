@@ -12,19 +12,17 @@
 
 #include "Msg.hpp"
 
-Msg::Msg(User * contact, str const & pref, str const & cmd, str const & payld) :
+Msg::Msg(str const & pref, str const & cmd, str const & payld) :
 	_prefix(pref),
 	_cmd(cmd),
-	_payload(payld),
-	_contact(contact)
+	_payload(payld)
 {
 	_regen_str();
 }
 
-Msg::Msg(User * contact, str const & s)
+Msg::Msg(str const & s)
 {
 	_payload = s;
-	_contact = contact;
 	if (_payload.empty())
 		return ;
 	if (_payload[0] == ':') {
@@ -69,7 +67,6 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 
 Msg::Msg(int num, User * contact, str const & p1)
 {
-
 	static const std::map<int, str> rpl_map = _gen_rpl_map();
 
 	std::map<str, str> vars;
@@ -95,7 +92,6 @@ Msg::Msg(int num, User * contact, str const & p1)
 	rpl_cmd << std::setw(3) << std::setfill('0') << num;
 	_cmd = rpl_cmd.str();
 
-	_contact = contact;
 	_prefix = SERVER_NAME;
 	_payload = rpl_string;
 
@@ -114,7 +110,6 @@ Msg & Msg::operator=(Msg const & rhs)
 	_cmd = rhs._cmd;
 	_payload = rhs._payload;
 	_as_str = rhs._as_str;
-	_contact = rhs._contact;
 	return (*this);
 }
 
@@ -146,10 +141,6 @@ str Msg::getPayload(void) const {
 	return (_payload);
 }
 
-User * Msg::getContact(void) const {
-	return (_contact);
-}
-
 str Msg::getStr(void) const {
 	return (_as_str);
 }
@@ -175,8 +166,4 @@ str_vec Msg::payloadAsVector(int ac, int requireColon) const
 		ret.push_back(extract_first_word(tmp));
 
 	return (ret);
-}
-
-int Msg::msg_send(void) const {
-	return (_contact->user_send(*this));
 }
