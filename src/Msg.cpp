@@ -46,10 +46,13 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
+	ret[ERR_NOSUCHCHANNEL] = "{1} ::No such channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
 	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
 	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
 	ret[ERR_NICKNAMEINUSE] = "{1} :Nickname is already in use";
+	ret[ERR_NOTONCHANNEL] = "{1} :You're not on that channel";
+	ret[ERR_USERONCHANNEL] = "{1} :is already on channel";
 	ret[ERR_NOTREGISTERED] = ":You have not registered";
 	ret[ERR_NEEDMOREPARAMS] = "{1} :Not enough parameters";
 	ret[ERR_ALREADYREGISTERED] = ":You may not reregister";
@@ -58,6 +61,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[ERR_INVITEONLYCHAN] = "{1} :Cannot join channel (+i)";
 	ret[ERR_BADCHANNELKEY] = "{1} :Cannot join channel (+k)";
 	ret[ERR_NOPRIVILEGES] = ":Permission Denied- You're not an IRC operator";
+	ret[ERR_CHANOPRIVSNEEDED] = "{1} :You're not channel operator";
 	ret[ERR_NOOPERHOST] = ":Invalid oper credentials";
 
 	return (ret);
