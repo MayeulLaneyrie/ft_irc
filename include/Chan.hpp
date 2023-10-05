@@ -62,6 +62,9 @@ class Chan {
 		void rmUser(User const & user);
 		User * getUser(str nick) const;
 
+		std::map<str, User *>::const_iterator begin(void) const;
+		std::map<str, User *>::const_iterator end(void) const;
+
 		void addOperator(User *user);
 		void rmOperator(User *user);
 		int isOperator(User *user);
