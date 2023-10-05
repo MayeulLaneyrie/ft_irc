@@ -15,7 +15,7 @@
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-Serv::Serv(int port, std::string password) :
+Serv::Serv(int port, str const & password) :
 	_password(password),
 	_usercount(0),
 	_chancount(0),
@@ -27,13 +27,11 @@ Serv::Serv(int port, std::string password) :
 	_port = port;
 }
 
-Serv::Serv(Serv const & src)
-{
+Serv::Serv(Serv const & src) {
 	*this = src;
 }
 
-Serv::~Serv(void)
-{
+Serv::~Serv(void) {
 	_clear();
 }
 
@@ -143,7 +141,7 @@ void Serv::_new_connection(void)
 
 	_users[fd] = new_user;
 	_usercount++;
-	std::cout << C_CYAN << new_user->getNick() << " joined." C_R << std::endl;
+	std::cout << C_CYAN << new_user->getNick() << " joined" C_R << std::endl;
 }
 
 void Serv::_user_manage(int fd)
@@ -164,7 +162,9 @@ User * Serv::getUserByNick(str const & nick)
 	return (NULL);
 }
 
-str Serv::getDatetime(void) const { return (_datetime); }
+str Serv::getDatetime(void) const {
+	return (_datetime);
+}
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
@@ -201,13 +201,19 @@ int Serv::run(void)
 	return (0);
 }
 
-int Serv::checkPass(std::string const & s) const { return (s == _password); }
+int Serv::checkPass(std::string const & s) const {
+	return (s == _password);
+}
 
-void Serv::registerUser(User * user) { _registerd[user->getNick()] = user; }
+void Serv::registerUser(User * user) {
+	_registerd[user->getNick()] = user;
+}
 
-void Serv::unregisterUser(User * user) { _registerd.erase(user->getNick()); }
+void Serv::unregisterUser(User * user) {
+	_registerd.erase(user->getNick());
+}
 
-void Serv::renameUser(User * user, str to) {
+void Serv::renameUser(User * user, str const & to) {
 	_registerd.erase(user->getNick());
 	_registerd[to] = user;
 }
@@ -221,15 +227,22 @@ void Serv::killUser(User * user)
 	_usercount--;
 }
 
-Chan * Serv::addChan(str name)
+Chan * Serv::addChan(str const & name)
 {
-	_chans[name] = new Chan(name);
+	_chans[name] = new Chan(this, name);
 	return (_chans[name]);
 }
 
-void Serv::rmChan(str name) { _chans.erase(name); }
+void Serv::rmChan(str const & name)
+{
+	if (!_chans.count(name))
+		return ;
+	Chan * chan = _chans[name];
+	_chans.erase(name);
+	delete chan;
+}
 
-Chan * Serv::getChan(str name) const
+Chan * Serv::getChan(str const & name) const
 {
 	if (_chans.count(name))
 		return (_chans.at(name));

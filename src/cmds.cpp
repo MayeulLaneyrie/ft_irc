@@ -143,9 +143,7 @@ int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
 	if (arg.empty())
 		return (rpl(ERR_NEEDMOREPARAMS, "PING"));
 
-	user_send(
-		Msg(this, SERVER_NAME, "PONG", str(SERVER_NAME) + " :" + arg[0])
-	);
+	user_send(Msg(SERVER_NAME, "PONG", str(SERVER_NAME) + " :" + arg[0]));
 
 	return (0);
 }
@@ -156,7 +154,14 @@ int User::_cmd_QUIT(Msg & cmd) // ----------------------------------------- QUIT
 	if (arg.empty())
 		arg.push_back("Client exited");
 
-	error(str(":Okay, bye: (") + _username + "@whatever) [" + arg[0] + ']');
+	if (arg.empty()) {
+		broadcast(Msg(_nick, "QUIT", ":Quit: "));
+		error(str(":Okay, bye: (") + _username + "@whatever) [Client exited]");
+	}
+	else {
+		broadcast(Msg(_nick, "QUIT", str(":Quit: ") + arg[0]));
+		error(str(":Okay, bye: (") + _username + "@whatever) [" + arg[0] + ']');
+	}
 	return (1);
 }
 
@@ -176,11 +181,34 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		Chan * chan_target = _serv->getChan(*it);
 
 		if (user_target && user_target->isFullyRegistered())
-			user_target->user_send(Msg(user_target, _nick, "PRIVMSG", *it + " :" + arg[1]));
+			user_target->user_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
-			chan_target->chan_send(Msg(NULL, _nick, "PRIVMSG", *it + " :" + arg[1]));
+			chan_target->chan_send(this, Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
 		else
 			rpl(ERR_NOSUCHNICK, *it);
+	}
+	return (0);
+}
+
+int User::_cmd_NOTICE(Msg & cmd) // ------------------------------------- NOTICE
+{
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() != 2)
+		return (0);
+	
+	std::set<str> names;
+	while (!arg[0].empty())
+		names.insert(extract_first_word(arg[0], ','));
+	std::set<str>::iterator it;
+
+	for (it = names.begin(); it != names.end(); ++it) {
+		User * user_target = _serv->getUserByNick(*it);
+		Chan * chan_target = _serv->getChan(*it);
+
+		if (user_target && user_target->isFullyRegistered())
+			user_target->user_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]));
+		else if(chan_target)
+			chan_target->chan_send(this, Msg(_nick, "NOTICE", *it + " :" + arg[1]));
 	}
 	return (0);
 }
@@ -195,7 +223,7 @@ int User::_cmd_OPER(Msg & cmd) // ----------------------------------------- OPER
 	if (arg[1] != OPER_PASS)
 		return (rpl(ERR_PASSWDMISMATCH));
 	_is_op = 1;
-	user_send(Msg(this, SERVER_NAME, "MODE", _nick + ": +o"));
+	user_send(Msg(SERVER_NAME, "MODE", _nick + ": +o"));
 	return (rpl(RPL_YOUREOPER));
 }
 
@@ -212,14 +240,16 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 
-	target->user_send(Msg(target, _nick, "KILL", arg[0] + " :" + arg[1]));
-	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + " (" + arg[1] + ")))");
+	target->user_send(Msg(_nick, "KILL", arg[0] + " :" + arg[1]));
+	target->broadcast(Msg(arg[0], "QUIT", ":(Killed (" + _nick + " (" + arg[1] + ")))"));
+	target->error(":Closing Link: " SERVER_NAME " :(Killed (" + _nick + " (" + arg[1] + ")))");
+
 	_serv->killUser(target);
 	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;
 	return (0);
 }
 
-int User::_cmd_JOIN(Msg & cmd) // ------------------------------------------ JOIN
+int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 {
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
@@ -227,8 +257,7 @@ int User::_cmd_JOIN(Msg & cmd) // ------------------------------------------ JOI
 	
 	Chan * channel = _serv->getChan(arg[0]);
 
-	if (!channel)
-	{
+	if (!channel) {
 		channel = _serv->addChan(arg[0]);
 		channel->addOperator(this);
 	}
@@ -240,14 +269,14 @@ int User::_cmd_JOIN(Msg & cmd) // ------------------------------------------ JOI
 		return (rpl(ERR_BADCHANNELKEY, arg[0]));
 	if (channel->checkMode(MODE_L) && !channel->isFull())
 		return (rpl(ERR_CHANNELISFULL, arg[0]));
-	channel->addUser(*this);
+	channel->addUser(this);
 	_chans[arg[0]] = channel;
-	channel->chan_send(Msg(NULL, _nick, "JOIN", str(":") + arg[0]));
+	channel->chan_send(NULL, Msg(_nick, "JOIN", str(":") + arg[0]));
 	// TODO : RPLS
 	return (0);
 }
 
-int User::_cmd_INVITE(Msg & cmd) //---------------------------------------- INVITE
+int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 {
 	//check si le sender est register
 	str_vec arg = cmd.payloadAsVector(2);

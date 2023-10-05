@@ -32,50 +32,52 @@ class Msg;
 
 class Chan {
 
-	private :
+	private : // PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE
 
 		std::map<str, User *> _users; // indexed by their nicks
 		std::set<User *> _operators;
 		std::set<User *> _invited; 
 
-		unsigned int	_mode;
-		str		_name;
-		str		_passwd;
-		str		_topic;
+		unsigned int _mode;
+		str _name;
+		str _passwd;
+		str _topic;
 
-		int		_usercount;
-		int		_usermax;
+		int _usercount;
+		int _usermax;
+
+		Serv * _serv;
 
 		Chan(void);
 
-	public :
+	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
-		Chan(str name);
+		Chan(Serv * serv, str const & name);
 		Chan(Chan const & src);
 		~Chan(void);
 
 		Chan & operator=(Chan const & rhs);
 
-		int chan_send(Msg const & msg);
+		int chan_send(User * source, Msg const & msg);
 
-		void addUser(User & user);
-		void rmUser(User & user);
-		User * getUser(str nick) const;
-		void renameUser(User * user, str to);
+		void addUser(User * user);
+		void rmUser(User * user);
+		User * getUser(str const & nick) const;
+		void renameUser(User * user, str const & to);
 
 		std::map<str, User *>::const_iterator begin(void) const;
 		std::map<str, User *>::const_iterator end(void) const;
 
-		void addOperator(User *user);
-		void rmOperator(User *user);
-		int isOperator(User *user);
+		void addOperator(User * user);
+		void rmOperator(User * user);
+		int isOperator(User * user);
 
-		void invite(User *user);
-		void uninvite(User *user);
-		int isInvited(User *user);
+		void invite(User * user);
+		void uninvite(User * user);
+		int isInvited(User * user);
 
-		void setPasswd(str passwd);
-		int checkPasswd(str passwd);
+		void setPasswd(str const & passwd);
+		int checkPasswd(str const & passwd);
 
 		unsigned int checkMode(unsigned int mode);
 		void setMode(unsigned int mode, int val);

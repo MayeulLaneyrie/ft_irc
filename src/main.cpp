@@ -13,8 +13,8 @@
 #include "utils.hpp"
 #include "Serv.hpp"
 
-int main(int ac, char **av) {
-
+int main(int ac, char **av)
+{
 	if (ac < 3)
 		die("s", "Usage: ./ircserv <port> <password>");
 	for (int i = 0; av[1][i]; ++i)

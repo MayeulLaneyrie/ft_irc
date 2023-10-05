@@ -80,7 +80,7 @@ class Serv {
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-		Serv(int port, str password);
+		Serv(int port, str const & password);
 		Serv(Serv const & src);
 
 		~Serv(void);
@@ -101,14 +101,14 @@ class Serv {
 
 		void registerUser(User * user);
 		void unregisterUser(User * user);
-		void renameUser(User * user, str to);
+		void renameUser(User * user, str const & to);
 		
 		void killUser(User * user);
 
-		Chan * addChan(str name);
+		Chan * addChan(str const & name);
 
-		void rmChan(str name);
-		Chan * getChan(str name) const;
+		void rmChan(str const & name);
+		Chan * getChan(str const & name) const;
 };
 
 #endif
