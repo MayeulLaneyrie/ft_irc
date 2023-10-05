@@ -90,7 +90,7 @@ int User::_exec_cmd(void)
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << C_GREEN << getNick() << " >" C_R_ << msg_str << std::endl;
+	std::cout << C_GREEN << getNick() << " >" C_R_ << "{ " << msg_str << " }" << std::endl;
 
 	Msg cmd_msg(this, msg_str);
 	str cmd = cmd_msg.getCmd();

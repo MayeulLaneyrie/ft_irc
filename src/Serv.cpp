@@ -229,11 +229,13 @@ void Serv::killUser(User * user)
 
 Chan * Serv::addChan(str name)
 {
-	_chans[name] = new Chan(name);
+	_chans[name] = new Chan(this, name);
 	return (_chans[name]);
 }
 
 void Serv::rmChan(str name) {
+	if (_chans.count(name))
+		delete _chans[name];
 	_chans.erase(name);
 }
 

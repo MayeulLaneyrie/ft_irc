@@ -12,13 +12,14 @@
 
 #include "Chan.hpp"
 
-Chan::Chan(str name) :
+Chan::Chan(Serv * serv, str name) :
 	_mode(0),
 	_name(name),
 	_passwd(""),
 	_topic(""),
 	_usercount(0),
-	_usermax(16)
+	_usermax(16),
+	_serv(serv)
 {
 	std::cout << C_CYAN << name << " created" C_R << std::endl;
 }
@@ -60,10 +61,14 @@ void Chan::addUser(User & user)
 
 void Chan::rmUser(User & user)
 {
+	if (!_usercount)
+		return ;
 	_users.erase(user.getNick());
 	_operators.erase(&user);
 	_invited.erase(&user);
 	_usercount--;
+	if (!_usercount)
+		_serv->rmChan(_name);
 }
 
 User * Chan::getUser(str nick) const

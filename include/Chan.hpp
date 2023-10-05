@@ -32,25 +32,27 @@ class Msg;
 
 class Chan {
 
-	private :
+	private : // PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE PRIVATE
 
 		std::map<str, User *> _users; // indexed by their nicks
 		std::set<User *> _operators;
 		std::set<User *> _invited; 
 
-		unsigned int	_mode;
-		str		_name;
-		str		_passwd;
-		str		_topic;
+		unsigned int _mode;
+		str _name;
+		str _passwd;
+		str _topic;
 
-		int		_usercount;
-		int		_usermax;
+		int _usercount;
+		int _usermax;
+
+		Serv * _serv;
 
 		Chan(void);
 
-	public :
+	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
-		Chan(str name);
+		Chan(Serv *serv, str name);
 		Chan(Chan const & src);
 		~Chan(void);
 
