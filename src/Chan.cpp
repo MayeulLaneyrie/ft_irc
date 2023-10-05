@@ -55,9 +55,11 @@ void Chan::addUser(User & user)
 	_usercount++;
 }
 
-void Chan::rmUser(User const & user)
+void Chan::rmUser(User & user)
 {
 	_users.erase(user.getNick());
+	_operators.erase(&user);
+	_invited.erase(&user);
 	_usercount--;
 }
 

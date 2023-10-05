@@ -30,6 +30,9 @@ User::User(User const & src)
 
 User::~User(void)
 {
+	std::map<str, Chan *>::iterator it;
+	for (it = _chans.begin(); it != _chans.end(); ++it)
+		it->second->rmUser(*this);
 	close(_fd);
 }
 

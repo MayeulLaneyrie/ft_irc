@@ -87,7 +87,7 @@ int User::_cmd_NICK(Msg & cmd)
 	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
 		return (error(":Access denied, password wasn't provided"));
 
-	std::cout << C_CYAN << _nick << " --> " << arg[0] << C_R << std::endl;
+	std::cout << C_CYAN << getNick() << " --> " << arg[0] << C_R << std::endl;
 
 	_serv->renameUser(this, arg[0]);
 
@@ -172,12 +172,15 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	std::set<str>::iterator it;
 
 	for (it = names.begin(); it != names.end(); ++it) {
-		User * target = _serv->getUserByNick(*it);
+		User * user_target = _serv->getUserByNick(*it);
+		Chan * chan_target = _serv->getChan(*it);
 
-		if (!target || !target->isFullyRegistered())
-			rpl(ERR_NOSUCHNICK, *it);
+		if (user_target && user_target->isFullyRegistered())
+			user_target->user_send(Msg(user_target, _nick, "PRIVMSG", *it + " :" + arg[1]));
+		else if(chan_target)
+			chan_target->chan_send(Msg(NULL, _nick, "PRIVMSG", *it + " :" + arg[1]));
 		else
-			target->user_send(Msg(target, _nick, "PRIVMSG", *it + " :" + arg[1]));
+			rpl(ERR_NOSUCHNICK, *it);
 	}
 	return (0);
 }
