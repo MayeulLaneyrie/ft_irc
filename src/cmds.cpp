@@ -311,12 +311,13 @@ int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------T
 		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
 	if (!channel->getUser(this->_nick))
 		return (rpl(ERR_NOTONCHANNEL, arg[0]));
-	if (arg.size == 1)
+	if (arg.size() == 1)
 	{
-		if (channel->getTopic())
-			return (rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic())); // RPL_TOPICWHOTIME also need to be send
-		return(rpl(RPL_NOTOPIC,arg[0]);
+		if (channel->getTopic().empty())
+			return (rpl(RPL_NOTOPIC,arg[0]));
+		return (rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic())); // RPL_TOPICWHOTIME also need to be send
 	}
+	return (0);
 
 	// 1 ou deux arguments (channel) (sujet du channel)
 	//voir ou changer le topic du chan(si sujet du chan preciser)

@@ -120,6 +120,7 @@ class User {
 		int _cmd_KILL(Msg & cmd);
 		int _cmd_JOIN(Msg & cmd);
 		int _cmd_INVITE(Msg & cmd);
+		int _cmd_TOPIC(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
