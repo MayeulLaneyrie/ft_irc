@@ -15,7 +15,7 @@
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-Serv::Serv(int port, std::string password) :
+Serv::Serv(int port, str const & password) :
 	_password(password),
 	_usercount(0),
 	_chancount(0),
@@ -213,7 +213,7 @@ void Serv::unregisterUser(User * user) {
 	_registerd.erase(user->getNick());
 }
 
-void Serv::renameUser(User * user, str to) {
+void Serv::renameUser(User * user, str const & to) {
 	_registerd.erase(user->getNick());
 	_registerd[to] = user;
 }
@@ -227,19 +227,22 @@ void Serv::killUser(User * user)
 	_usercount--;
 }
 
-Chan * Serv::addChan(str name)
+Chan * Serv::addChan(str const & name)
 {
 	_chans[name] = new Chan(this, name);
 	return (_chans[name]);
 }
 
-void Serv::rmChan(str name) {
-	if (_chans.count(name))
-		delete _chans[name];
+void Serv::rmChan(str const & name)
+{
+	if (!_chans.count(name))
+		return ;
+	Chan * chan = _chans[name];
 	_chans.erase(name);
+	delete chan;
 }
 
-Chan * Serv::getChan(str name) const
+Chan * Serv::getChan(str const & name) const
 {
 	if (_chans.count(name))
 		return (_chans.at(name));

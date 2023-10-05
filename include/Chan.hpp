@@ -52,7 +52,7 @@ class Chan {
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
-		Chan(Serv *serv, str name);
+		Chan(Serv * serv, str const & name);
 		Chan(Chan const & src);
 		~Chan(void);
 
@@ -60,24 +60,24 @@ class Chan {
 
 		int chan_send(Msg const & msg);
 
-		void addUser(User & user);
-		void rmUser(User & user);
-		User * getUser(str nick) const;
-		void renameUser(User * user, str to);
+		void addUser(User * user);
+		void rmUser(User * user);
+		User * getUser(str const & nick) const;
+		void renameUser(User * user, str const & to);
 
 		std::map<str, User *>::const_iterator begin(void) const;
 		std::map<str, User *>::const_iterator end(void) const;
 
-		void addOperator(User *user);
-		void rmOperator(User *user);
-		int isOperator(User *user);
+		void addOperator(User * user);
+		void rmOperator(User * user);
+		int isOperator(User * user);
 
-		void invite(User *user);
-		void uninvite(User *user);
-		int isInvited(User *user);
+		void invite(User * user);
+		void uninvite(User * user);
+		int isInvited(User * user);
 
-		void setPasswd(str passwd);
-		int checkPasswd(str passwd);
+		void setPasswd(str const & passwd);
+		int checkPasswd(str const & passwd);
 
 		unsigned int checkMode(unsigned int mode);
 		void setMode(unsigned int mode, int val);

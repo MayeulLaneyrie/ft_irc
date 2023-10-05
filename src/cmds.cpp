@@ -240,7 +240,7 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 		return (rpl(ERR_BADCHANNELKEY, arg[0]));
 	if (channel->checkMode(MODE_L) && !channel->isFull())
 		return (rpl(ERR_CHANNELISFULL, arg[0]));
-	channel->addUser(*this);
+	channel->addUser(this);
 	_chans[arg[0]] = channel;
 	channel->chan_send(Msg(NULL, _nick, "JOIN", str(":") + arg[0]));
 	// TODO : RPLS

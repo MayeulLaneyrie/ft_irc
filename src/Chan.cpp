@@ -12,7 +12,7 @@
 
 #include "Chan.hpp"
 
-Chan::Chan(Serv * serv, str name) :
+Chan::Chan(Serv * serv, str const & name) :
 	_mode(0),
 	_name(name),
 	_passwd(""),
@@ -53,32 +53,32 @@ int Chan::chan_send(Msg const & msg)
 	return (0);
 }
 
-void Chan::addUser(User & user)
+void Chan::addUser(User * user)
 {
-	_users[user.getNick()] = &user;
+	_users[user->getNick()] = user;
 	_usercount++;
 }
 
-void Chan::rmUser(User & user)
+void Chan::rmUser(User * user)
 {
 	if (!_usercount)
 		return ;
-	_users.erase(user.getNick());
-	_operators.erase(&user);
-	_invited.erase(&user);
+	_users.erase(user->getNick());
+	_operators.erase(user);
+	_invited.erase(user);
 	_usercount--;
 	if (!_usercount)
 		_serv->rmChan(_name);
 }
 
-User * Chan::getUser(str nick) const
+User * Chan::getUser(str const & nick) const
 {
 	if (_users.count(nick))
 		return (_users.at(nick));
 	return (NULL);
 }
 
-void Chan::renameUser(User * user, str to)
+void Chan::renameUser(User * user, str const & to)
 {
 	_users.erase(user->getNick());
 	_users[to] = user;
@@ -92,35 +92,35 @@ std::map<str, User *>::const_iterator Chan::end(void) const {
 	return (_users.end());
 }
 
-void Chan::addOperator(User *user) {
+void Chan::addOperator(User * user) {
 	_operators.insert(user);
 }
 
-void Chan::rmOperator(User *user) {
+void Chan::rmOperator(User * user) {
 	_operators.erase(user);
 }
 
-int Chan::isOperator(User *user) {
+int Chan::isOperator(User * user) {
 	return (_operators.count(user));
 }
 
-void Chan::invite(User *user) {
+void Chan::invite(User * user) {
 	_invited.insert(user);
 }
 
-void Chan::uninvite(User *user) {
+void Chan::uninvite(User * user) {
 	_invited.erase(user);
 }
 
-int Chan::isInvited(User *user) {
+int Chan::isInvited(User * user) {
 	return (_invited.count(user));
 }
 
-void Chan::setPasswd(str passwd) {
+void Chan::setPasswd(str const & passwd) {
 	_passwd = passwd;
 }
 
-int Chan::checkPasswd(str passwd) {
+int Chan::checkPasswd(str const & passwd) {
 	return (passwd == _passwd);
 }
 
