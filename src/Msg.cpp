@@ -102,13 +102,11 @@ Msg::Msg(int num, User * contact, str const & p1)
 	_regen_str();
 }
 
-Msg::Msg(Msg const & src)
-{
+Msg::Msg(Msg const & src) {
 	*this = src;
 }
 
-Msg::~Msg()
-{}
+Msg::~Msg() {}
 
 Msg & Msg::operator=(Msg const & rhs)
 {
@@ -136,13 +134,25 @@ void Msg::_regen_str(void)
 
 // ACCESSORS -------------------------------------------------------------------
 
-str Msg::getPrefix(void) const { return (_prefix); }
-str Msg::getCmd(void) const { return (_cmd); }
-str Msg::getPayload(void) const { return (_payload); }
+str Msg::getPrefix(void) const {
+	return (_prefix);
+}
 
-User * Msg::getContact(void) const { return (_contact); }
+str Msg::getCmd(void) const {
+	return (_cmd);
+}
 
-str Msg::getStr(void) const { return (_as_str); }
+str Msg::getPayload(void) const {
+	return (_payload);
+}
+
+User * Msg::getContact(void) const {
+	return (_contact);
+}
+
+str Msg::getStr(void) const {
+	return (_as_str);
+}
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
@@ -167,7 +177,6 @@ str_vec Msg::payloadAsVector(int ac, int requireColon) const
 	return (ret);
 }
 
-int Msg::msg_send(void) const
-{
-	return _contact->user_send(*this);
+int Msg::msg_send(void) const {
+	return (_contact->user_send(*this));
 }

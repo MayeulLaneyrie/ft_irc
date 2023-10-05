@@ -23,8 +23,7 @@ User::User(Serv * serv, int fd) :
 	_serv(serv)
 {}
 
-User::User(User const & src)
-{
+User::User(User const & src) {
 	*this = src;
 }
 
@@ -131,14 +130,19 @@ str User::getNick(void) const
 	return (oss.str());
 }
 
-str User::getUsername(void) const { return _username; }
+str User::getUsername(void) const {
+	return _username;
+}
 
-int User::getFd(void) const { return _fd; }
+int User::getFd(void) const {
+	return _fd;
+}
 
-Serv * User::getServ(void) const { return _serv; }
+Serv * User::getServ(void) const {
+	return _serv;
+}
 
-int	User::isFullyRegistered(void) const
-{
+int	User::isFullyRegistered(void) const {
 	return (_reg_status == REG_OK && !(_reg_status & REG_MISM));
 }
 
@@ -163,7 +167,7 @@ int User::user_recv(void)
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		std::cout << C_MAGENTA << getNick() << " left." C_R << std::endl;
+		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
 		return (1);
 	}
 
@@ -173,7 +177,7 @@ int User::user_recv(void)
 	int exit = 0;
 	while (_ibuffer.find("\r\n") != str::npos) {
 		if (_exec_cmd()) {
-			std::cout << C_MAGENTA << getNick() << " shall be disconnected." C_R << std::endl;
+			std::cout << C_MAGENTA << getNick() << " left" C_R << std::endl;
 			exit = 1;
 			break ;
 		}

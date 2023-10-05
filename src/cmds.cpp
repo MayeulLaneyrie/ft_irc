@@ -178,7 +178,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(user_target, _nick, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
-			chan_target->chan_send(Msg(NULL, _nick, "PRIVMSG", *it + " :" + arg[1]));
+			chan_target->chan_send(Msg(this, _nick, "PRIVMSG", *it + " :" + arg[1]));
 		else
 			rpl(ERR_NOSUCHNICK, *it);
 	}
@@ -219,7 +219,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	return (0);
 }
 
-int User::_cmd_JOIN(Msg & cmd) // ------------------------------------------ JOIN
+int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 {
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
@@ -247,7 +247,7 @@ int User::_cmd_JOIN(Msg & cmd) // ------------------------------------------ JOI
 	return (0);
 }
 
-int User::_cmd_INVITE(Msg & cmd) //---------------------------------------- INVITE
+int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 {
 	//check si le sender est register
 	str_vec arg = cmd.payloadAsVector(2);
