@@ -160,11 +160,19 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	if (arg.size() != 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "PRIVMSG"));
 	
-	User * target = _serv->getUserByNick(arg[0]);
-	if (!target || !target->isFullyRegistered())
-		return (rpl(ERR_NOSUCHNICK, arg[0]));
+	std::set<str> names;
+	while (!arg[0].empty())
+		names.insert(extract_first_word(arg[0], ','));
+	std::set<str>::iterator it;
 
-	target->user_send(Msg(target, _nick, "PRIVMSG", arg[0] + " :" + arg[1]));
+	for (it = names.begin(); it != names.end(); ++it) {
+		User * target = _serv->getUserByNick(*it);
+
+		if (!target || !target->isFullyRegistered())
+			rpl(ERR_NOSUCHNICK, *it);
+		else
+			target->user_send(Msg(target, _nick, "PRIVMSG", *it + " :" + arg[1]));
+	}
 	return (0);
 }
 
@@ -198,6 +206,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	target->user_send(Msg(target, _nick, "KILL", arg[0] + " :" + arg[1]));
 	target->error("Closing Link: " SERVER_NAME " (Killed (" + _nick + " (" + arg[1] + ")))");
 	_serv->killUser(target);
+	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;
 	return (0);
 }
 

@@ -90,6 +90,7 @@ class Serv {
 // ACCESSORS -------------------------------------------------------------------
 
 		User * getUserByNick(str const & nick);
+		Chan * getChanByName(str const & name);
 
 		str getDatetime(void) const;
 

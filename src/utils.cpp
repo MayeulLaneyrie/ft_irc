@@ -70,6 +70,6 @@ void handler(int x)
 {
 	(void)x;
 	std::cout
-		<< C_RED "\nSIGINT has been caught, the server will now stop." C_R
+		<< C_RED "\n*** SIGINT has been caught, the server will now stop." C_R
 		<< std::endl;
 }
