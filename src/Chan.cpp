@@ -68,6 +68,11 @@ User * Chan::getUser(str nick) const
 	return (NULL);
 }
 
+void Chan::renameUser(User * user, str to) {
+	_users.erase(user->getNick());
+	_users[to] = user;
+}
+
 std::map<str, User *>::const_iterator Chan::begin(void) const
 {
 	return (_users.begin());

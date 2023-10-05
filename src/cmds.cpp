@@ -87,9 +87,15 @@ int User::_cmd_NICK(Msg & cmd)
 	if (_reg_status & REG_USER && !(_reg_status & REG_PASS))
 		return (error(":Access denied, password wasn't provided"));
 
-	_serv->unregisterUser(this);
+	std::cout << C_CYAN << _nick << " --> " << arg[0] << C_R << std::endl;
+
+	_serv->renameUser(this, arg[0]);
+
+	std::map<str, Chan *>::iterator it;
+	for (it = _chans.begin(); it != _chans.end(); ++it)
+		it->second->renameUser(this, arg[0]);
+
 	_nick = arg[0];
-	_serv->registerUser(this);
 
 	if (_reg_status & REG_NICK)
 		return (0);

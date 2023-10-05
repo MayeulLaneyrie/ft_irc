@@ -102,6 +102,7 @@ class Serv {
 
 		void registerUser(User * user);
 		void unregisterUser(User * user);
+		void renameUser(User * user, str to);
 		
 		void killUser(User * user);
 

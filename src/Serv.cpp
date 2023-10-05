@@ -207,6 +207,11 @@ void Serv::registerUser(User * user) { _registerd[user->getNick()] = user; }
 
 void Serv::unregisterUser(User * user) { _registerd.erase(user->getNick()); }
 
+void Serv::renameUser(User * user, str to) {
+	_registerd.erase(user->getNick());
+	_registerd[to] = user;
+}
+
 void Serv::killUser(User * user)
 {
 	user->flush();

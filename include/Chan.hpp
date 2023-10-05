@@ -61,6 +61,7 @@ class Chan {
 		void addUser(User & user);
 		void rmUser(User const & user);
 		User * getUser(str nick) const;
+		void renameUser(User * user, str to);
 
 		std::map<str, User *>::const_iterator begin(void) const;
 		std::map<str, User *>::const_iterator end(void) const;
