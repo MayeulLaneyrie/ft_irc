@@ -102,6 +102,21 @@ int User::_exec_cmd(void)
 	return (this->*cmd_map.at(cmd))(cmd_msg);
 }
 
+std::set<User *> User::_in_shared_chans(void)
+{
+	std::set<User *> ret;
+	std::map<str, Chan *>::const_iterator chan_it;
+	std::map<str, User *>::const_iterator user_it;
+
+	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it) {
+		Chan * chan = chan_it->second;
+
+		for (user_it = chan->begin(); user_it != chan->end(); ++user_it)
+			ret.insert(user_it->second);
+	}
+	return (ret);
+}
+
 // ACCESSORS ===================================================================
 
 str User::getNick(void) const
@@ -113,11 +128,11 @@ str User::getNick(void) const
 	return (oss.str());
 }
 
-str User::getUsername(void) const { return (_username); }
+str User::getUsername(void) const { return _username; }
 
-int User::getFd(void) const { return (_fd); }
+int User::getFd(void) const { return _fd; }
 
-Serv * User::getServ(void) const { return (_serv); }
+Serv * User::getServ(void) const { return _serv; }
 
 int	User::isFullyRegistered(void) const
 {

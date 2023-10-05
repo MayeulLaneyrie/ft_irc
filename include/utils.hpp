@@ -43,7 +43,7 @@ void die(const char * fmt, ...);
 
 void setsock_nonblock(int fd);
 
-str extract_first_word(str & s);
+str extract_first_word(str & s, char sep = ' ');
 
 int sed(str & s, str const & from, str const & to);
 

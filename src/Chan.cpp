@@ -68,6 +68,16 @@ User * Chan::getUser(str nick) const
 	return (NULL);
 }
 
+std::map<str, User *>::const_iterator Chan::begin(void) const
+{
+	return (_users.begin());
+}
+
+std::map<str, User *>::const_iterator Chan::end(void) const
+{
+	return (_users.end());
+}
+
 void Chan::addOperator(User *user)
 {
 	_operators.insert(user);

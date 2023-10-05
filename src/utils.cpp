@@ -45,9 +45,9 @@ void setsock_nonblock(int fd) {
 		die("sds", __FILE__, __LINE__, strerror(errno));
 }
 
-std::string extract_first_word(std::string & s)
+std::string extract_first_word(std::string & s, char sep)
 {
-	size_t cmd_end = s.find(" ");
+	size_t cmd_end = s.find(sep);
 	if (cmd_end == std::string::npos)
 		cmd_end = s.size();
 	std::string cmd = s.substr(0, cmd_end);
