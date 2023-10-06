@@ -65,6 +65,7 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["OPER"] = &User::_cmd_OPER;
 	ret["KILL"] = &User::_cmd_KILL;
 	ret["JOIN"] = &User::_cmd_JOIN;
+	ret["TOPIC"] = &User::_cmd_TOPIC;
 	return (ret);
 }
 

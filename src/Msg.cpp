@@ -41,7 +41,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_YOURHOST] = ":Your host is {sn}, running version {v}";
 	ret[RPL_CREATED] = ":This server was created {dt}";
 	ret[RPL_MYINFO] = "{sn} {v} o itkol";
-	ret[RPL_NOTOPIC] = "{1} : No topic is set";
+	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 

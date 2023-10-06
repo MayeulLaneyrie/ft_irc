@@ -317,8 +317,27 @@ int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------T
 			return (rpl(RPL_NOTOPIC,arg[0]));
 		return (rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic())); // RPL_TOPICWHOTIME also need to be send
 	}
+	else
+	{
+		if (channel->checkMode(MODE_T) && !channel->isOperator(this))
+			return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
+		if (arg[1].empty())
+		{
+			channel->setTopic(NULL);
+			channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + channel->getTopic()));
+			//message a tous les clients ici aussi je crois mais a verifier
+			return (rpl(RPL_NOTOPIC, arg[0]));
+		}
+		else
+		{
+			channel->setTopic(arg[1]);
+			channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + arg[1]));
+			return (rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic()));
+		}
+		
+	}
+	//print message to all user
 	return (0);
-
 	// 1 ou deux arguments (channel) (sujet du channel)
 	//voir ou changer le topic du chan(si sujet du chan preciser)
 	//client pas sur le chan ERR_NOTONCHANNEL (442) 
