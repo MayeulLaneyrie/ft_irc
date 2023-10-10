@@ -357,37 +357,23 @@ int User::_cmd_KICK(Msg & cmd)
 	return (0);
 }
 
-/*int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
+int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
 {
-	str_vec arg = cmd.payLoadAsVector(2); // je crois qu'il faut mettre 2 car <target> optionnel (nom de serv ou nick)
+	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
-		return (rpl(ERR_NONICKNAMEGIVEN, arg[0])); // nick name attendu mais empty;
-	User *target = _serv->getUserByNick(arg[0]); //ca peut aussi etre un channel je crois ?
+		return (rpl(ERR_NONICKNAMEGIVEN, arg[0]));
+	User *target = _serv->getUserByNick(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
-	//ERR_NOSUCHNICK (401)
-
-	//ERR_NOSUCHSERVER (402)
-
-	//ERR_NONICKNAMEGIVEN (431)
-
-	//RPL_ENDOFWHOIS (318)
-
-	possible reply (part of the answer) : 
-	RPL_WHOISCERTFP (276)
-	RPL_WHOISREGNICK (307)
-	RPL_WHOISUSER (311)
-	RPL_WHOISSERVER (312)
-	RPL_WHOISOPERATOR (313)
-	RPL_WHOISIDLE (317)
-	RPL_WHOISCHANNELS (319)
-	RPL_WHOISSPECIAL (320)
-	RPL_WHOISACCOUNT (330)
-	RPL_WHOISACTUALLY (338)
-	RPL_WHOISHOST (378)
-	RPL_WHOISMODES (379)
-	RPL_WHOISSECURE (671)
-	RPL_AWAY (301)
-	
+	std::map<str, Chan *> channelList = target->getChan();
+	str listeChannel;
+	for (std::map<str, Chan *>::const_iterator it = channelList.begin(); it != channelList.end(); it++)
+		listeChannel += it->first + " ";
+	rpl(RPL_WHOISUSER);
+	rpl(RPL_WHOISSERVER);
+	//if (is_operator)
+	//	rpl(WHOISOPERATOR);
+	rpl(RPL_WHOISCHANNELS, listeChannel);
+	rpl(RPL_ENDOFWHOIS);
+	return (0);
 }
-*/

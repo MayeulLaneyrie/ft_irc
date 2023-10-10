@@ -67,6 +67,7 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["JOIN"] = &User::_cmd_JOIN;
 	ret["TOPIC"] = &User::_cmd_TOPIC;
 	ret["KICK"] = &User::_cmd_KICK;
+	ret["WHOIS"] = &User::_cmd_WHOIS;
 	return (ret);
 }
 
@@ -121,6 +122,15 @@ str User::getNick(void) const
 
 str User::getUsername(void) const {
 	return _username;
+}
+
+str User::getRealname(void) const {
+	return _realname;
+}
+
+std::map<str, Chan *> User::getChan(void) const
+{
+	return _chans;
 }
 
 int User::getFd(void) const {

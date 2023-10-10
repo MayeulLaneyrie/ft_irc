@@ -41,6 +41,14 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_YOURHOST] = ":Your host is {sn}, running version {v}";
 	ret[RPL_CREATED] = ":This server was created {dt}";
 	ret[RPL_MYINFO] = "{sn} {v} o itkol";
+
+	ret[RPL_WHOISUSER] = "{n} {u} <host> * :{rn}";
+	ret[RPL_WHOISSERVER] = "{n} {sn} : string that describe server info";
+	ret[RPL_WHOISOPERATOR] = "{n} :is an IRC operator";
+	ret[RPL_ENDOFWHOIS] = "{n} :End of /WHOIS list";
+	ret[RPL_WHOISCHANNELS] = "{n} :{1}";
+	
+
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
@@ -83,6 +91,7 @@ Msg::Msg(int num, User * contact, str const & p1)
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();
+	vars["{rn}"] = contact->getRealname();
 	vars["{sn}"] = SERVER_NAME;
 	vars["{dt}"] = contact->getServ()->getDatetime();
 	vars["{v}"] = "0.42";

@@ -125,6 +125,7 @@ class User {
 		int _cmd_INVITE(Msg & cmd);
 		int _cmd_TOPIC(Msg & cmd);
 		int _cmd_KICK(Msg & cmd);
+		int _cmd_WHOIS(Msg & cmd);
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
@@ -145,6 +146,9 @@ class User {
 		str getNick(void) const;
 		str getUsername(void) const;
 		int getFd(void) const;
+
+		str getRealname(void) const;
+		std::map<str, Chan *> getChan(void) const;
 
 		Serv * getServ(void) const;
 
