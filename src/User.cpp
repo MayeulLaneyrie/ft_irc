@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/29 13:32:14 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:11:30 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["TOPIC"] = &User::_cmd_TOPIC;
 	ret["KICK"] = &User::_cmd_KICK;
 	ret["WHOIS"] = &User::_cmd_WHOIS;
+	ret["MODE"] = &User::_cmd_MODE;
+	
 	return (ret);
 }
 

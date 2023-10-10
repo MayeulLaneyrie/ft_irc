@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 17:50:45 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/10/09 15:41:26 by shamizi          ###   ########.fr       */
+/*   Updated: 2023/10/10 17:15:31 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,33 +27,16 @@ int User::_cmd_PASS(Msg & cmd) // ----------------------------------------- PASS
 	if (_reg_status == REG_OK)
 		return (rpl(ERR_ALREADYREGISTERED));
 
-	if (_serv->checkPass(arg[0]))
+	if (_serv->checkPass(arg[0])) {
 		_reg_status |= REG_PASS;
+		_reg_status &= ~REG_MISM;
+	}
 	else
 		_reg_status |= REG_MISM;
 	return (0);
 }
 
 // ------------------------------------------------------------------------ NICK
-
-std::set<char> User::_gen_badchar_set(void)
-{
-	std::set<char> ret;
-
-	ret.insert(' ');
-	ret.insert(',');
-	ret.insert('*');
-	ret.insert('?');
-	ret.insert('!');
-	ret.insert('.');
-	ret.insert('@');
-	ret.insert(':');
-	ret.insert('$');
-	ret.insert('#');
-	ret.insert('&');
-	
-	return (ret);
-}
 
 int User::_cmd_NICK(Msg & cmd)
 {
@@ -64,20 +47,8 @@ int User::_cmd_NICK(Msg & cmd)
 	if (_reg_status & REG_NICK && arg[0] == _nick)
 		return (0);
 
-	/*
-	 * Rules:
-	 *	- The nick has to be at most 9 chars long (and at least one, duh).
-	 *	- The nick has to contain only printable ASCII chars.
-	 *	- The nick shall not contain bad chars (as defined in _gen_badchar_set(), see higher).
-	 */
-	if (arg[0].size() > 9 || arg[0].empty())
+	if (!is_valid_name(arg[0]) || is_name_chan(arg[0]))
 		return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
-
-	static const std::set<char> badchar_set = _gen_badchar_set();
-
-	for (str::iterator it = arg[0].begin(); it != arg[0].end(); ++it)
-		if (badchar_set.count(*it) || *it < 20 || *it > 126)
-			return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
 
 	if (_serv->getUserByNick(arg[0]))
 		return (rpl(ERR_NICKNAMEINUSE, arg[0]));
@@ -375,5 +346,14 @@ int User::_cmd_WHOIS(Msg & cmd) //----------------------------------------------
 	//	rpl(WHOISOPERATOR);
 	rpl(RPL_WHOISCHANNELS, listeChannel);
 	rpl(RPL_ENDOFWHOIS);
+
+}
+
+
+int User::_cmd_MODE(Msg & cmd)
+{
+	str_vec arg = cmd.payloadAsVector(3);
+	if (!arg.size())
+		return (rpl(ERR_NEEDMOREPARAMS, "MODE"));
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/29 13:24:49 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:15:45 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #include "Msg.hpp"
 #include "network.hpp"
 #include "utils.hpp"
+#include "namecheck.hpp"
 
 // _reg_status bits significations:
 
@@ -100,12 +101,6 @@ class User {
 		int _exec_cmd(void);
 
 		/*
-		 * Table of forbidden characters in a nick, used by _cmd_NICK() and
-		 * implemented right next to it.
-		 */
-		static std::set<char> _gen_badchar_set(void);
-
-		/*
 		 * Here are all the command implementations. They are all located in
 		 * cmds.cpp. They all take a Msg & as parameter, which has to contain
 		 * the parsed command to execute. They all return 1 if the user's
@@ -126,6 +121,8 @@ class User {
 		int _cmd_TOPIC(Msg & cmd);
 		int _cmd_KICK(Msg & cmd);
 		int _cmd_WHOIS(Msg & cmd);
+		int _cmd_MODE(Msg & cmd);
+
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
