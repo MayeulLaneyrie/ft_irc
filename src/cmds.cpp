@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 17:50:45 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/10/10 17:15:31 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/10 17:48:44 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,5 +369,18 @@ int User::_cmd_MODE(Msg & cmd)
 	if (!arg.size())
 		return (rpl(ERR_NEEDMOREPARAMS, "MODE"));
 
+	if (is_name_nick(arg[0])) {
+		if (!_serv->getUserByNick(arg[0]))
+			return (rpl(ERR_NOSUCHNICK, arg[0]));
+		if (arg[0] != _nick)
+			return (rpl(ERR_USERSDONTMATCH));
+		if (arg.size() == 1)
+			return (rpl(RPL_UMODEIS, ""));
+	}
+	else {
+		Chan * chan = _serv->getChan(arg[0]);
+		if (!chan)
+			return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	}
 	return (0);
 }

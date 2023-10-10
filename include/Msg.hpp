@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:00:00 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/10/09 15:24:34 by shamizi          ###   ########.fr       */
+/*   Updated: 2023/10/10 17:38:23 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #define RPL_YOURHOST 2
 #define RPL_CREATED 3
 #define RPL_MYINFO 4
+#define RPL_UMODEIS 221
 #define RPL_NOTOPIC 331
 #define RPL_TOPIC 332
 #define RPL_YOUREOPER 381
@@ -51,6 +52,7 @@
 #define ERR_NOPRIVILEGES 481
 #define ERR_CHANOPRIVSNEEDED 482
 #define ERR_NOOPERHOST 491
+#define ERR_USERSDONTMATCH 502
 
 class Chan;
 class User;
