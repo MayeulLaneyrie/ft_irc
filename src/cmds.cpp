@@ -359,11 +359,11 @@ int User::_cmd_KICK(Msg & cmd)
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[1]));
 	if (!channel->getUser(arg[1]))
-		return (rpl(ERR_USERNOTINCHANNEL, "Client ?" + arg[1] + arg[0]));
+		return (rpl(ERR_USERNOTINCHANNEL, arg[1] + " " + arg[0]));
 	if (!channel->isOperator(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
 	channel->rmUser(target);
-	std::string msg;
+	str msg;
 	if (arg.size() == 3)
 		msg = " :" + arg[2];
 	channel->chan_send(NULL, Msg(_nick, "KICK ", arg[1] + " " + arg[0] + msg));
