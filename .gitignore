@@ -5,3 +5,4 @@ ircserv
 *.d
 *.swp
 .vscode
+.nfs*
