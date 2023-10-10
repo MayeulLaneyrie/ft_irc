@@ -323,7 +323,7 @@ int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------T
 			return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
 		if (arg[1].empty())
 		{
-			channel->setTopic(NULL);
+			channel->setTopic("");
 			channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + channel->getTopic()));
 			//message a tous les clients ici aussi je crois mais a verifier
 			return (rpl(RPL_NOTOPIC, arg[0]));
