@@ -6,7 +6,7 @@
 #    By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/15 12:10:07 by mlaneyri          #+#    #+#              #
-#    Updated: 2023/09/28 18:01:44 by mlaneyri         ###   ########.fr        #
+#    Updated: 2023/10/10 16:52:01 by mlaneyri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ SRC		=	src/main.cpp \
 			src/User.cpp \
 			src/Chan.cpp \
 			src/Msg.cpp \
-			src/cmds.cpp
+			src/cmds.cpp \
+			src/namecheck.cpp
 
 NAME	=	ircserv
 
