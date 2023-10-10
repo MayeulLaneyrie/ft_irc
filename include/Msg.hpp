@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:00:00 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/10/10 17:38:23 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/10 18:09:48 by mlaneyri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@
 #define RPL_CREATED 3
 #define RPL_MYINFO 4
 #define RPL_UMODEIS 221
+
+#define RPL_WHOISUSER 311 //
+#define RPL_WHOISSERVER 312 //
+#define RPL_WHOISOPERATOR 313 //
+#define RPL_ENDOFWHOIS 318//
+#define RPL_WHOISCHANNELS 319 //
+
 #define RPL_NOTOPIC 331
 #define RPL_TOPIC 332
 #define RPL_YOUREOPER 381
