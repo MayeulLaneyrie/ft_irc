@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 17:50:45 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/29 13:28:13 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/09 15:41:26 by shamizi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "INVITE"));
-	User *target = _serv->getUserByNick(arg[0]);
+	User *target = _serv->getUserByNick(arg[-1]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 	Chan *channel = _serv->getChan(arg[1]);
@@ -345,9 +345,39 @@ int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------T
 	//tous les user du chan recoivent les changements de topic
 	//RPL_TOPIC (332) et RPL_TOPICWHOTIME (333)
 }
-/*
-int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
+
+int User::_cmd_KICK(Msg & cmd)
 {
+	//return 1 message par utilisateur kick, operator only,
+	str_vec arg = cmd.payloadAsVector(3); // channel/nick (different user with use of coma), reason (optionnal)
+	if (arg.size() < 2)
+		return (rpl(ERR_NEEDMOREPARAMS, "KICK"));
+	Chan *channel = _serv->getChan(arg[0]);
+	User *target = _serv->getUserByNick(arg[1]);
+	if (!channel)
+		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	if (!target)
+		return (rpl(ERR_NOSUCHNICK, arg[1]));
+	if (!channel->getUser(arg[1]))
+		return (rpl(ERR_USERNOTINCHANNEL, "Client ?" + arg[1] + arg[0]));
+	if (!channel->isOperator(this))
+		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
+	channel->rmUser(target);
+	std::string msg;
+	if (arg.size() == 3)
+		msg = " :" + arg[2];
+	channel->chan_send(NULL, Msg(_nick, "KICK ", arg[1] + " " + arg[0] + msg));
+	return (0);
+}
+
+/*int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
+{
+	str_vec arg = cmd.payLoadAsVector(2); // je crois qu'il faut mettre 2 car <target> optionnel (nom de serv ou nick)
+	if (arg.size() < 1)
+		return (rpl(ERR_NONICKNAMEGIVEN, arg[0])); // nick name attendu mais empty;
+	User *target = _serv->getUserByNick(arg[0]); //ca peut aussi etre un channel je crois ?
+	if (!target)
+		return (rpl(ERR_NOSUCHNICK, arg[0]));
 	//ERR_NOSUCHNICK (401)
 
 	//ERR_NOSUCHSERVER (402)
@@ -356,7 +386,7 @@ int User::_cmd_WHOIS(Msg & cmd) //----------------------------------------------
 
 	//RPL_ENDOFWHOIS (318)
 
-	possible reply : 
+	possible reply (part of the answer) : 
 	RPL_WHOISCERTFP (276)
 	RPL_WHOISREGNICK (307)
 	RPL_WHOISUSER (311)

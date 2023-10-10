@@ -6,7 +6,7 @@
 /*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/09/29 12:56:29 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/09 15:26:09 by shamizi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,13 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
+	ret[ERR_NOSUCHSERVER] = "{1} :No such server"; //1 = client + server_name;
 	ret[ERR_NOSUCHCHANNEL] = "{1} ::No such channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
 	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
 	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
 	ret[ERR_NICKNAMEINUSE] = "{1} :Nickname is already in use";
+	ret[ERR_USERNOTINCHANNEL] = "{1} :They aren't on that channel"; // client + nick + channel
 	ret[ERR_NOTONCHANNEL] = "{1} :You're not on that channel";
 	ret[ERR_USERONCHANNEL] = "{1} :is already on channel";
 	ret[ERR_NOTREGISTERED] = ":You have not registered";
