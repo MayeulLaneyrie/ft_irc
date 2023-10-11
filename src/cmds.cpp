@@ -304,7 +304,7 @@ int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 	//RPL_TOPIC (332) et RPL_TOPICWHOTIME (333)
 }
 
-int User::_cmd_KICK(Msg & cmd)
+int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 {
 	//return 1 message par utilisateur kick, operator only,
 	str_vec arg = cmd.payloadAsVector(3); // channel/nick (different user with use of coma), reason (optionnal)
@@ -387,6 +387,7 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 
 	str allowed_chars = "itkl";
 	str result = "";
+	str result_args = "";
 	int add = arg[1][0] == '-';
 
 	if (arg[1][0] == '-' || arg[1][0] == '+')
@@ -394,6 +395,14 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 
 	for (str::iterator it = arg[1].begin() ; it != arg[1].end(); ++it) {
 		switch (*it) {
+			case '+':
+				add = 1;
+				result.push_back('+');
+				break ;
+			case '-':
+				add = 0;
+				result.push_back('-');
+				break ;
 			case 'i':
 				if (result.find('i') != str::npos)
 					break ;
@@ -412,7 +421,9 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 				result.push_back('k');
 				chan->setMode(MODE_K, add);
 				if (!add || arg.size() != 3 || arg[2].empty())
-					chan->setPasswd(extract_first_word(arg[2]));
+					break ;
+				chan->setPasswd(extract_first_word(arg[2]));
+				(result_args += ' ') += chan->getPasswd();
 				break ;
 			case 'l':
 				if (result.find('l') != str::npos)
@@ -422,14 +433,16 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 				if (!add || arg.size() != 3 || arg[2].empty())
 					break ;
 				chan->setLimit(atoi(extract_first_word(arg[2]).c_str()));
+				(result_args += ' ') += int_to_str(chan->getLimit());
 			default:
 				rpl(ERR_UNKNOWNMODE, str(1, *it));
 		}
 	}
+	Msg(_nick, "MODE", result + result_args);
 	return (0);
 }
 
-int User::_cmd_PART(Msg & cmd)
+int User::_cmd_PART(Msg & cmd) // ----------------------------------------- PART
 {
 	str reason;
 	str_vec arg = cmd.payloadAsVector(2);
