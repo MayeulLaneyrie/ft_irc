@@ -236,9 +236,9 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 		return (0);
 	if (channel->checkMode(MODE_I) && !channel->isInvited(this))
 		return (rpl(ERR_INVITEONLYCHAN, arg[0]));
-	if (channel->checkMode(MODE_K) && !channel->checkPasswd(arg[1]))
+	if (channel->checkMode(MODE_K) && (arg.size() < 2 || !channel->checkPasswd(arg[1])))
 		return (rpl(ERR_BADCHANNELKEY, arg[0]));
-	if (channel->checkMode(MODE_L) && !channel->isFull())
+	if (channel->checkMode(MODE_L) && channel->isFull())
 		return (rpl(ERR_CHANNELISFULL, arg[0]));
 	channel->addUser(this);
 	_chans[arg[0]] = channel;
@@ -368,9 +368,12 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 			return (rpl(RPL_UMODEIS, "o"));
 		return (rpl(RPL_UMODEIS, ""));
 	}
+
 	Chan * chan = _serv->getChan(arg[0]);
+
 	if (!chan)
 		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+
 	if (arg.size() == 1) {
 		str mode_rpl = arg[0] + " +";
 
@@ -388,10 +391,7 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 	str allowed_chars = "itkl";
 	str result = "";
 	str result_args = "";
-	int add = arg[1][0] == '-';
-
-	if (arg[1][0] == '-' || arg[1][0] == '+')
-		arg[1].erase(0, 1);
+	int add = 1;
 
 	for (str::iterator it = arg[1].begin() ; it != arg[1].end(); ++it) {
 		switch (*it) {
@@ -434,11 +434,12 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 					break ;
 				chan->setLimit(atoi(extract_first_word(arg[2]).c_str()));
 				(result_args += ' ') += int_to_str(chan->getLimit());
+				break ;
 			default:
 				rpl(ERR_UNKNOWNMODE, str(1, *it));
 		}
 	}
-	Msg(_nick, "MODE", result + result_args);
+	chan->chan_send(NULL, Msg(_nick, "MODE", result + result_args));
 	return (0);
 }
 

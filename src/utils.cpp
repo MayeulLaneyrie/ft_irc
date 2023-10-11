@@ -85,7 +85,7 @@ str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars
 	for (i = 0; charset[i] && i < 8 * sizeof(unsigned int) - 1; ++i) {
 		if (bitset & mask) {
 			char_str += charset[i];
-			if (!vars.count(charset[i]))
+			if (vars.count(charset[i]))
 				(var_str += ' ') += vars[charset[i]];
 		}
 		mask *= 2;

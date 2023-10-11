@@ -176,7 +176,7 @@ void User::broadcast(Msg const & msg)
 	std::set<User *> contacts;
 
 	std::map<str, Chan *>::const_iterator chan_it;
-	std::map<str, User *>::const_iterator user_it;
+	Chan::iterator user_it;
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it) {
 		Chan * chan = chan_it->second;
 

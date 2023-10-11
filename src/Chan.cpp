@@ -84,11 +84,11 @@ void Chan::renameUser(User * user, str const & to)
 	_users[to] = user;
 }
 
-std::map<str, User *>::const_iterator Chan::begin(void) const {
+Chan::iterator Chan::begin(void) {
 	return (_users.begin());
 }
 
-std::map<str, User *>::const_iterator Chan::end(void) const {
+Chan::iterator Chan::end(void) {
 	return (_users.end());
 }
 
