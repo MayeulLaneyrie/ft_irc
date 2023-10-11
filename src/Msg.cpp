@@ -52,6 +52,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_CHANNELMODEIS] = "{1}";
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
+	ret[RPL_INVITING] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
