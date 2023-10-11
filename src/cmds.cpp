@@ -321,10 +321,11 @@ int User::_cmd_KICK(Msg & cmd)
 	if (!channel->isOperator(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
 	channel->rmUser(target);
+	this->rmChanFromList(channel->getName()); // ajout pour l'enlever aussi de la chanlist du user
 	str msg;
 	if (arg.size() == 3)
 		msg = " :" + arg[2];
-	channel->chan_send(NULL, Msg(_nick, "KICK ", arg[1] + " " + arg[0] + msg));
+	channel->chan_send(NULL, Msg(_nick, "KICK", arg[1] + " " + arg[0] + msg));
 	return (0);
 }
 
@@ -368,6 +369,38 @@ int User::_cmd_MODE(Msg & cmd)
 		Chan * chan = _serv->getChan(arg[0]);
 		if (!chan)
 			return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	}
+	return (0);
+}
+
+int User::_cmd_PART(Msg & cmd)
+{
+	str reason;
+	str_vec arg = cmd.payloadAsVector(2);
+	if (arg.size() < 1)
+		return (rpl(ERR_NEEDMOREPARAMS, "PART"));
+	if (arg.size() == 2)
+		reason = arg[1];
+	std::set<str> names;
+	while (!arg[0].empty())
+		names.insert(extract_first_word(arg[0], ','));
+	std::set<str>::iterator it;
+	for (it = names.begin(); it != names.end(); it++)
+	{
+		Chan * channel = _serv->getChan(*it);
+		if (!channel)
+			rpl(ERR_NOSUCHCHANNEL, *it);
+		else if (!channel->getUser(this->_nick))
+			rpl(ERR_NOTONCHANNEL, this->_nick);
+		else
+		{
+			if (reason.empty())
+				channel->chan_send(NULL, Msg(_nick, "PART", channel->getName()));
+			else
+				channel->chan_send(NULL, Msg(_nick, "PART", channel->getName() + " :" + reason));
+			channel->rmUser(this);
+			this->rmChanFromList(channel->getName());
+		}
 	}
 	return (0);
 }

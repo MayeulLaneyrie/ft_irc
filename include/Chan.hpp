@@ -85,6 +85,7 @@ class Chan {
 		void setTopic(str topic);
 		str getTopic(void) const;
 
+		str getName(void) const;
 		int isFull(void);
 };
 

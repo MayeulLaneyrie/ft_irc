@@ -143,6 +143,10 @@ str Chan::getTopic(void) const {
 	return (_topic);
 }
 
+str Chan::getName(void) const
+{
+	return (_name);
+}
 int Chan::isFull(void) {
 	return (_usercount >= _usermax);
 }

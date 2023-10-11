@@ -122,6 +122,7 @@ class User {
 		int _cmd_KICK(Msg & cmd);
 		int _cmd_WHOIS(Msg & cmd);
 		int _cmd_MODE(Msg & cmd);
+		int _cmd_PART(Msg & cmd);
 
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
@@ -146,6 +147,8 @@ class User {
 
 		str getRealname(void) const;
 		std::map<str, Chan *> getChan(void) const;
+		//rmChanFromChannellist ?
+		void rmChanFromList(str name);
 
 		Serv * getServ(void) const;
 

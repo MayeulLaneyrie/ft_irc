@@ -69,7 +69,7 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["KICK"] = &User::_cmd_KICK;
 	ret["WHOIS"] = &User::_cmd_WHOIS;
 	ret["MODE"] = &User::_cmd_MODE;
-	
+	ret["PART"] = &User::_cmd_PART;
 	return (ret);
 }
 
@@ -133,6 +133,11 @@ str User::getRealname(void) const {
 std::map<str, Chan *> User::getChan(void) const
 {
 	return _chans;
+}
+
+void User::rmChanFromList(str name)
+{
+	_chans.erase(_chans.find(name));
 }
 
 int User::getFd(void) const {
