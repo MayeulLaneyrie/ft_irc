@@ -294,39 +294,78 @@ int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------T
 
 	channel->setTopic(arg[1]);
 	channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + arg[1]));
-	//print message to all user
 	return (0);
-	// 1 ou deux arguments (channel) (sujet du channel)
-	//voir ou changer le topic du chan(si sujet du chan preciser)
-	//client pas sur le chan ERR_NOTONCHANNEL (442) 
-	//si topic protected et client veut le changer ERR_CHANOPRIVSNEEDED (482)
-	//tous les user du chan recoivent les changements de topic
-	//RPL_TOPIC (332) et RPL_TOPICWHOTIME (333)
 }
 
 int User::_cmd_KICK(Msg & cmd)
 {
 	//return 1 message par utilisateur kick, operator only,
 	str_vec arg = cmd.payloadAsVector(3); // channel/nick (different user with use of coma), reason (optionnal)
+	str comments;
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "KICK"));
-	Chan *channel = _serv->getChan(arg[0]);
-	User *target = _serv->getUserByNick(arg[1]);
-	if (!channel)
-		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
-	if (!target)
-		return (rpl(ERR_NOSUCHNICK, arg[1]));
-	if (!channel->getUser(arg[1]))
-		return (rpl(ERR_USERNOTINCHANNEL, arg[1] + " " + arg[0]));
-	if (!channel->isOperator(this))
-		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
-	channel->rmUser(target);
-	this->rmChanFromList(channel->getName()); // ajout pour l'enlever aussi de la chanlist du user
-	str msg;
+	// Chan *channel = _serv->getChan(arg[0]);
+	// User *target = _serv->getUserByNick(arg[1]);
+	// if (!channel)
+	// 	return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	// if (!target)
+	// 	return (rpl(ERR_NOSUCHNICK, arg[1]));
+	// if (!channel->getUser(arg[1]))
+	// 	return (rpl(ERR_USERNOTINCHANNEL, arg[1] + " " + arg[0]));
+	// if (!channel->isOperator(this))
+	// 	return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
+	// channel->rmUser(target);
+	// this->rmChanFromList(channel->getName()); // ajout pour l'enlever aussi de la chanlist du user
+	// str msg;
+	// if (arg.size() == 3)
+	// 	msg = " :" + arg[2];
+	// channel->chan_send(NULL, Msg(_nick, "KICK", arg[1] + " " + arg[0] + msg));
+	// return (0);
+	std::set<str> ChannelNames;
+	std::set<str> UserNames;
+	while (!arg[0].empty())
+		ChannelNames.insert(extract_first_word(arg[0], ','));
+	while (!arg[1].empty())
+		UserNames.insert(extract_first_word(arg[1], ','));
 	if (arg.size() == 3)
-		msg = " :" + arg[2];
-	channel->chan_send(NULL, Msg(_nick, "KICK", arg[1] + " " + arg[0] + msg));
-	return (0);
+		comments = arg[2];
+	std::set<str>::iterator it;
+	std::set<str>::iterator it2;
+	for (it = ChannelNames.begin(); it != ChannelNames.end(); it++)
+	{
+		Chan * channel = _serv->getChan(*it);
+		if (!channel)
+		{
+			rpl(ERR_NOSUCHCHANNEL, *it);
+			continue;
+		}
+		for (it2 = UserNames.begin(); it2 != UserNames.end(); it2++)
+		{
+			User *target = _serv->getUserByNick(*it2);
+			if (!target)
+			{
+				rpl(ERR_NOSUCHNICK, *it2);
+				continue;
+			}
+			else if (!channel->getUser(target->getNick()))
+				rpl(ERR_USERNOTINCHANNEL, target->getNick() + " " + channel->getName());
+			else if (!channel->isOperator(this))
+				{
+					rpl(ERR_CHANOPRIVSNEEDED, channel->getName());
+					continue ;
+				}
+			else
+			{
+				if (comments.empty())
+					channel->chan_send(NULL, Msg(_nick, "KICK", channel->getName() + " :" + target->getNick() + " " + _nick ));
+				else
+					channel->chan_send(NULL, Msg(_nick, "KICK", channel->getName() + " :" + target->getNick() + " " + comments));
+				channel->rmUser(target);
+				target->rmChanFromList(channel->getName());
+			}
+		}
+	}
+	return 0;
 }
 
 int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
