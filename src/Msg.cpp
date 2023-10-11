@@ -52,11 +52,12 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_CHANNELMODEIS] = "{1}";
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
+	ret[RPL_INVITING] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
 	ret[ERR_NOSUCHSERVER] = "{1} :No such server"; 
-	ret[ERR_NOSUCHCHANNEL] = "{1} ::No such channel";
+	ret[ERR_NOSUCHCHANNEL] = "{1} :No such channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
 	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
 	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
