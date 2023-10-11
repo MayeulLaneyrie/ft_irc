@@ -3,21 +3,37 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+         #
+#    By: lnr <lnr@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/15 12:10:07 by mlaneyri          #+#    #+#              #
-#    Updated: 2023/10/10 16:52:01 by mlaneyri         ###   ########.fr        #
+#    Updated: 2023/10/11 21:27:55 by lnr              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC		=	src/main.cpp \
-			src/utils.cpp \
 			src/Serv.cpp \
 			src/User.cpp \
 			src/Chan.cpp \
 			src/Msg.cpp \
-			src/cmds.cpp \
-			src/namecheck.cpp
+			src/utils.cpp \
+			src/namecheck.cpp \
+				src/cmds/PART.cpp \
+				src/cmds/TOPIC.cpp \
+				src/cmds/MODE.cpp \
+				src/cmds/PASS.cpp \
+				src/cmds/NOTICE.cpp \
+				src/cmds/VOID.cpp \
+				src/cmds/KILL.cpp \
+				src/cmds/QUIT.cpp \
+				src/cmds/NICK.cpp \
+				src/cmds/INVITE.cpp \
+				src/cmds/OPER.cpp \
+				src/cmds/JOIN.cpp \
+				src/cmds/USER.cpp \
+				src/cmds/PRIVMSG.cpp \
+				src/cmds/PING.cpp \
+				src/cmds/WHOIS.cpp \
+				src/cmds/KICK.cpp
 
 NAME	=	ircserv
 
@@ -43,6 +59,7 @@ $(NAME)	:	$(OBJ)
 obj		:
 			@ if [ ! -d "./.obj/src" ]; then \
 				mkdir -p .obj/src; \
+				mkdir -p .obj/src/cmds; \
 			fi
 
 .obj/%.o	:	%.cpp

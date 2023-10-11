@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlaneyri <mlaneyri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnr <lnr@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 18:29:55 by mlaneyri          #+#    #+#             */
-/*   Updated: 2023/10/10 17:15:45 by mlaneyri         ###   ########.fr       */
+/*   Updated: 2023/10/11 21:29:48 by lnr              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@ class User {
 
 		/*
 		 * Here are all the command implementations. They are all located in
-		 * cmds.cpp. They all take a Msg & as parameter, which has to contain
-		 * the parsed command to execute. They all return 1 if the user's
-		 * connection must be closed.
+		 * their own file cmds/COMMAND.cpp. They all take a Msg & as parameter,
+		 * which has to contain the parsed command to execute. They all return 1
+		 * if the user's connection must be closed.
 		 */
 		int _cmd_VOID(Msg & cmd);
 		int _cmd_PASS(Msg & cmd);
