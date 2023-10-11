@@ -49,6 +49,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_ENDOFWHOIS] = "{1} :End of /WHOIS list";
 	ret[RPL_WHOISCHANNELS] = "{1} :{2}";
 
+	ret[RPL_CHANNELMODEIS] = "{1}";
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
@@ -68,6 +69,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[ERR_ALREADYREGISTERED] = ":You may not reregister";
 	ret[ERR_PASSWDMISMATCH] = ":Password incorrect";
 	ret[ERR_CHANNELISFULL] = "{1} :Cannot join channel (+l)";
+	ret[ERR_UNKNOWNMODE] = "{1} :is unknown mode char to me";
 	ret[ERR_INVITEONLYCHAN] = "{1} :Cannot join channel (+i)";
 	ret[ERR_BADCHANNELKEY] = "{1} :Cannot join channel (+k)";
 	ret[ERR_NOPRIVILEGES] = ":Permission Denied- You're not an IRC operator";
@@ -89,6 +91,9 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 		rpl_string += ":This reply hasn't been implemented yet :/";
 	else
 		rpl_string += rpl_map.at(num);
+	
+	while (num > 999)
+		num -= 1000;
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();

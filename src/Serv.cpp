@@ -174,7 +174,7 @@ int Serv::run(void)
 	_setup_epoll();
 
 	_set_datetime();
-	signal(SIGINT, handler);
+	signal(SIGINT, sighandler);
 	std::cout	<< C_YELLOW "Server launched:" C_R_ << _datetime << std::endl
 				<< C_YELLOW "Listening on port:" C_R_ << _port << std::endl;
 

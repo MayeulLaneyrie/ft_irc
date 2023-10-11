@@ -70,23 +70,28 @@ class Chan {
 
 		void addOperator(User * user);
 		void rmOperator(User * user);
-		int isOperator(User * user);
+		int isOperator(User * user) const;
 
 		void invite(User * user);
 		void uninvite(User * user);
-		int isInvited(User * user);
+		int isInvited(User * user) const;
 
 		void setPasswd(str const & passwd);
-		int checkPasswd(str const & passwd);
+		int checkPasswd(str const & passwd) const;
+		str getPasswd( void ) const;
 
-		unsigned int checkMode(unsigned int mode);
+		unsigned int checkMode(unsigned int mode) const;
 		void setMode(unsigned int mode, int val);
+		unsigned int getMode( void ) const;
 
 		void setTopic(str topic);
-		str getTopic(void) const;
+		str getTopic( void ) const;
 
 		str getName(void) const;
-		int isFull(void);
+
+		void setLimit(int limit);
+		int getLimit( void ) const;
+		int isFull( void ) const;
 };
 
 #endif
