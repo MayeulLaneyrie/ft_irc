@@ -100,7 +100,7 @@ void Chan::rmOperator(User * user) {
 	_operators.erase(user);
 }
 
-int Chan::isOperator(User * user) {
+int Chan::isOperator(User * user) const {
 	return (_operators.count(user));
 }
 
@@ -112,7 +112,7 @@ void Chan::uninvite(User * user) {
 	_invited.erase(user);
 }
 
-int Chan::isInvited(User * user) {
+int Chan::isInvited(User * user) const {
 	return (_invited.count(user));
 }
 
@@ -120,11 +120,15 @@ void Chan::setPasswd(str const & passwd) {
 	_passwd = passwd;
 }
 
-int Chan::checkPasswd(str const & passwd) {
+int Chan::checkPasswd(str const & passwd) const {
 	return (passwd == _passwd);
 }
 
-unsigned int Chan::checkMode(unsigned int mode) {
+str Chan::getPasswd( void ) const {
+	return (_passwd);
+}
+
+unsigned int Chan::checkMode(unsigned int mode) const {
 	return (_mode & mode);
 }
 
@@ -136,17 +140,30 @@ void Chan::setMode(unsigned int mode, int val)
 		_mode &= (~mode);
 }
 
+unsigned int Chan::getMode( void ) const {
+	return (_mode);
+}
+
 void Chan::setTopic(str topic) {
 	_topic = topic;
 }
+
 str Chan::getTopic(void) const {
 	return (_topic);
 }
 
-str Chan::getName(void) const
-{
+str Chan::getName(void) const {
 	return (_name);
 }
-int Chan::isFull(void) {
+
+void Chan::setLimit(int limit) {
+	_usermax = limit;
+}
+
+int Chan::getLimit( void ) const {
+	return (_usermax);
+}
+
+int Chan::isFull(void) const {
 	return (_usercount >= _usermax);
 }

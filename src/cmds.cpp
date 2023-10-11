@@ -272,7 +272,7 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 	//envoyer l'invitation et l'ajouter a la liste des membres inviter RPL_INVITING (341)
 }
 
-int User::_cmd_TOPIC(Msg & cmd) //---------------------------------------------TOPIC
+int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 {
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
@@ -329,7 +329,7 @@ int User::_cmd_KICK(Msg & cmd)
 	return (0);
 }
 
-int User::_cmd_WHOIS(Msg & cmd) //-----------------------------------------------WHOIS
+int User::_cmd_WHOIS(Msg & cmd) // --------------------------------------- WHOIS
 {
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
@@ -350,8 +350,10 @@ int User::_cmd_WHOIS(Msg & cmd) //----------------------------------------------
 	return (0);
 }
 
-
-int User::_cmd_MODE(Msg & cmd)
+/*
+** I FUCKING WANT TO DIE
+*/
+int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 {
 	str_vec arg = cmd.payloadAsVector(3);
 	if (!arg.size())
@@ -362,13 +364,67 @@ int User::_cmd_MODE(Msg & cmd)
 			return (rpl(ERR_NOSUCHNICK, arg[0]));
 		if (arg[0] != _nick)
 			return (rpl(ERR_USERSDONTMATCH));
-		if (arg.size() == 1)
-			return (rpl(RPL_UMODEIS, ""));
+		if (_is_op)
+			return (rpl(RPL_UMODEIS, "o"));
+		return (rpl(RPL_UMODEIS, ""));
 	}
-	else {
-		Chan * chan = _serv->getChan(arg[0]);
-		if (!chan)
-			return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	Chan * chan = _serv->getChan(arg[0]);
+	if (!chan)
+		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+	if (arg.size() == 1) {
+		str mode_rpl = arg[0] + " +";
+
+		std::map<char, str> mode_args;
+		if (chan->getUser(_nick))
+			mode_args['k'] = chan->getPasswd();
+		else
+			mode_args['k'] = "<key>";
+		mode_args['l'] = int_to_str(chan->getLimit());
+
+		mode_rpl += mode_str(chan->getMode(), "itkl", mode_args);
+		return (rpl(RPL_CHANNELMODEIS, mode_rpl));
+	}
+
+	str allowed_chars = "itkl";
+	str result = "";
+	int add = arg[1][0] == '-';
+
+	if (arg[1][0] == '-' || arg[1][0] == '+')
+		arg[1].erase(0, 1);
+
+	for (str::iterator it = arg[1].begin() ; it != arg[1].end(); ++it) {
+		switch (*it) {
+			case 'i':
+				if (result.find('i') != str::npos)
+					break ;
+				chan->setMode(MODE_I, add);
+				result.push_back('i');
+				break ;
+			case 't':
+				if (result.find('i') != str::npos)
+					break ;
+				chan->setMode(MODE_T, add);
+				result.push_back('t');
+				break ;
+			case 'k':
+				if (result.find('k') != str::npos)
+					break ;
+				result.push_back('k');
+				chan->setMode(MODE_K, add);
+				if (!add || arg.size() != 3 || arg[2].empty())
+					chan->setPasswd(extract_first_word(arg[2]));
+				break ;
+			case 'l':
+				if (result.find('l') != str::npos)
+					break ;
+				result.push_back('l');
+				chan->setMode(MODE_L, add);
+				if (!add || arg.size() != 3 || arg[2].empty())
+					break ;
+				chan->setLimit(atoi(extract_first_word(arg[2]).c_str()));
+			default:
+				rpl(ERR_UNKNOWNMODE, str(1, *it));
+		}
 	}
 	return (0);
 }
