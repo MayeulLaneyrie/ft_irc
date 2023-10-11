@@ -92,12 +92,12 @@ Chan::iterator Chan::end(void) {
 	return (_users.end());
 }
 
-void Chan::addOperator(User * user) {
-	_operators.insert(user);
-}
-
-void Chan::rmOperator(User * user) {
-	_operators.erase(user);
+void Chan::opMode(User * user, int val)
+{
+	if (val)
+		_operators.insert(user);
+	else
+		_operators.erase(user);
 }
 
 int Chan::isOperator(User * user) const {

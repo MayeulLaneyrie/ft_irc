@@ -153,19 +153,6 @@ void Serv::_user_manage(int fd)
 		it->second->flush();
 }
 
-// ACCESSORS -------------------------------------------------------------------
-
-User * Serv::getUserByNick(str const & nick)
-{
-	if (_registerd.count(nick))
-		return (_registerd[nick]);
-	return (NULL);
-}
-
-str Serv::getDatetime(void) const {
-	return (_datetime);
-}
-
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 int Serv::run(void)
@@ -201,21 +188,25 @@ int Serv::run(void)
 	return (0);
 }
 
-int Serv::checkPass(std::string const & s) const {
+str Serv::getDatetime(void) const {
+	return (_datetime);
+}
+
+int Serv::checkPass(str const & s) const {
 	return (s == _password);
 }
 
-void Serv::registerUser(User * user) {
-	_registerd[user->getNick()] = user;
-}
-
-void Serv::unregisterUser(User * user) {
-	_registerd.erase(user->getNick());
-}
-
-void Serv::renameUser(User * user, str const & to) {
+void Serv::renameUser(User * user, str const & to)
+{
 	_registerd.erase(user->getNick());
 	_registerd[to] = user;
+}
+
+User * Serv::getUser(str const & nick)
+{
+	if (_registerd.count(nick))
+		return (_registerd[nick]);
+	return (NULL);
 }
 
 void Serv::killUser(User * user)

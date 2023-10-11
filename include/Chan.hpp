@@ -70,8 +70,7 @@ class Chan {
 		iterator begin(void);
 		iterator end(void);
 
-		void addOperator(User * user);
-		void rmOperator(User * user);
+		void opMode(User * user, int val);
 		int isOperator(User * user) const;
 
 		void invite(User * user);

@@ -87,26 +87,20 @@ class Serv {
 
 		Serv & operator=(Serv const & rhs);
 
-// ACCESSORS -------------------------------------------------------------------
-
-		User * getUserByNick(str const & nick);
+// OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
+		
+		int	run(void); // main loop
 
 		str getDatetime(void) const;
 
-// OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
-
-		int	run(void); // main loop
-
 		int checkPass(str const & s) const;
 
-		void registerUser(User * user);
-		void unregisterUser(User * user);
+		User * getUser(str const & nick);
 		void renameUser(User * user, str const & to);
 		
 		void killUser(User * user);
 
 		Chan * addChan(str const & name);
-
 		void rmChan(str const & name);
 		Chan * getChan(str const & name) const;
 };

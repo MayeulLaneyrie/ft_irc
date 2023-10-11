@@ -50,7 +50,7 @@ int User::_cmd_NICK(Msg & cmd)
 	if (!is_valid_name(arg[0]) || is_name_chan(arg[0]))
 		return (rpl(ERR_ERRONEUSNICKNAME, arg[0]));
 
-	if (_serv->getUserByNick(arg[0]))
+	if (_serv->getUser(arg[0]))
 		return (rpl(ERR_NICKNAMEINUSE, arg[0]));
 
 	if (_reg_status & REG_USER && _reg_status & REG_MISM)
@@ -134,7 +134,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		names.insert(extract_first_word(arg[0], ','));
 	std::set<str>::iterator it;
 	for (it = names.begin(); it != names.end(); ++it) {
-		User * user_target = _serv->getUserByNick(*it);
+		User * user_target = _serv->getUser(*it);
 		Chan * chan_target = _serv->getChan(*it);
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
@@ -156,7 +156,7 @@ int User::_cmd_NOTICE(Msg & cmd) // ------------------------------------- NOTICE
 		names.insert(extract_first_word(arg[0], ','));
 	std::set<str>::iterator it;
 	for (it = names.begin(); it != names.end(); ++it) {
-		User * user_target = _serv->getUserByNick(*it);
+		User * user_target = _serv->getUser(*it);
 		Chan * chan_target = _serv->getChan(*it);
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]));
@@ -187,7 +187,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() != 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "KILL"));
-	User * target = _serv->getUserByNick(arg[0]);
+	User * target = _serv->getUser(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 	target->user_send(Msg(_nick, "KILL", arg[0] + " :" + arg[1]));
@@ -206,7 +206,7 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 	Chan * channel = _serv->getChan(arg[0]);
 	if (!channel) {
 		channel = _serv->addChan(arg[0]);
-		channel->addOperator(this);
+		channel->opMode(this, 1);
 	}
 	if (channel->getUser(_nick))
 		return (0);
@@ -227,7 +227,7 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "INVITE"));
-	User *target = _serv->getUserByNick(arg[-1]);
+	User *target = _serv->getUser(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 	Chan *channel = _serv->getChan(arg[1]);
@@ -296,7 +296,7 @@ int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 		}
 		for (it2 = UserNames.begin(); it2 != UserNames.end(); it2++)
 		{
-			User *target = _serv->getUserByNick(*it2);
+			User *target = _serv->getUser(*it2);
 			if (!target)
 			{
 				rpl(ERR_NOSUCHNICK, *it2);
@@ -305,10 +305,10 @@ int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 			else if (!channel->getUser(target->getNick()))
 				rpl(ERR_USERNOTINCHANNEL, target->getNick() + " " + channel->getName());
 			else if (!channel->isOperator(this))
-				{
-					rpl(ERR_CHANOPRIVSNEEDED, channel->getName());
-					continue ;
-				}
+			{
+				rpl(ERR_CHANOPRIVSNEEDED, channel->getName());
+				continue ;
+			}
 			else
 			{
 				if (comments.empty())
@@ -328,7 +328,7 @@ int User::_cmd_WHOIS(Msg & cmd) // --------------------------------------- WHOIS
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
 		return (rpl(ERR_NONICKNAMEGIVEN, arg[0]));
-	User *target = _serv->getUserByNick(arg[0]);
+	User *target = _serv->getUser(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
 	std::map<str, Chan *> channelList = target->getChan();
@@ -351,7 +351,7 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 		return (rpl(ERR_NEEDMOREPARAMS, "MODE"));
 
 	if (is_name_nick(arg[0])) {
-		if (!_serv->getUserByNick(arg[0]))
+		if (!_serv->getUser(arg[0]))
 			return (rpl(ERR_NOSUCHNICK, arg[0]));
 		if (arg[0] != _nick)
 			return (rpl(ERR_USERSDONTMATCH));
@@ -379,7 +379,7 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 		return (rpl(RPL_CHANNELMODEIS, mode_rpl));
 	}
 
-	str allowed_chars = "itkl";
+	str allowed_chars = "itklo";
 	str result = "";
 	str result_args = "";
 	int add = 1;
@@ -395,37 +395,45 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 				result.push_back('-');
 				break ;
 			case 'i':
-				if (result.find('i') != str::npos)
-					break ;
 				chan->setMode(MODE_I, add);
 				result.push_back('i');
 				break ;
 			case 't':
-				if (result.find('i') != str::npos)
-					break ;
 				chan->setMode(MODE_T, add);
 				result.push_back('t');
 				break ;
 			case 'k':
-				if (result.find('k') != str::npos)
+				if (add && (arg.size() != 3 || arg[2].empty()))
 					break ;
 				result.push_back('k');
 				chan->setMode(MODE_K, add);
-				if (!add || arg.size() != 3 || arg[2].empty())
+				if (!add)
 					break ;
 				chan->setPasswd(extract_first_word(arg[2]));
 				(result_args += ' ') += chan->getPasswd();
 				break ;
 			case 'l':
-				if (result.find('l') != str::npos)
+				if (add && (arg.size() != 3 || arg[2].empty()))
 					break ;
 				result.push_back('l');
 				chan->setMode(MODE_L, add);
-				if (!add || arg.size() != 3 || arg[2].empty())
+				if (!add)
 					break ;
 				chan->setLimit(atoi(extract_first_word(arg[2]).c_str()));
 				(result_args += ' ') += int_to_str(chan->getLimit());
 				break ;
+			case 'o': {
+				if (arg.size() != 3 || arg[2].empty())
+					break ;
+				str target_name = extract_first_word(arg[2]);
+				User * target = _serv->getUser(target_name);
+				if (!target) {
+					rpl(ERR_NOSUCHNICK, target_name);
+					break ;
+				}
+				result.push_back('o');
+				chan->opMode(target, add);
+				break ; }
 			default:
 				rpl(ERR_UNKNOWNMODE, str(1, *it));
 		}
