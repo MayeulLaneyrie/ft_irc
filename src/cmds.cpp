@@ -59,19 +59,14 @@ int User::_cmd_NICK(Msg & cmd)
 		return (error(":Access denied, password wasn't provided"));
 
 	std::cout << C_CYAN << getNick() << " --> " << arg[0] << C_R << std::endl;
-
 	_serv->renameUser(this, arg[0]);
-
 	std::map<str, Chan *>::iterator it;
 	for (it = _chans.begin(); it != _chans.end(); ++it)
 		it->second->renameUser(this, arg[0]);
-
 	_nick = arg[0];
-
 	if (_reg_status & REG_NICK)
 		return (0);
 	_reg_status |= REG_NICK;
-
 	if (_reg_status & REG_USER) {
 		rpl(RPL_WELCOME);
 		rpl(RPL_YOURHOST);
@@ -86,19 +81,15 @@ int User::_cmd_USER(Msg & cmd) // ----------------------------------------- USER
 	str_vec arg = cmd.payloadAsVector(4, 1);
 	if (arg.size() != 4) 
 		return (rpl(ERR_NEEDMOREPARAMS, "USER"));
-
 	if (_reg_status == REG_OK)
 		return (rpl(ERR_ALREADYREGISTERED));
-
 	if (_reg_status & REG_NICK && _reg_status & REG_MISM)
 		return (error(":Access denied, wrong password"));
 	if (_reg_status & REG_NICK && !(_reg_status & REG_PASS))
 		return (error(":Access denied, password wasn't provided"));
-
 	_username = arg[0];
 	_realname = arg[3];
 	_reg_status |= REG_USER;
-
 	if (_reg_status & REG_NICK) {
 		rpl(RPL_WELCOME);
 		rpl(RPL_YOURHOST);
@@ -113,9 +104,7 @@ int User::_cmd_PING(Msg & cmd) // ----------------------------------------- PING
 	str_vec arg = cmd.payloadAsVector(1, 1);
 	if (arg.empty())
 		return (rpl(ERR_NEEDMOREPARAMS, "PING"));
-
 	user_send(Msg(SERVER_NAME, "PONG", str(SERVER_NAME) + " :" + arg[0]));
-
 	return (0);
 }
 
@@ -124,7 +113,6 @@ int User::_cmd_QUIT(Msg & cmd) // ----------------------------------------- QUIT
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
 		arg.push_back("Client exited");
-
 	if (arg.empty()) {
 		broadcast(Msg(_nick, "QUIT", ":Quit: "));
 		error(str(":Okay, bye: (") + _username + "@whatever) [Client exited]");
@@ -141,16 +129,13 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() != 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "PRIVMSG"));
-	
 	std::set<str> names;
 	while (!arg[0].empty())
 		names.insert(extract_first_word(arg[0], ','));
 	std::set<str>::iterator it;
-
 	for (it = names.begin(); it != names.end(); ++it) {
 		User * user_target = _serv->getUserByNick(*it);
 		Chan * chan_target = _serv->getChan(*it);
-
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
@@ -166,16 +151,13 @@ int User::_cmd_NOTICE(Msg & cmd) // ------------------------------------- NOTICE
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() != 2)
 		return (0);
-	
 	std::set<str> names;
 	while (!arg[0].empty())
 		names.insert(extract_first_word(arg[0], ','));
 	std::set<str>::iterator it;
-
 	for (it = names.begin(); it != names.end(); ++it) {
 		User * user_target = _serv->getUserByNick(*it);
 		Chan * chan_target = _serv->getChan(*it);
-
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]));
 		else if(chan_target)
@@ -202,19 +184,15 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 {
 	if (!_is_op)
 		return (rpl(ERR_NOPRIVILEGES));
-
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() != 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "KILL"));
-
 	User * target = _serv->getUserByNick(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
-
 	target->user_send(Msg(_nick, "KILL", arg[0] + " :" + arg[1]));
 	target->broadcast(Msg(arg[0], "QUIT", ":(Killed (" + _nick + " (" + arg[1] + ")))"));
 	target->error(":Closing Link: " SERVER_NAME " :(Killed (" + _nick + " (" + arg[1] + ")))");
-
 	_serv->killUser(target);
 	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;
 	return (0);
@@ -225,9 +203,7 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 1)
 		return (rpl(ERR_NEEDMOREPARAMS, "JOIN"));
-	
 	Chan * channel = _serv->getChan(arg[0]);
-
 	if (!channel) {
 		channel = _serv->addChan(arg[0]);
 		channel->addOperator(this);
@@ -243,13 +219,11 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 	channel->addUser(this);
 	_chans[arg[0]] = channel;
 	channel->chan_send(NULL, Msg(_nick, "JOIN", str(":") + arg[0]));
-	// TODO : RPLS
 	return (0);
 }
 
 int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 {
-	//check si le sender est register
 	str_vec arg = cmd.payloadAsVector(2);
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "INVITE"));
@@ -268,8 +242,6 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 	channel->invite(target);
 	//target_sendMsg(...)
 	return (0);
-	//check canal vers lequel on invite existe ERR_NOSUCHCHANNEL (403) (at least one user is on it)
-	//envoyer l'invitation et l'ajouter a la liste des membres inviter RPL_INVITING (341)
 }
 
 int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
@@ -291,7 +263,6 @@ int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 
 	if (channel->checkMode(MODE_T) && !channel->isOperator(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
-
 	channel->setTopic(arg[1]);
 	channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + arg[1]));
 	return (0);
@@ -299,28 +270,11 @@ int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 
 int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 {
-	//return 1 message par utilisateur kick, operator only,
-	str_vec arg = cmd.payloadAsVector(3); // channel/nick (different user with use of coma), reason (optionnal)
+
+	str_vec arg = cmd.payloadAsVector(3);
 	str comments;
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "KICK"));
-	// Chan *channel = _serv->getChan(arg[0]);
-	// User *target = _serv->getUserByNick(arg[1]);
-	// if (!channel)
-	// 	return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
-	// if (!target)
-	// 	return (rpl(ERR_NOSUCHNICK, arg[1]));
-	// if (!channel->getUser(arg[1]))
-	// 	return (rpl(ERR_USERNOTINCHANNEL, arg[1] + " " + arg[0]));
-	// if (!channel->isOperator(this))
-	// 	return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
-	// channel->rmUser(target);
-	// this->rmChanFromList(channel->getName()); // ajout pour l'enlever aussi de la chanlist du user
-	// str msg;
-	// if (arg.size() == 3)
-	// 	msg = " :" + arg[2];
-	// channel->chan_send(NULL, Msg(_nick, "KICK", arg[1] + " " + arg[0] + msg));
-	// return (0);
 	std::set<str> ChannelNames;
 	std::set<str> UserNames;
 	while (!arg[0].empty())
@@ -389,9 +343,6 @@ int User::_cmd_WHOIS(Msg & cmd) // --------------------------------------- WHOIS
 	return (0);
 }
 
-/*
-** I FUCKING WANT TO DIE
-*/
 int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 {
 	str_vec arg = cmd.payloadAsVector(3);
