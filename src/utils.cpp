@@ -45,20 +45,21 @@ void setsock_nonblock(int fd) {
 		die("sds", __FILE__, __LINE__, strerror(errno));
 }
 
-std::string extract_first_word(std::string & s, char sep)
+str extract_first_word(str & s, char sep)
 {
-	size_t cmd_end = s.find(sep);
-	if (cmd_end == std::string::npos)
-		cmd_end = s.size();
-	std::string cmd = s.substr(0, cmd_end);
-	s.erase(0, cmd_end + 1);
-	return (cmd);
+	size_t word_len = s.find(sep);
+	if (word_len == str::npos)
+		word_len = s.size();
+	str ret = s.substr(0, word_len);
+	s.erase(0, word_len);
+	s.erase(0, s.find_first_not_of(sep));
+	return (ret);
 }
 
-int sed(std::string & s, std::string const & from, std::string const & to)
+int sed(str & s, str const & from, str const & to)
 {
 	size_t pos = s.find(from);
-	if (pos != std::string::npos) {
+	if (pos != str::npos) {
 		s.erase(pos, from.size());
 		s.insert(pos, to);
 		return (1);
@@ -66,10 +67,36 @@ int sed(std::string & s, std::string const & from, std::string const & to)
 	return (0);
 }
 
-void handler(int x)
+void sighandler(int x)
 {
 	(void)x;
 	std::cout
 		<< C_RED "\n*** SIGINT has been caught, the server will now stop." C_R
 		<< std::endl;
+}
+
+str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars)
+{
+	unsigned int i;
+	unsigned int mask = 1;
+	str char_str = "";
+	str var_str = "";
+
+	for (i = 0; charset[i] && i < 8 * sizeof(unsigned int) - 1; ++i) {
+		if (bitset & mask) {
+			char_str += charset[i];
+			if (!vars.count(charset[i]))
+				(var_str += ' ') += vars[charset[i]];
+		}
+		mask *= 2;
+	}
+	return (char_str + var_str);
+}
+
+str int_to_str(int n)
+{
+	std::ostringstream oss;
+
+	oss << n;
+	return (oss.str());
 }

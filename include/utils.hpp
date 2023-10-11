@@ -17,8 +17,10 @@
 #include <cstdarg>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "network.hpp"
 
@@ -47,7 +49,11 @@ str extract_first_word(str & s, char sep = ' ');
 
 int sed(str & s, str const & from, str const & to);
 
-void handler(int x);
+void sighandler(int x);
+
+str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars);
+
+str int_to_str(int n);
 
 #endif
 
