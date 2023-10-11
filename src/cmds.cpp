@@ -427,18 +427,20 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 					break ;
 				str target_name = extract_first_word(arg[2]);
 				User * target = _serv->getUser(target_name);
-				if (!target) {
+				if (!target) { // TODO CHECK SI PRESENT SUR CHAN
 					rpl(ERR_NOSUCHNICK, target_name);
 					break ;
 				}
 				result.push_back('o');
 				chan->opMode(target, add);
+				(result_args += ' ') += target_name;
 				break ; }
 			default:
 				rpl(ERR_UNKNOWNMODE, str(1, *it));
 		}
 	}
-	chan->chan_send(NULL, Msg(_nick, "MODE", result + result_args));
+	if (result.find_first_of(allowed_chars) != str::npos)
+		chan->chan_send(NULL, Msg(_nick, "MODE", result + result_args));
 	return (0);
 }
 
@@ -467,8 +469,8 @@ int User::_cmd_PART(Msg & cmd) // ----------------------------------------- PART
 				channel->chan_send(NULL, Msg(_nick, "PART", channel->getName()));
 			else
 				channel->chan_send(NULL, Msg(_nick, "PART", channel->getName() + " :" + reason));
-			channel->rmUser(this);
 			this->rmChanFromList(channel->getName());
+			channel->rmUser(this);
 		}
 	}
 	return (0);
