@@ -145,9 +145,10 @@ class User {
 		str getUsername(void) const;
 		int getFd(void) const;
 
+		int getIsOp(void) const;
+
 		str getRealname(void) const;
 		std::map<str, Chan *> getChan(void) const;
-		//rmChanFromChannellist ?
 		void rmChanFromList(str name);
 
 		Serv * getServ(void) const;
@@ -166,7 +167,7 @@ class User {
 		 * data is found to be quite awful to retrieve from the rpl constructor
 		 * of Msg). In this case, a second parameter called p2 might be added.
 		 */
-		int rpl(int num, str const & p1 = "");
+		int rpl(int num, str const & p1 = "", str const & p2 = "");
 
 		/*
 		 * Send an error to this user, always returns 1, so it is possible in a

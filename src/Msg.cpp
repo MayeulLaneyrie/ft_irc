@@ -43,24 +43,24 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_MYINFO] = "{sn} {v} o itkol";
 	ret[RPL_UMODEIS] = ":+{1}";
 
-	ret[RPL_WHOISUSER] = "{n} {u} <host> * :{rn}";
-	ret[RPL_WHOISSERVER] = "{n} {sn} : string that describe server info";
-	ret[RPL_WHOISOPERATOR] = "{n} :is an IRC operator";
-	ret[RPL_ENDOFWHOIS] = "{n} :End of /WHOIS list";
-	ret[RPL_WHOISCHANNELS] = "{n} :{1}";
+	ret[RPL_WHOISUSER] = "{1} <host> * :{2}";
+	ret[RPL_WHOISSERVER] = "{1} {sn} : string that describe server info";
+	ret[RPL_WHOISOPERATOR] = "{1} :is an IRC operator";
+	ret[RPL_ENDOFWHOIS] = "{1} :End of /WHOIS list";
+	ret[RPL_WHOISCHANNELS] = "{1} :{2}";
 
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
-	ret[ERR_NOSUCHSERVER] = "{1} :No such server"; //1 = client + server_name;
+	ret[ERR_NOSUCHSERVER] = "{1} :No such server"; 
 	ret[ERR_NOSUCHCHANNEL] = "{1} ::No such channel";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
 	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
 	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
 	ret[ERR_NICKNAMEINUSE] = "{1} :Nickname is already in use";
-	ret[ERR_USERNOTINCHANNEL] = "{1} :They aren't on that channel"; // client + nick + channel
+	ret[ERR_USERNOTINCHANNEL] = "{1} :They aren't on that channel";
 	ret[ERR_NOTONCHANNEL] = "{1} :You're not on that channel";
 	ret[ERR_USERONCHANNEL] = "{1} :is already on channel";
 	ret[ERR_NOTREGISTERED] = ":You have not registered";
@@ -78,7 +78,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	return (ret);
 }
 
-Msg::Msg(int num, User * contact, str const & p1)
+Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 {
 	static const std::map<int, str> rpl_map = _gen_rpl_map();
 
@@ -97,6 +97,7 @@ Msg::Msg(int num, User * contact, str const & p1)
 	vars["{dt}"] = contact->getServ()->getDatetime();
 	vars["{v}"] = "0.42";
 	vars["{1}"] = p1;
+	vars["{2}"] = p2;
 
 	std::map<str, str>::const_iterator it;
 	for (it = vars.begin(); it != vars.end(); ++it)

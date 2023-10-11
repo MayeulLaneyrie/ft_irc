@@ -143,7 +143,7 @@ class Msg {
 		 * way. If needed, we might consider added another one of such parameter
 		 * (p2, for variable "{2}").
 		 */
-		Msg(int num, User * contact, str const & p1 = 0);
+		Msg(int num, User * contact, str const & p1 = 0, str const & p2 = 0);
 
 		Msg(Msg const & src);
 

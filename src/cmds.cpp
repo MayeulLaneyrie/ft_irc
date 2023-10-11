@@ -341,12 +341,12 @@ int User::_cmd_WHOIS(Msg & cmd) //----------------------------------------------
 	str listeChannel;
 	for (std::map<str, Chan *>::const_iterator it = channelList.begin(); it != channelList.end(); it++)
 		listeChannel += it->first + " ";
-	rpl(RPL_WHOISUSER);
-	rpl(RPL_WHOISSERVER);
-	//if (is_operator)
-	//	rpl(WHOISOPERATOR);
-	rpl(RPL_WHOISCHANNELS, listeChannel);
-	rpl(RPL_ENDOFWHOIS);
+	rpl(RPL_WHOISUSER, target->getNick() + " " + target->getUsername(), target->getRealname());
+	rpl(RPL_WHOISSERVER, target->getNick());
+	if (target->getIsOp())
+		rpl(RPL_WHOISOPERATOR, target->getNick());
+	rpl(RPL_WHOISCHANNELS, target->getNick(), listeChannel);
+	rpl(RPL_ENDOFWHOIS, target->getNick());
 	return (0);
 }
 

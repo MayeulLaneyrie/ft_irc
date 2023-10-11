@@ -135,6 +135,11 @@ std::map<str, Chan *> User::getChan(void) const
 	return _chans;
 }
 
+int User::getIsOp(void) const
+{
+	return (_is_op);
+}
+
 void User::rmChanFromList(str name)
 {
 	_chans.erase(_chans.find(name));
@@ -154,9 +159,9 @@ int	User::isFullyRegistered(void) const {
 
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
-int User::rpl(int num, str const & p1)
+int User::rpl(int num, str const & p1, str const & p2)
 {
-	user_send(Msg(num, this, p1));
+	user_send(Msg(num, this, p1, p2));
 	return (0);
 }
 
