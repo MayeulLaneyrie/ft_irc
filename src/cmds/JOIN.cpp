@@ -14,7 +14,7 @@
 
 int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 {
-	str_vec arg = cmd.payloadAsVector(2);
+	str_vec arg = cmd.payloadAsVector(2, 1);
 	if (arg.size() < 1)
 		return (rpl(ERR_NEEDMOREPARAMS, "JOIN"));
 	str_vec ChannelNames;
@@ -51,14 +51,14 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 			else if (channel->checkMode(MODE_K) && (arg.size() < 2 || !channel->checkPasswd(*keyIt)))
 				rpl(ERR_BADCHANNELKEY, *it);
 			else if (channel->checkMode(MODE_L) && channel->isFull())
-				(rpl(ERR_CHANNELISFULL, *it));
+				rpl(ERR_CHANNELISFULL, *it);
 			else
 			{
 				channel->addUser(this);
 				_chans[*it] = channel;
 				channel->chan_send(NULL, Msg(_nick, "JOIN", ":" + *it));
 				if (channel->getTopic() != "")
-					rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic());
+					rpl(RPL_TOPIC, *it + " :" + channel->getTopic());
 				Msg msg("","", *it);
 				_cmd_NAMES(msg);
 			}

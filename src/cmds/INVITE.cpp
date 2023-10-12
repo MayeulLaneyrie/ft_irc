@@ -14,7 +14,7 @@
 
 int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 {
-	str_vec arg = cmd.payloadAsVector(2);
+	str_vec arg = cmd.payloadAsVector(2, 1);
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "INVITE"));
 	User *target = _serv->getUser(arg[0]);

@@ -1,0 +1,61 @@
+PASS:
+	- ERR_NEEDMOREPARAMS
+	- ERR_ALREADYREGISTERED
+	- Bad password, good password
+USER:
+	- ERR_NEEDMOREPARAMS
+	- ERR_ALREADYREGISTERED
+	- With wrong Password
+	- With no password
+	- All good
+NICK:
+	- ERR_NONICKNAMEGIVEN
+	- ERR_ERRONEUSNICKNAME
+	- ERR_NICKNAMEINUSE
+	- With wrong Password
+	- With no password
+	- All good
+	- Test when already registered
+
+*** Test des commandes précédentes dans des ordres différents.
+
+PING:
+	- ERR_NEEDMOREPARAMS
+QUIT:
+	- With/Without arguments
+	*** Test how msg is broadcasted
+PRIVMSG:
+	- ERR_NEEDMOREPARAMS
+	- Single nick/single chan
+	- Multiple nick/chans mixed, including non existing ones
+NOTICE:
+	- Same as before, no rpl should be send
+OPER:
+	- ERR_NEEDMOREPARAMS
+	- Wrong name
+	- Wrong pass
+	- All good
+KILL:
+	- ERR_NOPRIVILEGES
+	- ERR_NEEDMOREPARAMS
+	- ERR_NOSUCHNICK
+	*** Test how msg is broadcasted
+JOIN:
+	- ERR_BADCHANNAME
+	- ERR_INVITEONLYCHAN
+	- ERR_BADCHANNELKEY
+	- ERR_CHANNELISFULL
+MODE:
+	- ERR_NEEDMOREPARAMS
+	- ERR_NOSUCHNICK
+	- ERR_USERSDONTMATCH
+	- Nick ok
+	- ERR_CHANOPRIVSNEEDED
+	- ERR_UNKNOWNMODE
+	- Combiner tout ce qu'on peut imaginer, en + et en -
+INVITE:
+TOPIC:
+KICK:
+WHOIS:
+PART:
+NAMES:
