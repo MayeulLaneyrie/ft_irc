@@ -74,29 +74,3 @@ void sighandler(int x)
 		<< C_RED "\n*** SIGINT has been caught, the server will now stop." C_R
 		<< std::endl;
 }
-
-str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars)
-{
-	unsigned int i;
-	unsigned int mask = 1;
-	str char_str = "";
-	str var_str = "";
-
-	for (i = 0; charset[i] && i < 8 * sizeof(unsigned int) - 1; ++i) {
-		if (bitset & mask) {
-			char_str += charset[i];
-			if (vars.count(charset[i]))
-				(var_str += ' ') += vars[charset[i]];
-		}
-		mask *= 2;
-	}
-	return (char_str + var_str);
-}
-
-str int_to_str(int n)
-{
-	std::ostringstream oss;
-
-	oss << n;
-	return (oss.str());
-}

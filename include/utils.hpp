@@ -51,9 +51,5 @@ int sed(str & s, str const & from, str const & to);
 
 void sighandler(int x);
 
-str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars);
-
-str int_to_str(int n);
-
 #endif
 
