@@ -34,11 +34,13 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 		Chan *channel = _serv->getChan(*it);
 		if (!channel)
 		{
-			if (is_valid_name(*it) || is_name_chan(*it))
+			if (is_valid_name(*it) && is_name_chan(*it))
 			{
 				channel = _serv->addChan(*it);
 				channel->opMode(this, 1);
 			}
+			else
+				rpl(ERR_BADCHANNAME, *it)
 		}
 		if (channel)
 		{
@@ -60,9 +62,9 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 				Msg msg("","", *it);
 				_cmd_NAMES(msg);
 			}
-			if (arg.size() == 2 && keyIt != Key.end())
-				keyIt++;
 		}
+		if (arg.size() == 2 && keyIt != Key.end())
+			keyIt++;
 	}
 	return (0);
 }
