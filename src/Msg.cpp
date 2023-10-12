@@ -60,6 +60,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
 	ret[ERR_NOSUCHSERVER] = "{1} :No such server"; 
 	ret[ERR_NOSUCHCHANNEL] = "{1} :No such channel";
+	ret[ERR_BADCHANNAME] = "{1} :Invalid channel name";
 	ret[ERR_UNKNOWNCOMMAND] = "{1} :Unknown command";
 	ret[ERR_NONICKNAMEGIVEN] = ":No nickname given";
 	ret[ERR_ERRONEUSNICKNAME] = "{1} :Erroneus nickname";
@@ -96,7 +97,7 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 		rpl_string += rpl_map.at(num);
 	
 	while (num > 999)
-		num -= 1000;
+		num %= 1000;
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();
