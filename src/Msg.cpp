@@ -44,7 +44,7 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_UMODEIS] = ":+{1}";
 
 	ret[RPL_WHOISUSER] = "{1} <host> * :{2}";
-	ret[RPL_WHOISSERVER] = "{1} {sn} : string that describe server info";
+	ret[RPL_WHOISSERVER] = "{1} {sn} :string that describes server info";
 	ret[RPL_WHOISOPERATOR] = "{1} :is an IRC operator";
 	ret[RPL_ENDOFWHOIS] = "{1} :End of /WHOIS list";
 	ret[RPL_WHOISCHANNELS] = "{1} :{2}";
@@ -53,6 +53,8 @@ std::map<int, str> Msg::_gen_rpl_map(void)
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_INVITING] = "{1}";
+	ret[RPL_NAMREPLY] = "= {1}";
+	ret[RPL_ENDOFNAMES] = "{1} :End of /NAMES list";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";

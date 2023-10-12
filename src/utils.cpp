@@ -52,7 +52,10 @@ str extract_first_word(str & s, char sep)
 		word_len = s.size();
 	str ret = s.substr(0, word_len);
 	s.erase(0, word_len);
-	s.erase(0, s.find_first_not_of(sep));
+	if (sep == ' ')
+		s.erase(0, s.find_first_not_of(sep));
+	else if (!s.empty())
+		s.erase(0, 1);
 	return (ret);
 }
 
@@ -73,30 +76,4 @@ void sighandler(int x)
 	std::cout
 		<< C_RED "\n*** SIGINT has been caught, the server will now stop." C_R
 		<< std::endl;
-}
-
-str mode_str(unsigned int bitset, const char * charset, std::map<char, str> vars)
-{
-	unsigned int i;
-	unsigned int mask = 1;
-	str char_str = "";
-	str var_str = "";
-
-	for (i = 0; charset[i] && i < 8 * sizeof(unsigned int) - 1; ++i) {
-		if (bitset & mask) {
-			char_str += charset[i];
-			if (vars.count(charset[i]))
-				(var_str += ' ') += vars[charset[i]];
-		}
-		mask *= 2;
-	}
-	return (char_str + var_str);
-}
-
-str int_to_str(int n)
-{
-	std::ostringstream oss;
-
-	oss << n;
-	return (oss.str());
 }
