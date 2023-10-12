@@ -52,7 +52,10 @@ str extract_first_word(str & s, char sep)
 		word_len = s.size();
 	str ret = s.substr(0, word_len);
 	s.erase(0, word_len);
-	s.erase(0, s.find_first_not_of(sep));
+	if (sep == ' ')
+		s.erase(0, s.find_first_not_of(sep));
+	else if (!s.empty())
+		s.erase(0, 1);
 	return (ret);
 }
 

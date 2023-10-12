@@ -70,6 +70,8 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["WHOIS"] = &User::_cmd_WHOIS;
 	ret["MODE"] = &User::_cmd_MODE;
 	ret["PART"] = &User::_cmd_PART;
+	ret["INVITE"] = &User::_cmd_INVITE;
+	ret["NAMES"] = &User::_cmd_NAMES;
 	return (ret);
 }
 
