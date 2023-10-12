@@ -24,5 +24,3 @@ int main(int ac, char **av)
 	Serv serv(atoi(av[1]), av[2]);
 	return (serv.run());
 }
-
-
