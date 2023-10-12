@@ -32,6 +32,6 @@ int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 	if (channel->checkMode(MODE_T) && !channel->isOperator(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
 	channel->setTopic(arg[1]);
-	channel->chan_send(NULL, Msg(arg[0], "TOPIC", str(":") + arg[1]));
+	channel->chan_send(NULL, Msg(_nick, "TOPIC", arg[0] + " :" + arg[1]));
 	return (0);
 }
