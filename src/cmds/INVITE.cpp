@@ -31,6 +31,6 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 		return (rpl(ERR_USERONCHANNEL, arg[0] + " " + arg[1]));
 	channel->invite(target);
 	rpl(RPL_INVITING, target->getNick() + " " + channel->getName());
-	target->user_send(Msg(_nick + "INVITE" + target->getNick() + " :" +channel->getName()));
+	target->user_send(Msg(_nick, "INVITE", target->getNick() + " :" + channel->getName()));
 	return (0);
 }

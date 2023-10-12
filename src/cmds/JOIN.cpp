@@ -40,7 +40,7 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 				channel->opMode(this, 1);
 			}
 			else
-				rpl(ERR_BADCHANNAME, *it)
+				rpl(ERR_BADCHANNAME, *it);
 		}
 		if (channel)
 		{
