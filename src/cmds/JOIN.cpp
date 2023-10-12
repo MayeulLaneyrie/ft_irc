@@ -57,7 +57,8 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 				channel->chan_send(NULL, Msg(_nick, "JOIN", ":" + *it));
 				if (channel->getTopic() != "")
 					rpl(RPL_TOPIC, arg[0] + " :" + channel->getTopic());
-				_cmd_NAMES("", "", *it);
+				Msg msg("","", *it);
+				_cmd_NAMES(msg);
 			}
 			if (arg.size() == 2 && keyIt != Key.end())
 				keyIt++;
