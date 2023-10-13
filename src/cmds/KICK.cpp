@@ -14,53 +14,35 @@
 
 int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 {
-
 	str_vec arg = cmd.payloadAsVector(3);
-	str comments;
 	if (arg.size() < 2)
 		return (rpl(ERR_NEEDMOREPARAMS, "KICK"));
-	std::set<str> ChannelNames;
+
+	Chan * channel = _serv->getChan(arg[0]);
+	if (!channel)
+		return (rpl(ERR_NOSUCHCHANNEL, arg[0]));
+
 	std::set<str> UserNames;
-	while (!arg[0].empty())
-		ChannelNames.insert(extract_first_word(arg[0], ','));
 	while (!arg[1].empty())
 		UserNames.insert(extract_first_word(arg[1], ','));
-	if (arg.size() == 3)
-		comments = arg[2];
+
+	str comment = (arg.size() == 3 ? arg[2] : _nick);
+
 	std::set<str>::iterator it;
-	std::set<str>::iterator it2;
-	for (it = ChannelNames.begin(); it != ChannelNames.end(); it++)
-	{
-		Chan * channel = _serv->getChan(*it);
-		if (!channel)
-		{
-			rpl(ERR_NOSUCHCHANNEL, *it);
-			continue;
-		}
-		for (it2 = UserNames.begin(); it2 != UserNames.end(); it2++)
-		{
-			User *target = _serv->getUser(*it2);
-			if (!target)
-			{
-				rpl(ERR_NOSUCHNICK, *it2);
-				continue;
-			}
-			else if (!channel->getUser(target->getNick()))
-				rpl(ERR_USERNOTINCHANNEL, target->getNick() + " " + channel->getName());
-			else if (!channel->isOperator(this))
-			{
-				rpl(ERR_CHANOPRIVSNEEDED, channel->getName());
-				continue ;
-			}
-			else
-			{
-				if (comments.empty())
-					channel->chan_send(NULL, Msg(_nick, "KICK", channel->getName() + " :" + target->getNick() + " " + _nick ));
-				else
-					channel->chan_send(NULL, Msg(_nick, "KICK", channel->getName() + " :" + target->getNick() + " " + comments));
-				channel->rmUser(target);
-				target->rmChanFromList(channel->getName());
-			}
+	for (it = UserNames.begin(); it != UserNames.end(); it++) {
+
+		User *target = _serv->getUser(*it);
+
+		if (!target)
+			rpl(ERR_NOSUCHNICK, *it);
+		else if (!channel->getUser(*it))
+			rpl(ERR_USERNOTINCHANNEL, *it + " " + arg[0]);
+		else if (!channel->isOp(this))
+			rpl(ERR_CHANOPRIVSNEEDED, arg[0]);
+		else {
+			channel->chan_send(Msg(_nick, "KICK", arg[0] + " " + *it + " :" + comment));
+			channel->rmUser(target);
+			target->rmChanFromList(arg[0]);
 		}
 	}
 	return 0;

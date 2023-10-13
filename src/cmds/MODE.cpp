@@ -53,9 +53,12 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 			return (rpl(ERR_NOSUCHNICK, arg[0]));
 		if (arg[0] != _nick)
 			return (rpl(ERR_USERSDONTMATCH));
-		if (_is_op)
-			return (rpl(RPL_UMODEIS, "o"));
-		return (rpl(RPL_UMODEIS, ""));
+		if (arg.size() == 1)
+			return (rpl(RPL_UMODEIS, (_is_op ? "o" : "")));
+		for (str::iterator it = arg[1].begin(); it != arg[1].end(); ++it)
+			if (*it != '+' && *it != '-')
+				rpl(ERR_UNKNOWNMODE, str(1, *it));
+		return (0);
 	}
 
 	Chan * chan = _serv->getChan(arg[0]);
@@ -77,7 +80,7 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 		return (rpl(RPL_CHANNELMODEIS, mode_rpl));
 	}
 
-	if (!chan->isOperator(this))
+	if (!chan->isOp(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
 
 	str allowed_chars = "itklo";
@@ -87,20 +90,20 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 
 	for (str::iterator it = arg[1].begin() ; it != arg[1].end(); ++it) {
 		if (*it == '+') {
-			add = 1;
 			result.push_back('+');
+			add = 1;
 		}
 		else if (*it == '-') {
-			add = 0;
 			result.push_back('-');
+			add = 0;
 		}
 		else if (*it == 'i') {
-			chan->setMode(MODE_I, add);
 			result.push_back('i');
+			chan->setMode(MODE_I, add);
 		}
 		else if (*it == 't') {
-			chan->setMode(MODE_T, add);
 			result.push_back('t');
+			chan->setMode(MODE_T, add);
 		}
 		else if (*it == 'k' && (!add || has_third(arg))) {
 			result.push_back('k');
@@ -133,6 +136,6 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 			rpl(ERR_UNKNOWNMODE, str(1, *it));
 	}
 	if (result.find_first_of(allowed_chars) != str::npos)
-		chan->chan_send(NULL, Msg(_nick, "MODE", result + result_args));
+		chan->chan_send(Msg(_nick, "MODE", result + result_args));
 	return (0);
 }

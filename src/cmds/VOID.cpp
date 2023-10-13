@@ -14,6 +14,6 @@
 
 int User::_cmd_VOID(Msg & cmd) // ----------------------------------------- VOID
 {
-	(void)cmd;
+	( void )cmd;
 	return (0);
 }

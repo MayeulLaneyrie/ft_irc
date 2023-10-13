@@ -25,7 +25,7 @@ int User::_cmd_INVITE(Msg & cmd) //-------------------------------------- INVITE
 		return (rpl(ERR_NOSUCHCHANNEL, arg[1]));
 	if (!channel->getUser(_nick))
 		return (rpl(ERR_NOTONCHANNEL, arg[1]));
-	if (channel->checkMode(MODE_I) && !channel->isOperator(this))
+	if (channel->checkMode(MODE_I) && !channel->isOp(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[1]));
 	if (channel->getUser(arg[0]))
 		return (rpl(ERR_USERONCHANNEL, arg[0] + " " + arg[1]));

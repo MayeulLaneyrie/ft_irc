@@ -48,17 +48,17 @@ class Chan {
 
 		Serv * _serv;
 
-		Chan(void);
+		Chan( void );
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
 		Chan(Serv * serv, str const & name);
 		Chan(Chan const & src);
-		~Chan(void);
+		~Chan( void );
 
 		Chan & operator=(Chan const & rhs);
 
-		int chan_send(User * source, Msg const & msg);
+		int chan_send(Msg const & msg, User * source = NULL);
 
 		void addUser(User * user);
 		void rmUser(User * user);
@@ -67,11 +67,11 @@ class Chan {
 
 		typedef std::map<str, User *>::iterator iterator;
 
-		iterator begin(void);
-		iterator end(void);
+		iterator begin( void );
+		iterator end( void );
 
 		void opMode(User * user, int val);
-		int isOperator(User * user) const;
+		int isOp(User * user) const;
 
 		void invite(User * user);
 		void uninvite(User * user);
@@ -88,7 +88,7 @@ class Chan {
 		void setTopic(str topic);
 		str getTopic( void ) const;
 
-		str getName(void) const;
+		str getName( void ) const;
 
 		void setLimit(int limit);
 		int getLimit( void ) const;

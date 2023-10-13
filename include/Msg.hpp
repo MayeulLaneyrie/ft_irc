@@ -73,7 +73,7 @@ class User;
 /*
  * Msg is LOVE, Msg is LIFE!
  * All data exchanged between clients & the server has to be in the form of Msg.
- * 
+ *
  * A Msg is formed by three parts:
  * 1. A prefix (optionnal), which is always preceded by a ':' character, and
  * that indicates the origin of the msg. All msgs send by the server to users
@@ -85,7 +85,7 @@ class User;
  * require a ':' to include the rest of the message line in the final argument.
  * Due to the arguments splitting rules varying according to the command, the
  * payload is here stored in a single str.
- * 
+ *
  * These three parts, & the arguments are all to be separated by a single space
  * (' ', ASCII #32).
  */
@@ -125,8 +125,6 @@ class Msg {
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
 
-
-	
 		/*
 		 * Construct message by explicitly specifying all informations
 		 */
@@ -171,23 +169,22 @@ class Msg {
 		 * This one is an actual banger. Each command needs to retrieve a
 		 * certain number of arguments from the payload. We specify this number
 		 * with ac.
-		 * 
+		 *
 		 * If we haven't enough arguments in the payload, we will just
 		 * return the ones we were able to grab. (Some commands might need
 		 * various number of arguments, this behaviour allows them to ask for
 		 * the max number, and then manage what they got the way they want).
-		 * 
+		 *
 		 * Some commands don't require a colon (':' character) to be added
 		 * before the final argument for it to include the rest of the payload,
 		 * including spaces. We actually consider this as the default behaviour:
 		 * if requireColon is set to 1, the final argument has to be prefixed
 		 * with ':' to include more than one word.
-		 * 
+		 *
 		 * In any case, if the final argument starts with a ':' character, that
 		 * one will be erased.
 		 */
 		str_vec payloadAsVector(int ac, int requireColon = 0) const;
-
 };
 
 #endif

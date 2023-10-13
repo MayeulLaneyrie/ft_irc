@@ -27,7 +27,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		if (user_target && user_target->isFullyRegistered())
 			user_target->user_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
-			chan_target->chan_send(this, Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
+			chan_target->chan_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]), this);
 		else
 			rpl(ERR_NOSUCHNICK, *it);
 	}

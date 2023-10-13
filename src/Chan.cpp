@@ -28,7 +28,7 @@ Chan::Chan(Chan const & src) {
 	*this = src;
 }
 
-Chan::~Chan(void) {
+Chan::~Chan( void ) {
 	std::cout << C_MAGENTA << _name << " removed" C_R << std::endl;
 }
 
@@ -43,7 +43,7 @@ Chan & Chan::operator=(Chan const & rhs)
 	return (*this);
 }
 
-int Chan::chan_send(User * source, Msg const & msg)
+int Chan::chan_send(Msg const & msg, User * source)
 {
 	std::map<str, User *>::iterator it = _users.begin();
 
@@ -84,11 +84,11 @@ void Chan::renameUser(User * user, str const & to)
 	_users[to] = user;
 }
 
-Chan::iterator Chan::begin(void) {
+Chan::iterator Chan::begin( void ) {
 	return (_users.begin());
 }
 
-Chan::iterator Chan::end(void) {
+Chan::iterator Chan::end( void ) {
 	return (_users.end());
 }
 
@@ -100,7 +100,7 @@ void Chan::opMode(User * user, int val)
 		_operators.erase(user);
 }
 
-int Chan::isOperator(User * user) const {
+int Chan::isOp(User * user) const {
 	return (_operators.count(user));
 }
 
@@ -148,11 +148,11 @@ void Chan::setTopic(str topic) {
 	_topic = topic;
 }
 
-str Chan::getTopic(void) const {
+str Chan::getTopic( void ) const {
 	return (_topic);
 }
 
-str Chan::getName(void) const {
+str Chan::getName( void ) const {
 	return (_name);
 }
 
@@ -164,6 +164,6 @@ int Chan::getLimit( void ) const {
 	return (_usermax);
 }
 
-int Chan::isFull(void) const {
+int Chan::isFull( void ) const {
 	return (_usercount >= _usermax);
 }

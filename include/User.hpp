@@ -83,22 +83,22 @@ class User {
 
 // INTERNAL STUFF --------------------------------------------------------------
 
-		User(void);
+		User( void );
 
 		/*
 		 * Tables used in _exec_cmd()
 		 */
-		static std::map<str, ft_cmd> _gen_cmd_map(void);
+		static std::map<str, ft_cmd> _gen_cmd_map( void );
 		static const std::map<str, ft_cmd> _cmd_map;
 
-		static std::set<str> _gen_prereg_set(void);
+		static std::set<str> _gen_prereg_set( void );
 		static const std::set<str> _prereg_set;
 
 		/*
 		 * Extract a message from _ibuffer, parses it and then executes it.
 		 * Returns 1 if it is then required to close this user's connection.
 		 */
-		int _exec_cmd(void);
+		int _exec_cmd( void );
 
 		/*
 		 * Here are all the command implementations. They are all located in
@@ -132,7 +132,7 @@ class User {
 
 		User(Serv * serv, int fd);
 		User(User const & src);
-		~User(void);
+		~User( void );
 
 		User & operator=(User const & rhs);
 
@@ -142,19 +142,19 @@ class User {
 		 * That one does a bit more than just returning _nick: if no nick has
 		 * been set yet, it returns a temporary nick in the form TMP.{fd}.
 		 */
-		str getNick(void) const;
-		str getUsername(void) const;
-		int getFd(void) const;
+		str getNick( void ) const;
+		str getUsername( void ) const;
+		int getFd( void ) const;
 
-		int getIsOp(void) const;
+		int isOper( void ) const;
 
-		str getRealname(void) const;
-		std::map<str, Chan *> getChan(void) const;
+		str getRealname( void ) const;
+		std::map<str, Chan *> getChan( void ) const;
 		void rmChanFromList(str name);
 
-		Serv * getServ(void) const;
+		Serv * getServ( void ) const;
 
-		int	isFullyRegistered(void) const;
+		int	isFullyRegistered( void ) const;
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
@@ -188,7 +188,7 @@ class User {
 		 * for every complete msg line it contains).
 		 * Returns 0
 		 */
-		int user_recv(void);
+		int user_recv( void );
 
 		/*
 		 * Adds msg at the end of the user's output buffer. If flushnow is set
@@ -200,7 +200,7 @@ class User {
 		/*
 		 * send() the output buffer (_obuffer) to the user, then clear it.
 		 */
-		int	flush(void);
+		int	flush( void );
 };
 
 #endif

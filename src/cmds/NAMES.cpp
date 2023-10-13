@@ -20,27 +20,29 @@ int User::_cmd_NAMES(Msg & cmd)
 		return (rpl(RPL_ENDOFNAMES, "*"));
 	
 	str_vec names;
-	while (!arg[0].empty())
-	{
+	while (!arg[0].empty()) {
 		str tmp = extract_first_word(arg[0], ',');
 		if (std::find(names.begin(), names.end(), tmp) == names.end())
 			names.push_back(tmp);
 	}
+
 	for (str_vec::iterator i = names.begin(); i != names.end(); ++i) {
+
 		Chan * chan = _serv->getChan(*i);
-		if (chan) {
-			str rpl_arg = *i + " :";
-			for (Chan::iterator j = chan->begin(); j != chan->end(); ++j) {
-				if (chan->isOperator(j->second))
-					(rpl_arg += '@') += j->second->getNick() + ' ';
-				else
-					rpl_arg += j->second->getNick() + ' ';
-			}
-			rpl(RPL_NAMREPLY, rpl_arg);
-			rpl(RPL_ENDOFNAMES, *i);
-		}
-		else
+		if (!chan) {
 			rpl(ERR_NOSUCHCHANNEL, *i);
+			continue ;
+		}
+		
+		str rpl_arg = *i + " :";
+		for (Chan::iterator j = chan->begin(); j != chan->end(); ++j) {
+			if (chan->isOp(j->second))
+				(rpl_arg += '@') += j->second->getNick() + ' ';
+			else
+				rpl_arg += j->second->getNick() + ' ';
+		}
+		rpl(RPL_NAMREPLY, rpl_arg);
+		rpl(RPL_ENDOFNAMES, *i);
 	}
 	return (0);
 }

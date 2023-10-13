@@ -16,7 +16,7 @@
 #include <set>
 #include "utils.hpp"
 
-std::set<char> gen_badchar_set(void);
+std::set<char> gen_badchar_set( void );
 
 /*
 ** Rules:

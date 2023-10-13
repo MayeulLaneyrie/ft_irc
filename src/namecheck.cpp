@@ -12,7 +12,7 @@
 
 #include "namecheck.hpp"
 
-std::set<char> gen_badchar_set(void)
+std::set<char> gen_badchar_set( void )
 {
 	std::set<char> ret;
 

@@ -27,7 +27,7 @@ User::User(User const & src) {
 	*this = src;
 }
 
-User::~User(void)
+User::~User( void )
 {
 	std::map<str, Chan *>::iterator it;
 	for (it = _chans.begin(); it != _chans.end(); ++it)
@@ -47,7 +47,7 @@ User & User::operator=(User const & rhs)
 
 // INTERNAL STUFF ==============================================================
 
-std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
+std::map<str, User::ft_cmd> User::_gen_cmd_map( void )
 {
 	std::map<str, ft_cmd> ret;
 
@@ -72,12 +72,13 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map(void)
 	ret["PART"] = &User::_cmd_PART;
 	ret["INVITE"] = &User::_cmd_INVITE;
 	ret["NAMES"] = &User::_cmd_NAMES;
+	ret["WHO"] = &User::_cmd_VOID;
 	return (ret);
 }
 
 const std::map<str, User::ft_cmd> User::_cmd_map = User::_gen_cmd_map();
 
-std::set<str> User::_gen_prereg_set(void)
+std::set<str> User::_gen_prereg_set( void )
 {
 	std::set<str> ret;
 
@@ -93,16 +94,17 @@ std::set<str> User::_gen_prereg_set(void)
 
 const std::set<str> User::_prereg_set = User::_gen_prereg_set();
 
-int User::_exec_cmd(void)
+int User::_exec_cmd( void )
 {
 	size_t msg_len = _ibuffer.find("\r\n");
 	str msg_str = _ibuffer.substr(0, msg_len);
 	_ibuffer.erase(0, msg_len + 2);
 
-	std::cout << C_GREEN << getNick() << " >" C_R_ << "{ " << msg_str << " }" << std::endl;
-
 	Msg cmd_msg(msg_str);
 	str cmd = cmd_msg.getCmd();
+
+	if (cmd != "PING")
+		std::cout << C_GREEN << getNick() << " >" C_R_ << "{ " << msg_str << " }" << std::endl;
 
 	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
 		return (rpl(ERR_NOTREGISTERED));
@@ -115,7 +117,7 @@ int User::_exec_cmd(void)
 
 // ACCESSORS ===================================================================
 
-str User::getNick(void) const
+str User::getNick( void ) const
 {
 	if (!_nick.empty())
 		return (_nick);
@@ -124,20 +126,20 @@ str User::getNick(void) const
 	return (oss.str());
 }
 
-str User::getUsername(void) const {
+str User::getUsername( void ) const {
 	return _username;
 }
 
-str User::getRealname(void) const {
+str User::getRealname( void ) const {
 	return _realname;
 }
 
-std::map<str, Chan *> User::getChan(void) const
+std::map<str, Chan *> User::getChan( void ) const
 {
 	return _chans;
 }
 
-int User::getIsOp(void) const
+int User::isOper( void ) const
 {
 	return (_is_op);
 }
@@ -147,15 +149,15 @@ void User::rmChanFromList(str name)
 	_chans.erase(_chans.find(name));
 }
 
-int User::getFd(void) const {
+int User::getFd( void ) const {
 	return _fd;
 }
 
-Serv * User::getServ(void) const {
+Serv * User::getServ( void ) const {
 	return _serv;
 }
 
-int	User::isFullyRegistered(void) const {
+int	User::isFullyRegistered( void ) const {
 	return (_reg_status == REG_OK && !(_reg_status & REG_MISM));
 }
 
@@ -193,7 +195,7 @@ void User::broadcast(Msg const & msg)
 		(*it)->user_send(msg);
 }
 
-int User::user_recv(void)
+int User::user_recv( void )
 {
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
@@ -220,14 +222,15 @@ int User::user_recv(void)
 
 int User::user_send(Msg const & msg, int flushnow)
 {
-	std::cout << C_BLUE << getNick() << " <" C_R_ << msg.getStr();
+	if (msg.getCmd() != "PONG")
+		std::cout << C_BLUE << getNick() << " <" C_R_ << msg.getStr();
 	_obuffer += msg.getStr();
 	if (flushnow)
 		return (flush());
 	return (0);
 }
 
-int	User::flush(void)
+int	User::flush( void )
 {
 	if (_obuffer.empty())
 		return (0);

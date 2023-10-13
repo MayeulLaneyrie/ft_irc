@@ -43,8 +43,8 @@ class Serv {
 
 // SERVER DATA -----------------------------------------------------------------
 
-		int	_port;
-		str	_password;
+		int _port;
+		str _password;
 
 		str _datetime;
 
@@ -62,19 +62,17 @@ class Serv {
 
 // INTERNAL STUFF  -------------------------------------------------------------
 
-		void _clear(void);
+		void _clear( void );
 
-		int _setup_socket(void);
-		int _setup_epoll(void);
+		void _setup_socket( void );
+		void _setup_datetime( void );
+		void _setup_all( void );
 
-		int _epoll_register(int fd);
+		void _epoll_register(int fd);
 
-		void _set_datetime(void);
+		void _new_connection( void );
 
-		void _new_connection(void);
-		void _user_manage(int fd);
-
-		Serv(void);
+		Serv( void );
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
@@ -83,15 +81,15 @@ class Serv {
 		Serv(int port, str const & password);
 		Serv(Serv const & src);
 
-		~Serv(void);
+		~Serv( void );
 
 		Serv & operator=(Serv const & rhs);
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 		
-		int	run(void); // main loop
+		int	run( void ); // main loop
 
-		str getDatetime(void) const;
+		str getDatetime( void ) const;
 
 		int checkPass(str const & s) const;
 

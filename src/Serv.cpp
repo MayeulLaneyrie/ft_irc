@@ -31,7 +31,7 @@ Serv::Serv(Serv const & src) {
 	*this = src;
 }
 
-Serv::~Serv(void) {
+Serv::~Serv( void ) {
 	_clear();
 }
 
@@ -51,7 +51,7 @@ Serv & Serv::operator=(Serv const & rhs) {
 
 // INTERNAL STUFF --------------------------------------------------------------
 
-void Serv::_clear(void)
+void Serv::_clear( void )
 {
 	std::map<int, User *>::iterator user_it;
 	for (user_it = _users.begin(); user_it != _users.end(); ++user_it) {
@@ -60,7 +60,7 @@ void Serv::_clear(void)
 		delete user_it->second;
 	}
 
-	std::map<std::string, Chan *>::iterator chan_it;
+	std::map<str, Chan *>::iterator chan_it;
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it)
 		delete chan_it->second;
 
@@ -70,7 +70,7 @@ void Serv::_clear(void)
 		close(_sockfd);
 }
 
-int Serv::_setup_socket(void)
+void Serv::_setup_socket( void )
 {
 	int optval = 1;
 	_sa.sin6_family = AF_INET6;
@@ -89,31 +89,9 @@ int Serv::_setup_socket(void)
 		die("sds", __FILE__, __LINE__, strerror(errno));
 
 	setsock_nonblock(_sockfd);
-
-	return (0);
 }
 
-int Serv::_setup_epoll(void)
-{
-	if ((_epollfd = epoll_create(10)) < 0)
-		die("sds", __FILE__, __LINE__, strerror(errno));
-
-	_epoll_register(_sockfd);
-	return (0);
-}
-
-int	Serv::_epoll_register(int fd)
-{
-	struct epoll_event ev;
-
-	ev.events = EPOLLIN;
-	ev.data.fd = fd;
-	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) < 0)
-		die("sds", __FILE__, __LINE__, strerror(errno));
-	return (0);
-}
-
-void Serv::_set_datetime(void)
+void Serv::_setup_datetime( void )
 {
 	time_t curr_time;
 	tm * curr_tm;
@@ -125,7 +103,29 @@ void Serv::_set_datetime(void)
 	_datetime = str(date_s);
 }
 
-void Serv::_new_connection(void)
+void Serv::_setup_all( void )
+{
+	_setup_socket();
+	_setup_datetime();
+
+	if ((_epollfd = epoll_create(10)) < 0)
+		die("sds", __FILE__, __LINE__, strerror(errno));
+	_epoll_register(_sockfd);
+
+	signal(SIGINT, sighandler);
+}
+
+void Serv::_epoll_register(int fd)
+{
+	struct epoll_event ev;
+
+	ev.events = EPOLLIN;
+	ev.data.fd = fd;
+	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) < 0)
+		die("sds", __FILE__, __LINE__, strerror(errno));
+}
+
+void Serv::_new_connection( void )
 {
 	int fd;
 
@@ -144,24 +144,12 @@ void Serv::_new_connection(void)
 	std::cout << C_CYAN << new_user->getNick() << " joined" C_R << std::endl;
 }
 
-void Serv::_user_manage(int fd)
-{
-	if (_users[fd]->user_recv())
-		killUser(_users[fd]);
-	std::map<int, User *>::iterator it;
-	for (it = _users.begin(); it != _users.end(); ++it)
-		it->second->flush();
-}
-
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
-int Serv::run(void)
+int Serv::run( void )
 {
-	_setup_socket();
-	_setup_epoll();
+	_setup_all();
 
-	_set_datetime();
-	signal(SIGINT, sighandler);
 	std::cout	<< C_YELLOW "Server launched:" C_R_ << _datetime << std::endl
 				<< C_YELLOW "Listening on port:" C_R_ << _port << std::endl;
 
@@ -170,10 +158,10 @@ int Serv::run(void)
 		struct epoll_event evts[MAXEV];
 
 		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0) {
-			if (errno == EINTR)
-				return (1);
-			else
+			if (errno != EINTR)
 				die("sds", __FILE__, __LINE__, strerror(errno));
+			else
+				return (1);
 		}
 
 		for (int i = 0; i < nfds; ++i) {
@@ -181,14 +169,18 @@ int Serv::run(void)
 
 			if (fd == _sockfd)
 				_new_connection();
-			else
-				_user_manage(fd);
+			else if (_users[fd]->user_recv())
+				killUser(_users[fd]);
 		}
+
+		std::map<int, User *>::iterator it;
+		for (it = _users.begin(); it != _users.end(); ++it)
+			it->second->flush();
 	}
 	return (0);
 }
 
-str Serv::getDatetime(void) const {
+str Serv::getDatetime( void ) const {
 	return (_datetime);
 }
 

@@ -33,7 +33,7 @@ Msg::Msg(str const & s)
 	_regen_str();
 }
 
-std::map<int, str> Msg::_gen_rpl_map(void)
+std::map<int, str> Msg::_gen_rpl_map( void )
 {
 	std::map<int, str> ret;
 
@@ -96,7 +96,7 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 	else
 		rpl_string += rpl_map.at(num);
 	
-	while (num > 999)
+	if (num > 999)
 		num %= 1000;
 
 	vars["{n}"] = contact->getNick();
@@ -140,7 +140,7 @@ Msg & Msg::operator=(Msg const & rhs)
 
 // INTERNAL STUFF --------------------------------------------------------------
 
-void Msg::_regen_str(void)
+void Msg::_regen_str( void )
 {
 	std::ostringstream oss("");
 
@@ -153,19 +153,19 @@ void Msg::_regen_str(void)
 
 // ACCESSORS -------------------------------------------------------------------
 
-str Msg::getPrefix(void) const {
+str Msg::getPrefix( void ) const {
 	return (_prefix);
 }
 
-str Msg::getCmd(void) const {
+str Msg::getCmd( void ) const {
 	return (_cmd);
 }
 
-str Msg::getPayload(void) const {
+str Msg::getPayload( void ) const {
 	return (_payload);
 }
 
-str Msg::getStr(void) const {
+str Msg::getStr( void ) const {
 	return (_as_str);
 }
 
