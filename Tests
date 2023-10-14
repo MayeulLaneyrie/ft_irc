@@ -11,65 +11,46 @@ USER:
 NICK:
 	- [OK] ERR_NONICKNAMEGIVEN
 	- [OK] ERR_ERRONEUSNICKNAME
-	- [] ERR_NICKNAMEINUSE
-	- [] With wrong Password
-	- [] With no password
-	- [] All good
-	- [] Test when already registered
+	- [OK] ERR_NICKNAMEINUSE
+	- [OK] With wrong Password
+	- [OK] With no password
+	- [OK] All good
+	- [OK] Test when already registered
 
 *** Test des commandes précédentes dans des ordres différents.
 
 PING:
-	- [] ERR_NEEDMOREPARAMS
-QUIT:
-	- [] With/Without arguments
-	*** Test how msg is broadcasted
-PRIVMSG:
-	- [] ERR_NEEDMOREPARAMS
-	- [] Single nick/single chan
-	- [] Multiple nick/chans mixed, including non existing ones
-NOTICE:
-	- [] Same as before, no rpl should be send
-OPER:
-	- [] ERR_NEEDMOREPARAMS
-	- [] Wrong name
-	- [] Wrong pass
-	- [] All good
-KILL:
-	- [] ERR_NOPRIVILEGES
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHNICK
-	*** Test how msg is broadcasted
+	- [OK] ERR_NEEDMOREPARAMS
 JOIN:
-	- [] ERR_BADCHANNAME
-	- [] ERR_INVITEONLYCHAN
-	- [] ERR_BADCHANNELKEY
-	- [] ERR_CHANNELISFULL
-	- [] Multiple chans, including non existing ones
+	- [OK] ERR_BADCHANNAME
+	- [OK] ERR_INVITEONLYCHAN
+	- [OK] ERR_BADCHANNELKEY
+	- [OK] ERR_CHANNELISFULL
+	- [OK] Multiple chans, including non existing ones
 MODE:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHNICK
-	- [] ERR_USERSDONTMATCH
-	- [] Nick ok
-	- [] ERR_CHANOPRIVSNEEDED
-	- [] ERR_UNKNOWNMODE
-	- [] Combiner tout ce qu'on peut imaginer, en + et en -
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHNICK
+	- [OK] ERR_USERSDONTMATCH
+	- [OK] Nick ok
+	- [OK] ERR_CHANOPRIVSNEEDED
+	- [OK] ERR_UNKNOWNMODE
+	- [OK] Combiner tout ce qu'on peut imaginer, en + et en -
 TOPIC:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHCHANNEL
-	- [] ERR_NOTONCHANNEL
-	- [] RPL_NOTOPIC
-	- [] RPL_TOPIC
-	- [] ERR_CHANOPRIVSNEEDED
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHCHANNEL
+	- [OK] ERR_NOTONCHANNEL
+	- [OK] RPL_NOTOPIC
+	- [OK] RPL_TOPIC
+	- [OK] ERR_CHANOPRIVSNEEDED
+	- [OK] all good
 INVITE:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHNICK
-	- [] ERR_NOSUCHCHANNEL
-	- [] ERR_NOTONCHANNEL
-	- [] ERR_CHANOPRIVSNEEDED
-	- [] ERR_USERONCHANNEL
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHNICK
+	- [OK] ERR_NOSUCHCHANNEL
+	- [OK] ERR_NOTONCHANNEL
+	- [OK] ERR_CHANOPRIVSNEEDED
+	- [OK] ERR_USERONCHANNEL
+	- [OK] all good
 KICK:
 	- [] ERR_NEEDMOREPARAMS
 	- [] ERR_NOSUCHCHANNEL
@@ -78,6 +59,12 @@ KICK:
 	- [] ERR_CHANOPRIVSNEEDED
 	- [] Multiple nicks, including non existing ones
 	- [] all good
+PRIVMSG:
+	- [] ERR_NEEDMOREPARAMS
+	- [] Single nick/single chan
+	- [] Multiple nick/chans mixed, including non existing ones
+NOTICE:
+	- [] Same as before, no rpl should be send
 WHOIS:
 	- [] ERR_NEEDMOREPARAMS
 	- [] ERR_NOSUCHNICK
@@ -88,6 +75,19 @@ PART:
 	- [] ERR_NOTONCHANNEL
 	- [] Multiple chans, including non existing ones
 	- [] all good
+OPER:
+	- [] ERR_NEEDMOREPARAMS
+	- [] Wrong name
+	- [] Wrong pass
+	- [] All good
+KILL:
+	- [] ERR_NOPRIVILEGES
+	- [] ERR_NEEDMOREPARAMS
+	- [] ERR_NOSUCHNICK
+	*** Test how msg is broadcasted
+QUIT:
+	- [] With/Without arguments
+	*** Test how msg is broadcasted
 NAMES:
 	- [] ERR_NEEDMOREPARAMS
 	- [] ERR_NOSUCHCHANNEL

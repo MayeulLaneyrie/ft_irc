@@ -105,7 +105,9 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 			result.push_back('t');
 			chan->setMode(MODE_T, add);
 		}
-		else if (*it == 'k' && (!add || has_third(arg))) {
+		else if (*it == 'k') {
+			if (add && !has_third(arg))
+				continue ;
 			result.push_back('k');
 			chan->setMode(MODE_K, add);
 			if (add) {
@@ -113,7 +115,9 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 				(result_args += ' ') += chan->getPasswd();
 			}
 		}
-		else if (*it == 'l' && (!add || has_third(arg))) {
+		else if (*it == 'l') {
+			if (add && !has_third(arg))
+				continue ;
 			result.push_back('l');
 			chan->setMode(MODE_L, add);
 			if (add) {
@@ -121,7 +125,9 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 				(result_args += ' ') += int_to_str(chan->getLimit());
 			}
 		}
-		else if (*it == 'o' && has_third(arg)) {
+		else if (*it == 'o') {
+			if (!has_third(arg))
+				continue ;
 			str target_name = extract_first_word(arg[2]);
 			User * target = _serv->getUser(target_name);
 			if (!target) 

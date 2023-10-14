@@ -41,22 +41,24 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 				channel->opMode(this, 1);
 			}
 		}
-		else if (channel->getUser(_nick))
-			;
-		else if (channel->checkMode(MODE_I) && !channel->isInvited(this))
-			rpl(ERR_INVITEONLYCHAN, *it);
-		else if (channel->checkMode(MODE_K) && (keyIt == Key.end() || !channel->checkPasswd(*keyIt)))
-			rpl(ERR_BADCHANNELKEY, *it);
-		else if (channel->checkMode(MODE_L) && channel->isFull())
-			rpl(ERR_CHANNELISFULL, *it);
-		else {
-			channel->addUser(this);
-			_chans[*it] = channel;
-			channel->chan_send(Msg(_nick, "JOIN", ":" + *it));
-			if (channel->getTopic() != "")
-				rpl(RPL_TOPIC, *it + " :" + channel->getTopic());
-			Msg msg("", "", *it);
-			_cmd_NAMES(msg);
+		if (channel) {
+			if (channel->getUser(_nick))
+				;
+			else if (channel->checkMode(MODE_I) && !channel->isInvited(this))
+				rpl(ERR_INVITEONLYCHAN, *it);
+			else if (channel->checkMode(MODE_K) && (keyIt == Key.end() || !channel->checkPasswd(*keyIt)))
+				rpl(ERR_BADCHANNELKEY, *it);
+			else if (channel->checkMode(MODE_L) && channel->isFull())
+				rpl(ERR_CHANNELISFULL, *it);
+			else {
+				channel->addUser(this);
+				_chans[*it] = channel;
+				channel->chan_send(Msg(_nick, "JOIN", ":" + *it));
+				if (channel->getTopic() != "")
+					rpl(RPL_TOPIC, *it + " :" + channel->getTopic());
+				Msg msg("", "", *it);
+				_cmd_NAMES(msg);
+			}
 		}
 		if (keyIt != Key.end())
 			keyIt++;

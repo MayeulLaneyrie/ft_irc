@@ -37,6 +37,9 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 	std::map<str, Chan *>::iterator it;
 	for (it = _chans.begin(); it != _chans.end(); ++it)
 		it->second->renameUser(this, arg[0]);
+	broadcast(Msg(_nick, "NICK", arg[0]));
+	if (_reg_status == REG_OK)
+		user_send(Msg(_nick, "NICK", arg[0]));
 	_nick = arg[0];
 	if (_reg_status & REG_NICK)
 		return (0);
