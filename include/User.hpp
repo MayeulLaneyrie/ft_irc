@@ -51,11 +51,12 @@ class User {
 
 // USER DATA -------------------------------------------------------------------
 
-		int		_fd;
+		int _fd;
 
-		str		_nick;
-		str		_username;
-		str		_realname;
+		str _nick;
+		str _pref;
+		str _username;
+		str _realname;
 		
 		/*
 		 * output and input buffers. All input is bufferized to manage the
@@ -64,9 +65,9 @@ class User {
 		 * more than one call to send for each epoll loop.
 		 * _cbuffer is just the buffer used with recv().
 		 */
-		str		_obuffer;
-		str		_ibuffer;
-		char	_cbuffer[RECV_BUFF_SIZE];
+		str _obuffer;
+		str _ibuffer;
+		char _cbuffer[RECV_BUFF_SIZE];
 
 		/*
 		 * _reg_status: bitset to indicate what conditions have been yet
@@ -74,12 +75,12 @@ class User {
 		 * defined above.
 		 * _is_op: boolean, self-explanatory.
 		 */
-		int		_reg_status;
-		int		_is_op;
+		int _reg_status;
+		int _is_op;
 
 		std::map<str, Chan *> _chans;
 
-		Serv *	_serv;
+		Serv * _serv;
 
 // INTERNAL STUFF --------------------------------------------------------------
 

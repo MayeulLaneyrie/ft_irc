@@ -25,9 +25,9 @@ int User::_cmd_NOTICE(Msg & cmd) // ------------------------------------- NOTICE
 		User * user_target = _serv->getUser(*it);
 		Chan * chan_target = _serv->getChan(*it);
 		if (user_target && user_target->isFullyRegistered())
-			user_target->user_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]));
+			user_target->user_send(Msg(_pref, "NOTICE", *it + " :" + arg[1]));
 		else if(chan_target)
-			chan_target->chan_send(Msg(_nick, "NOTICE", *it + " :" + arg[1]), this);
+			chan_target->chan_send(Msg(_pref, "NOTICE", *it + " :" + arg[1]), this);
 	}
 	return (0);
 }

@@ -33,17 +33,23 @@ int User::_cmd_NICK(Msg & cmd) // ----------------------------------------- NICK
 		return (error(":Access denied, password wasn't provided"));
 
 	std::cout << C_CYAN << getNick() << " --> " << arg[0] << C_R << std::endl;
+
 	_serv->renameUser(this, arg[0]);
 	std::map<str, Chan *>::iterator it;
 	for (it = _chans.begin(); it != _chans.end(); ++it)
 		it->second->renameUser(this, arg[0]);
-	broadcast(Msg(_nick, "NICK", arg[0]));
+
+	broadcast(Msg(_pref, "NICK", arg[0]));
 	if (_reg_status == REG_OK)
-		user_send(Msg(_nick, "NICK", arg[0]));
+		user_send(Msg(_pref, "NICK", arg[0]));
+
 	_nick = arg[0];
+	_pref = _nick + '!' + _username + "@whatever";
+
 	if (_reg_status & REG_NICK)
 		return (0);
 	_reg_status |= REG_NICK;
+
 	if (_reg_status & REG_USER) {
 		rpl(RPL_WELCOME);
 		rpl(RPL_YOURHOST);

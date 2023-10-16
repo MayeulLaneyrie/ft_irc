@@ -25,9 +25,9 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 		User * user_target = _serv->getUser(*it);
 		Chan * chan_target = _serv->getChan(*it);
 		if (user_target && user_target->isFullyRegistered())
-			user_target->user_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]));
+			user_target->user_send(Msg(_pref, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
-			chan_target->chan_send(Msg(_nick, "PRIVMSG", *it + " :" + arg[1]), this);
+			chan_target->chan_send(Msg(_pref, "PRIVMSG", *it + " :" + arg[1]), this);
 		else
 			rpl(ERR_NOSUCHNICK, *it);
 	}

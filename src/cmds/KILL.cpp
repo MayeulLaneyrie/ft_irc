@@ -22,7 +22,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	User * target = _serv->getUser(arg[0]);
 	if (!target)
 		return (rpl(ERR_NOSUCHNICK, arg[0]));
-	target->user_send(Msg(_nick, "KILL", arg[0] + " :" + arg[1]));
+	target->user_send(Msg(_pref, "KILL", arg[0] + " :" + arg[1]));
 	target->broadcast(Msg(arg[0], "QUIT", ":(Killed (" + _nick + " (" + arg[1] + ")))"));
 	target->error(":Closing Link: " SERVER_NAME " :(Killed (" + _nick + " (" + arg[1] + ")))");
 	_serv->killUser(target);

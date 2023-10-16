@@ -17,7 +17,7 @@ int User::_cmd_QUIT(Msg & cmd) // ----------------------------------------- QUIT
 	str_vec arg = cmd.payloadAsVector(1);
 	if (arg.empty())
 		arg.push_back("Client exited");
-	broadcast(Msg(_nick, "QUIT", str(":Quit: ") + arg[0]));
+	broadcast(Msg(_pref, "QUIT", str(":Quit: ") + arg[0]));
 	error(str(":Okay, bye: (") + _username + "@whatever) [" + arg[0] + ']');
 	return (1);
 }

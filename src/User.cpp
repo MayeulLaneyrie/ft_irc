@@ -104,7 +104,7 @@ int User::_exec_cmd( void )
 	str cmd = cmd_msg.getCmd();
 
 	if (cmd != "PING")
-		std::cout << C_GREEN << getNick() << " >" C_R_ << "{ " << msg_str << " }" << std::endl;
+		std::cout << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R_  << std::endl;
 
 	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
 		return (rpl(ERR_NOTREGISTERED));
@@ -200,7 +200,7 @@ int User::user_recv( void )
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 	
 	if (!len) {
-		broadcast(Msg(_nick, "QUIT", ":Connection closed"));
+		broadcast(Msg(_pref, "QUIT", ":Connection closed"));
 		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
 		return (1);
 	}
@@ -223,7 +223,7 @@ int User::user_recv( void )
 int User::user_send(Msg const & msg, int flushnow)
 {
 	if (msg.getCmd() != "PONG")
-		std::cout << C_BLUE << getNick() << " <" C_R_ << msg.getStr();
+		std::cout << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
 	_obuffer += msg.getStr();
 	if (flushnow)
 		return (flush());

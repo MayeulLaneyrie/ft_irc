@@ -52,44 +52,44 @@ INVITE:
 	- [OK] ERR_USERONCHANNEL
 	- [OK] all good
 KICK:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHCHANNEL
-	- [] ERR_NOSUCHNICK
-	- [] ERR_USERNOTINCHANNEL
-	- [] ERR_CHANOPRIVSNEEDED
-	- [] Multiple nicks, including non existing ones
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHCHANNEL
+	- [OK] ERR_NOSUCHNICK
+	- [OK] ERR_USERNOTINCHANNEL
+	- [OK] ERR_CHANOPRIVSNEEDED
+	- [OK] Multiple nicks, including non existing ones
+	- [OK] all good
 PRIVMSG:
-	- [] ERR_NEEDMOREPARAMS
-	- [] Single nick/single chan
-	- [] Multiple nick/chans mixed, including non existing ones
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] Single nick/single chan
+	- [OK] Multiple nick/chans mixed, including non existing ones
 NOTICE:
-	- [] Same as before, no rpl should be send
+	- [OK] Same as before, no rpl should be send
 WHOIS:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHNICK
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHNICK
+	- [OK] all good
 PART:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHCHANNEL
-	- [] ERR_NOTONCHANNEL
-	- [] Multiple chans, including non existing ones
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHCHANNEL
+	- [OK] ERR_NOTONCHANNEL
+	- [OK] Multiple chans, including non existing ones
+	- [OK] all good
 OPER:
-	- [] ERR_NEEDMOREPARAMS
-	- [] Wrong name
-	- [] Wrong pass
-	- [] All good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] Wrong name
+	- [OK] Wrong pass
+	- [OK] All good
 KILL:
-	- [] ERR_NOPRIVILEGES
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHNICK
+	- [OK] ERR_NOPRIVILEGES
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHNICK
 	*** Test how msg is broadcasted
 QUIT:
-	- [] With/Without arguments
+	- [OK] With/Without arguments
 	*** Test how msg is broadcasted
 NAMES:
-	- [] ERR_NEEDMOREPARAMS
-	- [] ERR_NOSUCHCHANNEL
-	- [] Multiple chans, including non existing ones
-	- [] all good
+	- [OK] ERR_NEEDMOREPARAMS
+	- [OK] ERR_NOSUCHCHANNEL
+	- [OK] Multiple chans, including non existing ones
+	- [OK] all good

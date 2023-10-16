@@ -34,7 +34,7 @@ int User::_cmd_PART(Msg & cmd) // ----------------------------------------- PART
 		else if (!channel->getUser(_nick))
 			rpl(ERR_NOTONCHANNEL, _nick);
 		else {
-			channel->chan_send(Msg(_nick, "PART", *it + reason));
+			channel->chan_send(Msg(_pref, "PART", *it + reason));
 			rmChanFromList(*it);
 			channel->rmUser(this);
 		}

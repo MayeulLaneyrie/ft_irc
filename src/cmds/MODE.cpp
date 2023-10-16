@@ -142,6 +142,6 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 			rpl(ERR_UNKNOWNMODE, str(1, *it));
 	}
 	if (result.find_first_of(allowed_chars) != str::npos)
-		chan->chan_send(Msg(_nick, "MODE", result + result_args));
+		chan->chan_send(Msg(_pref, "MODE", arg[0] + ' ' + result + result_args));
 	return (0);
 }

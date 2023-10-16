@@ -35,6 +35,6 @@ int User::_cmd_TOPIC(Msg & cmd) // --------------------------------------- TOPIC
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
 
 	channel->setTopic(arg[1]);
-	channel->chan_send(Msg(_nick, "TOPIC", arg[0] + " :" + arg[1]));
+	channel->chan_send(Msg(_pref, "TOPIC", arg[0] + " :" + arg[1]));
 	return (0);
 }

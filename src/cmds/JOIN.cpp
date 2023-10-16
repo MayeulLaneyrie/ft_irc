@@ -53,7 +53,7 @@ int User::_cmd_JOIN(Msg & cmd) // ----------------------------------------- JOIN
 			else {
 				channel->addUser(this);
 				_chans[*it] = channel;
-				channel->chan_send(Msg(_nick, "JOIN", ":" + *it));
+				channel->chan_send(Msg(_pref, "JOIN", ":" + *it));
 				if (channel->getTopic() != "")
 					rpl(RPL_TOPIC, *it + " :" + channel->getTopic());
 				Msg msg("", "", *it);

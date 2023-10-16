@@ -35,12 +35,14 @@ int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 
 		if (!target)
 			rpl(ERR_NOSUCHNICK, *it);
+		else if (!channel->getUser(_nick))
+			rpl (ERR_NOTONCHANNEL, arg[0]);
 		else if (!channel->getUser(*it))
 			rpl(ERR_USERNOTINCHANNEL, *it + " " + arg[0]);
 		else if (!channel->isOp(this))
 			rpl(ERR_CHANOPRIVSNEEDED, arg[0]);
 		else {
-			channel->chan_send(Msg(_nick, "KICK", arg[0] + " " + *it + " :" + comment));
+			channel->chan_send(Msg(_pref, "KICK", arg[0] + " " + *it + " :" + comment));
 			channel->rmUser(target);
 			target->rmChanFromList(arg[0]);
 		}
