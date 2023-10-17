@@ -26,6 +26,6 @@
 #include <cstdarg>
 #include <cstring>
 
-#define RECV_BUFF_SIZE 16
+#define RECV_BUFF_SIZE 2048
 
 #endif

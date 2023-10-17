@@ -40,8 +40,13 @@ User & User::operator=(User const & rhs)
 	close(_fd);
 	_fd = rhs._fd;
 	_nick = rhs._nick;
+	_username = rhs._username;
+	_realname = rhs._realname;
 	_ibuffer = rhs._ibuffer;
+	_obuffer = rhs._obuffer;
 	_reg_status = rhs._reg_status;
+	_is_op = rhs._is_op;
+	_serv = rhs._serv;
 	return (*this);
 }
 
@@ -73,7 +78,6 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map( void )
 	ret["INVITE"] = &User::_cmd_INVITE;
 	ret["NAMES"] = &User::_cmd_NAMES;
 	ret["WHO"] = &User::_cmd_VOID;
-	ret["BOT"] = &User::_cmd_BOT;
 	return (ret);
 }
 
@@ -105,7 +109,7 @@ int User::_exec_cmd( void )
 	str cmd = cmd_msg.getCmd();
 
 	if (cmd != "PING")
-		std::cout << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R_  << std::endl;
+		std::cout << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R << std::endl;
 
 	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
 		return (rpl(ERR_NOTREGISTERED));
@@ -199,8 +203,8 @@ void User::broadcast(Msg const & msg)
 int User::user_recv( void )
 {
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
-	
-	if (!len) {
+
+	if (len <= 0) {
 		broadcast(Msg(_pref, "QUIT", ":Connection closed"));
 		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
 		return (1);
@@ -235,7 +239,7 @@ int	User::flush( void )
 {
 	if (_obuffer.empty())
 		return (0);
-	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), 0);
+	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), MSG_NOSIGNAL);
 	_obuffer.clear();
 	return (ret);
 }

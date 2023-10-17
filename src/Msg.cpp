@@ -84,6 +84,8 @@ std::map<int, str> Msg::_gen_rpl_map( void )
 	return (ret);
 }
 
+#ifndef BOT
+
 Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 {
 	static const std::map<int, str> rpl_map = _gen_rpl_map();
@@ -121,6 +123,8 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 
 	_regen_str();
 }
+
+#endif
 
 Msg::Msg(Msg const & src) {
 	*this = src;

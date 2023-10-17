@@ -138,6 +138,8 @@ class Msg {
 		 */
 		Msg(str const & s);
 
+		#ifndef BOT
+
 		/*
 		 * Construct a RPL message. The prefix will be the SERVER_NAME, the
 		 * command will be the reply number. The payload string will be taken
@@ -150,6 +152,8 @@ class Msg {
 		 * (p2, for variable "{2}").
 		 */
 		Msg(int num, User * contact, str const & p1 = 0, str const & p2 = 0);
+
+		#endif
 
 		Msg(Msg const & src);
 

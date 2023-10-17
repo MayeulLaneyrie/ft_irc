@@ -34,8 +34,13 @@ SRC		=	src/main.cpp \
 				src/cmds/PING.cpp \
 				src/cmds/WHOIS.cpp \
 				src/cmds/KICK.cpp \
-				src/cmds/NAMES.cpp \
-				src/cmds/BOT.cpp
+				src/cmds/NAMES.cpp
+
+BOT_SRC	=	bot_src/main.cpp \
+			bot_src/Bot.cpp \
+			src/utils.cpp \
+			src/namecheck.cpp \
+			src/Msg.cpp
 
 NAME	=	ircserv
 
@@ -46,8 +51,10 @@ CDEP	=	-MMD
 RM		=	rm -rf
 
 OBJ		=	$(SRC:%.cpp=.obj/%.o)
+BOT_OBJ	=	$(BOT_SRC:%.cpp=.obj/%.o)
 
 DEP		=	$(SRC:%.cpp=.obj/%.d)
+BOT_DEP	=	$(BOT_SRC:%.cpp=.obj/%.d)
 
 all		:	obj $(NAME)
 
@@ -58,11 +65,15 @@ $(NAME)	:	$(OBJ)
 			@ $(CC) $(CFLAGS) -o $(NAME) $(SRC)
 			@ echo "\e[1mDone!\e[0m"
 
+bot		:	$(BOT_OBJ)
+			@ echo "\n\e[3mLinking...\e[0m\n"
+			@ $(CC) $(CFLAGS) -D BOT -o bot $(BOT_SRC)
+			@ echo "\e[1mDone!\e[0m"
+
 obj		:
-			@ if [ ! -d "./.obj/src" ]; then \
-				mkdir -p .obj/src; \
-				mkdir -p .obj/src/cmds; \
-			fi
+			@ mkdir -p .obj/src
+			@ mkdir -p .obj/src/cmds
+			@ mkdir -p .obj/bot_src
 
 .obj/%.o	:	%.cpp
 			@ echo "\e[3mCompiling $<...\e[0m"
@@ -70,12 +81,14 @@ obj		:
 
 clean	:
 			@ echo "\e[3mCleaning...\e[0m"
-			@ $(RM) $(OBJ)
+			@ $(RM) $(OBJ) $(BOT_OBJ)
 			@ $(RM) .obj
 
 fclean	:	clean
 			@ echo "\e[3mRemoving $(NAME)...\e[0m"
 			@ $(RM) $(NAME)
+			@ echo "\e[3mRemoving bot...\e[0m"
+			@ $(RM) bot
 
 re		:	fclean all
 
