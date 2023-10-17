@@ -73,6 +73,9 @@ int Bot::_exec_cmd( void )
 		std::cout << C_MAGENTA "Connection failed!" C_R << std::endl;
 		return (1);
 	}
+	
+	if (msg.getCmd() == "PING")
+		send_to_serv(Msg("", "PONG", msg.getPayload()));
 
 	str prefix = msg.getPrefix();
 	str sender = extract_first_word(prefix, '!');
@@ -107,15 +110,28 @@ int Bot::_exec_cmd( void )
 	return (0);
 }
 
-// OTHER PUBLIC MEMBER FUNCTIONS ===============================================
+void Bot::_setup_sig( void )
+{
+	struct sigaction info;
 
+	info.sa_handler = sighandler;
+	info.sa_flags = 0;
+	sigemptyset(&info.sa_mask);
+	sigaction(SIGINT, &info, NULL);
+}
+
+// OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
 int Bot::run( void )
 {
+	_setup_sig();
+
 	while (1) {
 
 		int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE, 0);
 
+		if (errno == EINTR)
+			return (1);
 		if (len <= 0) {
 			std::cout << C_MAGENTA "Connection lost." C_R << std::endl;
 			return (1);

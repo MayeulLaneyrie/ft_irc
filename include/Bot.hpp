@@ -45,6 +45,8 @@ class Bot {
 		Bot( void );
 
 		int _exec_cmd( void );
+		void _setup_sig( void );
+
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
 
