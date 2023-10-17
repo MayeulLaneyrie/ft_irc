@@ -73,6 +73,7 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map( void )
 	ret["INVITE"] = &User::_cmd_INVITE;
 	ret["NAMES"] = &User::_cmd_NAMES;
 	ret["WHO"] = &User::_cmd_VOID;
+	ret["BOT"] = &User::_cmd_BOT;
 	return (ret);
 }
 

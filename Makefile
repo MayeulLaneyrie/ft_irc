@@ -34,7 +34,8 @@ SRC		=	src/main.cpp \
 				src/cmds/PING.cpp \
 				src/cmds/WHOIS.cpp \
 				src/cmds/KICK.cpp \
-				src/cmds/NAMES.cpp
+				src/cmds/NAMES.cpp \
+				src/cmds/BOT.cpp
 
 NAME	=	ircserv
 

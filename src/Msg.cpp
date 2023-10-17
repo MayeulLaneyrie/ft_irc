@@ -80,7 +80,7 @@ std::map<int, str> Msg::_gen_rpl_map( void )
 	ret[ERR_CHANOPRIVSNEEDED] = "{1} :You're not channel operator";
 	ret[ERR_NOOPERHOST] = ":Invalid oper credentials";
 	ret[ERR_USERSDONTMATCH] = ":Cant change mode for other users";
-
+	ret[BOT_HELP] = "{1}";
 	return (ret);
 }
 

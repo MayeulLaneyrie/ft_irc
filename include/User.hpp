@@ -125,6 +125,7 @@ class User {
 		int _cmd_MODE(Msg & cmd);
 		int _cmd_PART(Msg & cmd);
 		int _cmd_NAMES(Msg & cmd);
+		int _cmd_BOT(Msg & cmd);
 
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P
