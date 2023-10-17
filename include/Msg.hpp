@@ -67,8 +67,6 @@
 #define ERR_NOOPERHOST 491
 #define ERR_USERSDONTMATCH 502
 
-#define BOT_HELP 999 //bot des familles
-
 class Chan;
 class User;
 
@@ -138,7 +136,7 @@ class Msg {
 		 */
 		Msg(str const & s);
 
-		#ifndef BOT
+#ifndef BOT
 
 		/*
 		 * Construct a RPL message. The prefix will be the SERVER_NAME, the
@@ -153,7 +151,7 @@ class Msg {
 		 */
 		Msg(int num, User * contact, str const & p1 = 0, str const & p2 = 0);
 
-		#endif
+#endif
 
 		Msg(Msg const & src);
 

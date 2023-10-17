@@ -19,11 +19,14 @@ Bot::Bot(int port, str nick, str pass) :
 	_pass(pass),
 	_is_connected(0)
 {
+	if (port < 1 || port > 65535)
+		die("sdsd", __FILE__, __LINE__, "Invalid port value", port);
+
 	if ((_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
 
 	_sa.sin_family = AF_INET;
-	_sa.sin_addr.s_addr = inet_addr("127.0.0.1");
+	_sa.sin_addr.s_addr = htonl(0x7f000001);
 	_sa.sin_port = htons(port);
 
 	if (connect(_fd, (sockaddr*)&_sa, sizeof(_sa)) < 0)
@@ -88,23 +91,44 @@ int Bot::_exec_cmd( void )
 		return (0);
 
 	if (!is_name_chan(arg[0])) {
+
 		str bot_cmd = extract_first_word(arg[1]);
 		if (bot_cmd == "join")
 			send_to_serv(Msg("", "JOIN", arg[1]));
 		else if (bot_cmd == "banword") {
-			send_to_serv(Msg("", "NOTICE",
-				sender + " :\"" + arg[1] + "\" will be added to the list of forbidden words."));
+			notice(sender, "\"" + arg[1] + "\" will be added to the list of forbidden words.");
 			_bad_words.insert(arg[1]);
 		}
+		else if (bot_cmd == "list") {
+			str list_msg("The following words are currently banned: ");
+			std::set<str>::iterator it;
+
+			for (it = _bad_words.begin(); it != _bad_words.end(); ++it) {
+				if (it != _bad_words.begin())
+					list_msg += ", ";
+				list_msg += *it;
+			}
+			notice(sender, list_msg);
+		}
+		else if (bot_cmd == "help") {
+			notice(sender, "Hi, I am a censor bot! Whenever someone tells a bad"
+				" word, I will tell them to watch their f*cking mouth.");
+			notice(sender, "You can user me with the following commands:");
+			notice(sender, "help: display these messages");
+			notice(sender, "join <chan>: try to join the specified channel(s)");
+			notice(sender, "banword <word>: ban the specified word");
+			notice(sender, "list: display a list of all the banned words");
+		}
+		else
+			notice(sender, "I don't know this command: " + bot_cmd);
 		return (0);
 	}
 
 	std::set<str>::iterator it;
 	for (it = _bad_words.begin(); it != _bad_words.end(); ++it) {
 		if (arg[1].find(*it) != str::npos)
-			send_to_serv(Msg("", "NOTICE",
-				arg[0] + " :Watch your f*cking mouth, " + sender + ", \"" + *it
-				+ "\" is a forbidden word!"));
+			notice(arg[0], "Watch your f*cking mouth " + sender + ", \"" + *it
+				+ "\" is a forbidden word!");
 	}
 
 	return (0);
@@ -144,6 +168,10 @@ int Bot::run( void )
 			if (_exec_cmd())
 				return (1);
 	}
+}
+
+int Bot::notice(str target, str msg) {
+	return (send_to_serv(Msg("", "NOTICE", target + " :" + msg)));
 }
 
 int Bot::send_to_serv(Msg const & msg)

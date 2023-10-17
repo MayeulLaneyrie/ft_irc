@@ -62,6 +62,7 @@ class Bot {
 
 		int run( void );
 
+		int notice(str target, str msg);
 		int send_to_serv(Msg const & msg);
 };
 
