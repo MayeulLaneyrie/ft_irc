@@ -80,6 +80,9 @@ int User::_cmd_MODE(Msg & cmd) // ----------------------------------------- MODE
 		return (rpl(RPL_CHANNELMODEIS, mode_rpl));
 	}
 
+	if (arg[1] == "b")
+		return (rpl(RPL_ENDOFBANLIST, arg[0]));
+
 	if (!chan->isOp(this))
 		return (rpl(ERR_CHANOPRIVSNEEDED, arg[0]));
 

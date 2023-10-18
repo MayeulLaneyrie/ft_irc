@@ -32,6 +32,7 @@ SRC		=	src/main.cpp \
 				src/cmds/USER.cpp \
 				src/cmds/PRIVMSG.cpp \
 				src/cmds/PING.cpp \
+				src/cmds/WHO.cpp \
 				src/cmds/WHOIS.cpp \
 				src/cmds/KICK.cpp \
 				src/cmds/NAMES.cpp

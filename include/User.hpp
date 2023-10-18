@@ -121,6 +121,7 @@ class User {
 		int _cmd_INVITE(Msg & cmd);
 		int _cmd_TOPIC(Msg & cmd);
 		int _cmd_KICK(Msg & cmd);
+		int _cmd_WHO(Msg & cmd);
 		int _cmd_WHOIS(Msg & cmd);
 		int _cmd_MODE(Msg & cmd);
 		int _cmd_PART(Msg & cmd);

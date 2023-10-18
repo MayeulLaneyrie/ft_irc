@@ -46,6 +46,7 @@ std::map<int, str> Msg::_gen_rpl_map( void )
 	ret[RPL_WHOISUSER] = "{1} <host> * :{2}";
 	ret[RPL_WHOISSERVER] = "{1} {sn} :string that describes server info";
 	ret[RPL_WHOISOPERATOR] = "{1} :is an IRC operator";
+	ret[RPL_ENDOFWHO] = "{1} :End of WHO list";
 	ret[RPL_ENDOFWHOIS] = "{1} :End of /WHOIS list";
 	ret[RPL_WHOISCHANNELS] = "{1} :{2}";
 
@@ -53,8 +54,10 @@ std::map<int, str> Msg::_gen_rpl_map( void )
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_INVITING] = "{1}";
+	ret[RPL_WHOREPLY] = "{1} {u} whatever {sn} {n} H{2} :0 {rn}";
 	ret[RPL_NAMREPLY] = "= {1}";
 	ret[RPL_ENDOFNAMES] = "{1} :End of /NAMES list";
+	ret[RPL_ENDOFBANLIST] = "{1} :End of channel ban list";
 	ret[RPL_YOUREOPER] = ":You are now an IRC operator";
 
 	ret[ERR_NOSUCHNICK] = "{1} :No such nick/channel";
@@ -98,15 +101,14 @@ Msg::Msg(int num, User * contact, str const & p1, str const & p2)
 	else
 		rpl_string += rpl_map.at(num);
 	
-	if (num > 999)
-		num %= 1000;
+	num %= 1000;
 
 	vars["{n}"] = contact->getNick();
 	vars["{u}"] = contact->getUsername();
 	vars["{rn}"] = contact->getRealname();
 	vars["{sn}"] = SERVER_NAME;
 	vars["{dt}"] = contact->getServ()->getDatetime();
-	vars["{v}"] = "0.42";
+	vars["{v}"] = "0.0.42";
 	vars["{1}"] = p1;
 	vars["{2}"] = p2;
 

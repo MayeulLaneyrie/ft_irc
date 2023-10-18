@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.hpp"
 #include "Serv.hpp"
 
 // COPLIEN, CONSTRUCTORS & DESTRUCTORS -----------------------------------------
@@ -158,19 +157,22 @@ int Serv::run( void )
 		struct epoll_event evts[MAXEV];
 
 		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0) {
-			if (errno != EINTR)
-				die("sds", __FILE__, __LINE__, strerror(errno));
-			else
-				return (1);
+			std::cout << C_RED "The server will now stop due to epoll_wait()"
+				" being interrupted." C_R << std::endl;
+			return (1);
 		}
 
+		std::cout << "*** New epoll round!" << std::endl;
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
 
 			if (fd == _sockfd)
 				_new_connection();
-			else if (_users[fd]->user_recv())
-				killUser(_users[fd]);
+			else {
+				std::cout << "    READ OK " << _users[fd]->getNick() << " (" << fd << ")" << std::endl;
+				if (_users[fd]->user_recv())
+					killUser(_users[fd]);
+			}
 		}
 
 		std::map<int, User *>::iterator it;

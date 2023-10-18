@@ -37,11 +37,7 @@ void die(const char * fmt, ...) {
 }
 
 void setsock_nonblock(int fd) {
-	int flags;
-
-	if ((flags = fcntl(fd, F_GETFL)) < 0)
-		die("sds", __FILE__, __LINE__, strerror(errno));
-	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
 }
 
@@ -73,7 +69,5 @@ int sed(str & s, str const & from, str const & to)
 void sighandler(int x)
 {
 	( void )x;
-	std::cout
-		<< C_RED "\n*** SIGINT has been caught, the program will now stop." C_R
-		<< std::endl;
+	std::cout << "\n" C_RED "**** SIGINT has been caught ****" C_R << std::endl;
 }

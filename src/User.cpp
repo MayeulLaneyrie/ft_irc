@@ -64,7 +64,6 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map( void )
 	ret["USER"] = &User::_cmd_USER;
 	ret["PING"] = &User::_cmd_PING;
 	ret["QUIT"] = &User::_cmd_QUIT;
-	ret["MODE"] = &User::_cmd_VOID;
 	ret["PRIVMSG"] = &User::_cmd_PRIVMSG;
 	ret["NOTICE"] = &User::_cmd_NOTICE;
 	ret["OPER"] = &User::_cmd_OPER;
@@ -72,12 +71,12 @@ std::map<str, User::ft_cmd> User::_gen_cmd_map( void )
 	ret["JOIN"] = &User::_cmd_JOIN;
 	ret["TOPIC"] = &User::_cmd_TOPIC;
 	ret["KICK"] = &User::_cmd_KICK;
+	ret["WHO"] = &User::_cmd_WHO;
 	ret["WHOIS"] = &User::_cmd_WHOIS;
 	ret["MODE"] = &User::_cmd_MODE;
 	ret["PART"] = &User::_cmd_PART;
 	ret["INVITE"] = &User::_cmd_INVITE;
 	ret["NAMES"] = &User::_cmd_NAMES;
-	ret["WHO"] = &User::_cmd_VOID;
 	return (ret);
 }
 
@@ -108,7 +107,7 @@ int User::_exec_cmd( void )
 	Msg cmd_msg(msg_str);
 	str cmd = cmd_msg.getCmd();
 
-	if (cmd != "PING")
+	if (1 || cmd != "PING")
 		std::cout << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R << std::endl;
 
 	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
@@ -227,7 +226,7 @@ int User::user_recv( void )
 
 int User::user_send(Msg const & msg, int flushnow)
 {
-	if (msg.getCmd() != "PONG")
+	if (1 || msg.getCmd() != "PONG")
 		std::cout << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
 	_obuffer += msg.getStr();
 	if (flushnow)
@@ -239,6 +238,9 @@ int	User::flush( void )
 {
 	if (_obuffer.empty())
 		return (0);
+
+	std::cout << "    FLUSH " << getNick() << " (" << _fd << ")" << std::endl;
+
 	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), MSG_NOSIGNAL);
 	_obuffer.clear();
 	return (ret);
