@@ -53,11 +53,8 @@ Serv & Serv::operator=(Serv const & rhs) {
 void Serv::_clear( void )
 {
 	std::map<int, User *>::iterator user_it;
-	for (user_it = _users.begin(); user_it != _users.end(); ++user_it) {
-		user_it->second->error(":Server shutdown, bye bye!");
-		user_it->second->flush();
+	for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
 		delete user_it->second;
-	}
 
 	std::map<str, Chan *>::iterator chan_it;
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it)
@@ -118,7 +115,7 @@ void Serv::_epoll_register(int fd)
 {
 	struct epoll_event ev;
 
-	ev.events = EPOLLIN;
+	ev.events = EPOLLIN | EPOLLOUT;
 	ev.data.fd = fd;
 	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
@@ -145,6 +142,8 @@ void Serv::_new_connection( void )
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
+int g_interrupt = 0;
+
 int Serv::run( void )
 {
 	_setup_all();
@@ -156,28 +155,45 @@ int Serv::run( void )
 		int nfds;
 		struct epoll_event evts[MAXEV];
 
-		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0) {
-			std::cout << C_RED "The server will now stop due to epoll_wait()"
-				" being interrupted." C_R << std::endl;
-			return (1);
+		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 || g_interrupt) {
+			if (!g_interrupt)
+				die("sds", __FILE__, __LINE__, strerror(errno));
+			if (g_interrupt == 1) {
+
+				std::cout << C_RED "*** The server will now stop ***" C_R << std::endl;
+
+				if (!_usercount)
+					return (1);
+
+				std::map<int, User *>::iterator user_it;
+				for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
+					user_it->second->error(":Server shutdown, bye bye!");
+
+				++g_interrupt;
+			}
+			else
+				return (1);
 		}
 
-		std::cout << "*** New epoll round!" << std::endl;
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
 
 			if (fd == _sockfd)
 				_new_connection();
 			else {
-				std::cout << "    READ OK " << _users[fd]->getNick() << " (" << fd << ")" << std::endl;
-				if (_users[fd]->user_recv())
-					killUser(_users[fd]);
+				if (evts[i].events & EPOLLIN)
+				{
+					_users[fd]->setStop(_users[fd]->user_recv());
+				}
+				if (evts[i].events & EPOLLOUT)
+				{
+					if (_users[fd]->getStop() >= 0)
+						_users[fd]->flush();
+					if (_users[fd]->getStop())
+						killUser(_users[fd]);
+				}
 			}
 		}
-
-		std::map<int, User *>::iterator it;
-		for (it = _users.begin(); it != _users.end(); ++it)
-			it->second->flush();
 	}
 	return (0);
 }
@@ -205,7 +221,6 @@ User * Serv::getUser(str const & nick)
 
 void Serv::killUser(User * user)
 {
-	user->flush();
 	_registerd.erase(user->getNick());
 	_users.erase(user->getFd());
 	delete user;

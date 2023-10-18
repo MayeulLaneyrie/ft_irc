@@ -20,6 +20,7 @@ User::User(Serv * serv, int fd) :
 	_ibuffer(""),
 	_reg_status(0),
 	_is_op(0),
+	_stop(0),
 	_serv(serv)
 {}
 
@@ -46,6 +47,7 @@ User & User::operator=(User const & rhs)
 	_obuffer = rhs._obuffer;
 	_reg_status = rhs._reg_status;
 	_is_op = rhs._is_op;
+	_stop = rhs._stop;
 	_serv = rhs._serv;
 	return (*this);
 }
@@ -165,6 +167,14 @@ int	User::isFullyRegistered( void ) const {
 	return (_reg_status == REG_OK && !(_reg_status & REG_MISM));
 }
 
+int User::getStop( void ) const {
+	return (_stop);
+}
+
+int User::setStop(int stop) {
+	return (_stop = stop);
+}
+
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
 
 int User::rpl(int num, str const & p1, str const & p2)
@@ -201,12 +211,15 @@ void User::broadcast(Msg const & msg)
 
 int User::user_recv( void )
 {
+	if (_stop)
+		return (_stop);
+
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 
 	if (len <= 0) {
 		broadcast(Msg(_pref, "QUIT", ":Connection closed"));
 		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
-		return (1);
+		return (-1);
 	}
 
 	_cbuffer[len] = '\0';
@@ -220,17 +233,14 @@ int User::user_recv( void )
 			break ;
 		}
 	}
-	flush();
 	return (exit);
 }
 
-int User::user_send(Msg const & msg, int flushnow)
+int User::user_send(Msg const & msg)
 {
 	if (1 || msg.getCmd() != "PONG")
 		std::cout << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
 	_obuffer += msg.getStr();
-	if (flushnow)
-		return (flush());
 	return (0);
 }
 
@@ -238,8 +248,6 @@ int	User::flush( void )
 {
 	if (_obuffer.empty())
 		return (0);
-
-	std::cout << "    FLUSH " << getNick() << " (" << _fd << ")" << std::endl;
 
 	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), MSG_NOSIGNAL);
 	_obuffer.clear();

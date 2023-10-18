@@ -78,6 +78,8 @@ class User {
 		int _reg_status;
 		int _is_op;
 
+		int _stop;
+
 		std::map<str, Chan *> _chans;
 
 		Serv * _serv;
@@ -157,6 +159,9 @@ class User {
 
 		int	isFullyRegistered( void ) const;
 
+		int getStop( void ) const;
+		int setStop(int stop);
+
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
 		/*
@@ -196,7 +201,7 @@ class User {
 		 * to 1, it is then immediatly flushed. The reason for this buffering is
 		 * to avoid having more than 1 call to send() for each epoll loop.
 		 */
-		int user_send(Msg const & msg, int flushnow = 0);
+		int user_send(Msg const & msg);
 
 		/*
 		 * send() the output buffer (_obuffer) to the user, then clear it.

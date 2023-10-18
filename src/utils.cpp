@@ -66,8 +66,12 @@ int sed(str & s, str const & from, str const & to)
 	return (0);
 }
 
+extern int g_interrupt;
+
 void sighandler(int x)
 {
 	( void )x;
+
+	g_interrupt = 1;
 	std::cout << "\n" C_RED "**** SIGINT has been caught ****" C_R << std::endl;
 }

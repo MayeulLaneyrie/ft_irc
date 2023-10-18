@@ -134,6 +134,8 @@ int Bot::_exec_cmd( void )
 	return (0);
 }
 
+int g_interrupt = 0;
+
 void Bot::_setup_sig( void )
 {
 	struct sigaction info;
