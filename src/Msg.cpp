@@ -54,7 +54,8 @@ std::map<int, str> Msg::_gen_rpl_map( void )
 	ret[RPL_NOTOPIC] = "{1} :No topic is set";
 	ret[RPL_TOPIC] = "{1}";
 	ret[RPL_INVITING] = "{1}";
-	ret[RPL_WHOREPLY] = "{1} {u} whatever {sn} {n} H{2} :0 {rn}";
+	ret[RPL_WHOREPLY] = "* {1} whatever {sn} {2}";
+	ret[RPL_WHOREPLYCHAN] = "{1} whatever {sn} {2}";
 	ret[RPL_NAMREPLY] = "= {1}";
 	ret[RPL_ENDOFNAMES] = "{1} :End of /NAMES list";
 	ret[RPL_ENDOFBANLIST] = "{1} :End of channel ban list";

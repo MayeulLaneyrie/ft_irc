@@ -21,15 +21,20 @@ int User::_cmd_WHO(Msg & cmd) // ------------------------------------------- WHO
 	Chan * chan;
 	User * user;
 
-	if ((user = _serv->getUser(arg[0])))
-		user_send(Msg(RPL_WHOREPLY, user, "*", (user->isOper() ? "*" : "")));
+	if ((user = _serv->getUser(arg[0]))) {
+		str rpl_param = arg[0] + " H" + (user->isOper() ? "*" : "")
+			+ " :0 " + user->getRealname();
+
+		rpl(RPL_WHOREPLY, user->getUsername(), rpl_param);
+	}
 	else if ((chan = _serv->getChan(arg[0]))) {
 		Chan::iterator it;
+
 		for (it = chan->begin(); it != chan->end(); ++it) {
-			str flags = (it->second->isOper() ? "*" : "");
-			if (chan->isOp(it->second))
-				flags += "@";
-			user_send(Msg(RPL_WHOREPLY, it->second, arg[0], flags));
+			str rpl_param = it->first + " H" + (it->second->isOper() ? "*" : "")
+				+ (chan->isOp(it->second) ? "@" : "") + " :0 " + it->second->getRealname();
+
+			rpl(RPL_WHOREPLYCHAN, arg[0] + " " + it->second->getUsername(), rpl_param);
 		}
 	}
 	return (rpl(RPL_ENDOFWHO, arg[0]));
