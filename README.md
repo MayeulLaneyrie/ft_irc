@@ -28,7 +28,7 @@ The following commands are currently implemented:
  	- PART <channel>{,<channel>} [<reason>]
  	- NAMES <channel>{,<channel>}
 ```
-We based on the doc found at: modern.ircdocs.horse.
+We based on the doc found at <modern.ircdocs.horse>
 
 ## Usage
 
