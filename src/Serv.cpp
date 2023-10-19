@@ -106,19 +106,9 @@ void Serv::_setup_all( void )
 
 	if ((_epollfd = epoll_create(10)) < 0)
 		die("sds", __FILE__, __LINE__, strerror(errno));
-	_epoll_register(_sockfd);
+	epoll_register(_sockfd, EPOLLIN, EPOLL_CTL_ADD);
 
 	signal(SIGINT, sighandler);
-}
-
-void Serv::_epoll_register(int fd)
-{
-	struct epoll_event ev;
-
-	ev.events = EPOLLIN | EPOLLOUT;
-	ev.data.fd = fd;
-	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) < 0)
-		die("sds", __FILE__, __LINE__, strerror(errno));
 }
 
 void Serv::_new_connection( void )
@@ -131,7 +121,7 @@ void Serv::_new_connection( void )
 		die("sds", __FILE__, __LINE__, strerror(errno));
 
 	setsock_nonblock(fd);
-	_epoll_register(fd);
+	epoll_register(fd, EPOLLIN, EPOLL_CTL_ADD);
 
 	User * new_user = new User(this, fd);
 
@@ -142,38 +132,31 @@ void Serv::_new_connection( void )
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
-int g_interrupt = 0;
-
 int Serv::run( void )
 {
+	int stop = 0;
+
 	_setup_all();
 
 	std::cout	<< C_YELLOW "Server launched:" C_R_ << _datetime << std::endl
 				<< C_YELLOW "Listening on port:" C_R_ << _port << std::endl;
 
-	while (1) {
+	while (stop < 3) {
 		int nfds;
 		struct epoll_event evts[MAXEV];
 
-		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 || g_interrupt) {
-			if (!g_interrupt)
-				die("sds", __FILE__, __LINE__, strerror(errno));
-			if (g_interrupt == 1) {
-
-				std::cout << C_RED "*** The server will now stop ***" C_R << std::endl;
-
-				if (!_usercount)
-					return (1);
-
-				std::map<int, User *>::iterator user_it;
-				for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
-					user_it->second->error(":Server shutdown, bye bye!");
-
-				++g_interrupt;
-			}
-			else
+		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 && !stop) {
+			std::cout << C_RED "*** The server will now stop ***" C_R << std::endl;
+			if (!_usercount)
 				return (1);
+			std::map<int, User *>::iterator user_it;
+			for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
+				user_it->second->error(":Server shutdown, bye bye!");
+			stop = 1;
 		}
+
+		if (stop)
+			++stop;
 
 		for (int i = 0; i < nfds; ++i) {
 			int fd = evts[i].data.fd;
@@ -182,20 +165,25 @@ int Serv::run( void )
 				_new_connection();
 			else {
 				if (evts[i].events & EPOLLIN)
-				{
 					_users[fd]->setStop(_users[fd]->user_recv());
-				}
-				if (evts[i].events & EPOLLOUT)
-				{
-					if (_users[fd]->getStop() >= 0)
-						_users[fd]->flush();
-					if (_users[fd]->getStop())
-						killUser(_users[fd]);
-				}
+				if (evts[i].events & EPOLLOUT && _users[fd]->getStop() >= 0)
+					_users[fd]->flush();
+				if (_users[fd]->getStop())
+					killUser(_users[fd]);
 			}
 		}
 	}
 	return (0);
+}
+
+void Serv::epoll_register(int fd, int events, int op)
+{
+	struct epoll_event ev;
+
+	ev.events = events;
+	ev.data.fd = fd;
+	if (epoll_ctl(_epollfd, op, fd, &ev) < 0)
+		die("sds", __FILE__, __LINE__, strerror(errno));
 }
 
 str Serv::getDatetime( void ) const {

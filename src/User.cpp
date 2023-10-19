@@ -140,18 +140,15 @@ str User::getRealname( void ) const {
 	return _realname;
 }
 
-std::map<str, Chan *> User::getChan( void ) const
-{
+std::map<str, Chan *> User::getChan( void ) const {
 	return _chans;
 }
 
-int User::isOper( void ) const
-{
+int User::isOper( void ) const {
 	return (_is_op);
 }
 
-void User::rmChanFromList(str name)
-{
+void User::rmChanFromList(str name) {
 	_chans.erase(_chans.find(name));
 }
 
@@ -240,6 +237,8 @@ int User::user_send(Msg const & msg)
 {
 	if (1 || msg.getCmd() != "PONG")
 		std::cout << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
+	if (_obuffer.empty())
+		_serv->epoll_register(_fd, EPOLLIN | EPOLLOUT, EPOLL_CTL_MOD);
 	_obuffer += msg.getStr();
 	return (0);
 }
@@ -248,7 +247,7 @@ int	User::flush( void )
 {
 	if (_obuffer.empty())
 		return (0);
-
+	_serv->epoll_register(_fd, EPOLLIN, EPOLL_CTL_MOD);
 	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), MSG_NOSIGNAL);
 	_obuffer.clear();
 	return (ret);

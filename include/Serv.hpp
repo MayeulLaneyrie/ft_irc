@@ -68,8 +68,6 @@ class Serv {
 		void _setup_datetime( void );
 		void _setup_all( void );
 
-		void _epoll_register(int fd);
-
 		void _new_connection( void );
 
 		Serv( void );
@@ -88,6 +86,8 @@ class Serv {
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 		
 		int	run( void ); // main loop
+
+		void epoll_register(int fd, int events, int op);
 
 		str getDatetime( void ) const;
 
