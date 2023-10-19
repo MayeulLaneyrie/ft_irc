@@ -1,6 +1,6 @@
 # FT_IRC
 
-##by mlaneyri & shamizi
+## by mlaneyri & shamizi
 
 125/100 triple outstanding irc.
 
