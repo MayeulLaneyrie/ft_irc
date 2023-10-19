@@ -24,6 +24,9 @@
 
 #include "network.hpp"
 
+#define OUT			(std::cout)
+#define NL			(std::endl)
+
 #define C_RED		"\e[1;41;30m"
 #define C_GREEN		"\e[1;42;30m"
 #define C_YELLOW	"\e[1;43;30m"

@@ -149,18 +149,13 @@ class User {
 		str getUsername( void ) const;
 		int getFd( void ) const;
 
-		int isOper( void ) const;
-
 		str getRealname( void ) const;
+
 		std::map<str, Chan *> getChan( void ) const;
-		void rmChanFromList(str name);
 
 		Serv * getServ( void ) const;
 
-		int	isFullyRegistered( void ) const;
-
 		int getStop( void ) const;
-		int setStop(int stop);
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
 
@@ -194,14 +189,14 @@ class User {
 		 * for every complete msg line it contains).
 		 * Returns 0
 		 */
-		int user_recv( void );
+		void do_stuff( void );
 
 		/*
 		 * Adds msg at the end of the user's output buffer. If flushnow is set
 		 * to 1, it is then immediatly flushed. The reason for this buffering is
 		 * to avoid having more than 1 call to send() for each epoll loop.
 		 */
-		int user_send(Msg const & msg);
+		void user_send(Msg const & msg);
 
 		/*
 		 * send() the output buffer (_obuffer) to the user, then clear it.

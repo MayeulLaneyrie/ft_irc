@@ -21,7 +21,7 @@ Chan::Chan(Serv * serv, str const & name) :
 	_usermax(16),
 	_serv(serv)
 {
-	std::cout << C_CYAN << name << " created" C_R << std::endl;
+	OUT << C_CYAN << name << " created" C_R << NL;
 }
 
 Chan::Chan(Chan const & src) {
@@ -29,25 +29,32 @@ Chan::Chan(Chan const & src) {
 }
 
 Chan::~Chan( void ) {
-	std::cout << C_MAGENTA << _name << " removed" C_R << std::endl;
+	OUT << C_MAGENTA << _name << " removed" C_R << NL;
 }
 
 Chan & Chan::operator=(Chan const & rhs)
 {
-	this->_name = rhs._name;
-	this->_mode = rhs._mode;
-	this->_passwd = rhs._passwd;
-	this->_topic = rhs._topic;
-	this->_usercount = rhs._usercount,
-	this->_usermax = rhs._usermax;
+	_users = rhs._users;
+	_operators = rhs._operators;
+	_invited = rhs._invited;
+
+	_name = rhs._name;
+	_mode = rhs._mode;
+	_passwd = rhs._passwd;
+	_topic = rhs._topic;
+	_usercount = rhs._usercount,
+	_usermax = rhs._usermax;
+
+	_serv = rhs._serv;
+
 	return (*this);
 }
 
 int Chan::chan_send(Msg const & msg, User * source)
 {
-	std::map<str, User *>::iterator it = _users.begin();
+	Chan::iterator it;
 
-	for (it = _users.begin(); it != _users.end(); ++it)
+	for (it = begin(); it != end(); ++it)
 		if (it->second != source)
 			it->second->user_send(msg);
 	return (0);
@@ -108,10 +115,6 @@ void Chan::invite(User * user) {
 	_invited.insert(user);
 }
 
-void Chan::uninvite(User * user) {
-	_invited.erase(user);
-}
-
 int Chan::isInvited(User * user) const {
 	return (_invited.count(user));
 }
@@ -150,10 +153,6 @@ void Chan::setTopic(str topic) {
 
 str Chan::getTopic( void ) const {
 	return (_topic);
-}
-
-str Chan::getName( void ) const {
-	return (_name);
 }
 
 void Chan::setLimit(int limit) {

@@ -109,8 +109,7 @@ int User::_exec_cmd( void )
 	Msg cmd_msg(msg_str);
 	str cmd = cmd_msg.getCmd();
 
-	if (1 || cmd != "PING")
-		std::cout << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R << std::endl;
+	OUT << C_GREEN << getNick() << " >\e[0;32m { " << msg_str << " }" C_R << NL;
 
 	if (_reg_status != REG_OK && !_prereg_set.count(cmd))
 		return (rpl(ERR_NOTREGISTERED));
@@ -133,43 +132,27 @@ str User::getNick( void ) const
 }
 
 str User::getUsername( void ) const {
-	return _username;
+	return (_username);
 }
 
 str User::getRealname( void ) const {
-	return _realname;
+	return (_realname);
 }
 
 std::map<str, Chan *> User::getChan( void ) const {
-	return _chans;
-}
-
-int User::isOper( void ) const {
-	return (_is_op);
-}
-
-void User::rmChanFromList(str name) {
-	_chans.erase(_chans.find(name));
+	return (_chans);
 }
 
 int User::getFd( void ) const {
-	return _fd;
+	return (_fd);
 }
 
 Serv * User::getServ( void ) const {
-	return _serv;
-}
-
-int	User::isFullyRegistered( void ) const {
-	return (_reg_status == REG_OK && !(_reg_status & REG_MISM));
+	return (_serv);
 }
 
 int User::getStop( void ) const {
 	return (_stop);
-}
-
-int User::setStop(int stop) {
-	return (_stop = stop);
 }
 
 // OTHER PUBLIC MEMBER FUNCTIONS ===============================================
@@ -206,41 +189,38 @@ void User::broadcast(Msg const & msg)
 		(*it)->user_send(msg);
 }
 
-int User::user_recv( void )
+void User::do_stuff( void )
 {
 	if (_stop)
-		return (_stop);
+		return ;
 
 	int len = recv(_fd, _cbuffer, RECV_BUFF_SIZE - 1, 0);
 
 	if (len <= 0) {
 		broadcast(Msg(_pref, "QUIT", ":Connection closed"));
-		std::cout << C_MAGENTA << getNick() << " was disconnected" C_R << std::endl;
-		return (-1);
+		OUT << C_MAGENTA << getNick() << " was disconnected" C_R << NL;
+		_stop = -1;
+		return ;
 	}
 
 	_cbuffer[len] = '\0';
 	_ibuffer.append(_cbuffer);
 
-	int exit = 0;
 	while (_ibuffer.find("\r\n") != str::npos) {
 		if (_exec_cmd()) {
-			std::cout << C_MAGENTA << getNick() << " left" C_R << std::endl;
-			exit = 1;
+			OUT << C_MAGENTA << getNick() << " left" C_R << NL;
+			_stop = 1;
 			break ;
 		}
 	}
-	return (exit);
 }
 
-int User::user_send(Msg const & msg)
+void User::user_send(Msg const & msg)
 {
-	if (1 || msg.getCmd() != "PONG")
-		std::cout << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
+	OUT << C_BLUE << getNick() << " <\e[0;34m " << msg.getStr() << C_R;
 	if (_obuffer.empty())
 		_serv->epoll_register(_fd, EPOLLIN | EPOLLOUT, EPOLL_CTL_MOD);
 	_obuffer += msg.getStr();
-	return (0);
 }
 
 int	User::flush( void )

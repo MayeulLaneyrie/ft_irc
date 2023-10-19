@@ -44,7 +44,7 @@ int User::_cmd_KICK(Msg & cmd) // ----------------------------------------- KICK
 		else {
 			channel->chan_send(Msg(_pref, "KICK", arg[0] + " " + *it + " :" + comment));
 			channel->rmUser(target);
-			target->rmChanFromList(arg[0]);
+			target->_chans.erase(arg[0]);
 		}
 	}
 	return 0;

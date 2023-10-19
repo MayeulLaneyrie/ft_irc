@@ -32,7 +32,7 @@ void die(const char * fmt, ...) {
 		if (*(++fmt))
 			std::cerr << ": ";
 	}
-	std::cerr << std::endl;
+	std::cerr << NL;
 	exit(EXIT_FAILURE);
 }
 
@@ -69,5 +69,5 @@ int sed(str & s, str const & from, str const & to)
 void sighandler(int x)
 {
 	( void )x;
-	std::cout << "\n" C_RED "**** SIGINT has been caught ****" C_R << std::endl;
+	OUT << "\n" C_RED "**** SIGINT has been caught ****" C_R << NL;
 }

@@ -33,6 +33,7 @@ class Bot {
 
 		str _ibuffer;
 		char _cbuffer[RECV_BUFF_SIZE];
+		str _obuffer;
 
 		int _is_connected;
 
@@ -62,8 +63,9 @@ class Bot {
 
 		int run( void );
 
-		int notice(str target, str msg);
-		int send_to_serv(Msg const & msg);
+		void notice(str target, str msg);
+		void send_to_serv(Msg const & msg);
+		int flush( void );
 };
 
 #endif

@@ -35,8 +35,8 @@ int User::_cmd_PART(Msg & cmd) // ----------------------------------------- PART
 			rpl(ERR_NOTONCHANNEL, _nick);
 		else {
 			channel->chan_send(Msg(_pref, "PART", *it + reason));
-			rmChanFromList(*it);
 			channel->rmUser(this);
+			_chans.erase(*it);
 		}
 	}
 	return (0);

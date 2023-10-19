@@ -25,7 +25,7 @@ int User::_cmd_KILL(Msg & cmd) // ----------------------------------------- KILL
 	target->user_send(Msg(_pref, "KILL", arg[0] + " :" + arg[1]));
 	target->broadcast(Msg(arg[0], "QUIT", ":(Killed (" + _nick + " (" + arg[1] + ")))"));
 	target->error(":Closing Link: " SERVER_NAME " :(Killed (" + _nick + " (" + arg[1] + ")))");
-	target->setStop(1);
-	std::cout << C_MAGENTA << arg[0] << " has been killed." C_R << std::endl;
+	target->_stop = 1;
+	OUT << C_MAGENTA << arg[0] << " has been killed." C_R << NL;
 	return (0);
 }

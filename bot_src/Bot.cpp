@@ -68,12 +68,12 @@ int Bot::_exec_cmd( void )
 	Msg msg(msg_str);
 	str cmd = msg.getCmd();
 
-	std::cout << "\e[0;32m" << msg_str << C_R << std::endl;
+	OUT << "\e[0;32m" << msg_str << C_R << NL;
 
 	if (msg.getCmd() == "001")
 		_is_connected = 1;
 	else if (!_is_connected) {
-		std::cout << C_MAGENTA "Connection failed!" C_R << std::endl;
+		OUT << C_MAGENTA "Connection failed!" C_R << NL;
 		return (1);
 	}
 	
@@ -157,7 +157,7 @@ int Bot::run( void )
 		if (errno == EINTR)
 			return (1);
 		if (len <= 0) {
-			std::cout << C_MAGENTA "Connection lost." C_R << std::endl;
+			OUT << C_MAGENTA "Connection lost." C_R << NL;
 			return (1);
 		}
 
@@ -165,17 +165,29 @@ int Bot::run( void )
 		_ibuffer.append(_cbuffer);
 
 		while (_ibuffer.find("\r\n") != str::npos)
-			if (_exec_cmd())
+			if (_exec_cmd()) {
+				flush();
 				return (1);
+			}
+		flush();
 	}
 }
 
-int Bot::notice(str target, str msg) {
-	return (send_to_serv(Msg("", "NOTICE", target + " :" + msg)));
+void Bot::notice(str target, str msg) {
+	send_to_serv(Msg("", "NOTICE", target + " :" + msg));
 }
 
-int Bot::send_to_serv(Msg const & msg)
+void Bot::send_to_serv(Msg const & msg)
 {
-	std::cout << "\e[0;34m" << msg.getStr() << C_R;
-	return (send(_fd, msg.getStr().c_str(), msg.getStr().size(), MSG_NOSIGNAL));
+	OUT << "\e[0;34m" << msg.getStr() << C_R;
+	_obuffer += msg.getStr();
+}
+
+int Bot::flush( void )
+{
+	if (_obuffer.empty())
+		return (0);
+	int ret = send(_fd, _obuffer.c_str(), _obuffer.size(), MSG_NOSIGNAL);
+	_obuffer.clear();
+	return (ret);
 }

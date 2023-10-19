@@ -54,11 +54,11 @@ void Serv::_clear( void )
 {
 	std::map<int, User *>::iterator user_it;
 	for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
-		delete user_it->second;
+		delete (user_it->second);
 
 	std::map<str, Chan *>::iterator chan_it;
 	for (chan_it = _chans.begin(); chan_it != _chans.end(); ++chan_it)
-		delete chan_it->second;
+		delete (chan_it->second);
 
 	if (_epollfd >= 0)
 		close(_epollfd);
@@ -127,7 +127,31 @@ void Serv::_new_connection( void )
 
 	_users[fd] = new_user;
 	_usercount++;
-	std::cout << C_CYAN << new_user->getNick() << " joined" C_R << std::endl;
+	OUT << C_CYAN << new_user->getNick() << " joined" C_R << NL;
+}
+
+void Serv::_manage_event(struct epoll_event ev)
+{
+	if (ev.data.fd == _sockfd) {
+		_new_connection();
+		return ;
+	}
+
+	User * user = _users[ev.data.fd];
+
+	if (ev.events & EPOLLIN) {
+		if (!user->getStop())
+			user->do_stuff();
+		if (user->getStop() < 0)
+			killUser(user);
+	}
+
+	if (ev.events & EPOLLOUT) {
+		if (user->getStop() >= 0)
+			user->flush();
+		if (user->getStop())
+			killUser(user);
+	}
 }
 
 // OTHER PUBLIC MEMBER FUNCTIONS -----------------------------------------------
@@ -138,40 +162,33 @@ int Serv::run( void )
 
 	_setup_all();
 
-	std::cout	<< C_YELLOW "Server launched:" C_R_ << _datetime << std::endl
-				<< C_YELLOW "Listening on port:" C_R_ << _port << std::endl;
+	OUT << C_YELLOW "Server launched:  " C_R_ << _datetime << NL
+		<< C_YELLOW "Listening on port:" C_R_ << _port << NL;
 
-	while (stop < 3) {
+	while (stop < 3)
+	{
 		int nfds;
 		struct epoll_event evts[MAXEV];
 
-		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 && !stop) {
-			std::cout << C_RED "*** The server will now stop ***" C_R << std::endl;
+		if ((nfds = epoll_wait(_epollfd, evts, MAXEV, -1)) < 0 && !stop)
+		{
+			OUT << C_RED "*** The server will now stop ***" C_R << NL;
+
 			if (!_usercount)
 				return (1);
+
 			std::map<int, User *>::iterator user_it;
 			for (user_it = _users.begin(); user_it != _users.end(); ++user_it)
 				user_it->second->error(":Server shutdown, bye bye!");
+
 			stop = 1;
 		}
 
 		if (stop)
 			++stop;
 
-		for (int i = 0; i < nfds; ++i) {
-			int fd = evts[i].data.fd;
-
-			if (fd == _sockfd)
-				_new_connection();
-			else {
-				if (evts[i].events & EPOLLIN)
-					_users[fd]->setStop(_users[fd]->user_recv());
-				if (evts[i].events & EPOLLOUT && _users[fd]->getStop() >= 0)
-					_users[fd]->flush();
-				if (_users[fd]->getStop())
-					killUser(_users[fd]);
-			}
-		}
+		for (int i = 0; i < nfds; ++i)
+			_manage_event(evts[i]);
 	}
 	return (0);
 }
@@ -211,7 +228,7 @@ void Serv::killUser(User * user)
 {
 	_registerd.erase(user->getNick());
 	_users.erase(user->getFd());
-	delete user;
+	delete (user);
 	_usercount--;
 }
 
@@ -227,7 +244,7 @@ void Serv::rmChan(str const & name)
 		return ;
 	Chan * chan = _chans[name];
 	_chans.erase(name);
-	delete chan;
+	delete (chan);
 }
 
 Chan * Serv::getChan(str const & name) const

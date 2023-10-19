@@ -22,7 +22,7 @@ int User::_cmd_WHO(Msg & cmd) // ------------------------------------------- WHO
 	User * user;
 
 	if ((user = _serv->getUser(arg[0]))) {
-		str rpl_param = arg[0] + " H" + (user->isOper() ? "*" : "")
+		str rpl_param = arg[0] + " H" + (user->_is_op ? "*" : "")
 			+ " :0 " + user->getRealname();
 
 		rpl(RPL_WHOREPLY, user->getUsername(), rpl_param);
@@ -31,7 +31,7 @@ int User::_cmd_WHO(Msg & cmd) // ------------------------------------------- WHO
 		Chan::iterator it;
 
 		for (it = chan->begin(); it != chan->end(); ++it) {
-			str rpl_param = it->first + " H" + (it->second->isOper() ? "*" : "")
+			str rpl_param = it->first + " H" + (it->second->_is_op ? "*" : "")
 				+ (chan->isOp(it->second) ? "@" : "") + " :0 " + it->second->getRealname();
 
 			rpl(RPL_WHOREPLYCHAN, arg[0] + " " + it->second->getUsername(), rpl_param);

@@ -70,6 +70,8 @@ class Serv {
 
 		void _new_connection( void );
 
+		void _manage_event(struct epoll_event ev);
+
 		Serv( void );
 
 	public : // PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC PUBLIC P

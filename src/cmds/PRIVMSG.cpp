@@ -24,7 +24,7 @@ int User::_cmd_PRIVMSG(Msg & cmd) // ----------------------------------- PRIVMSG
 	for (it = names.begin(); it != names.end(); ++it) {
 		User * user_target = _serv->getUser(*it);
 		Chan * chan_target = _serv->getChan(*it);
-		if (user_target && user_target->isFullyRegistered())
+		if (user_target && user_target->_reg_status == REG_OK)
 			user_target->user_send(Msg(_pref, "PRIVMSG", *it + " :" + arg[1]));
 		else if(chan_target)
 			chan_target->chan_send(Msg(_pref, "PRIVMSG", *it + " :" + arg[1]), this);

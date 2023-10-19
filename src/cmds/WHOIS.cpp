@@ -35,7 +35,7 @@ int User::_cmd_WHOIS(Msg & cmd) // --------------------------------------- WHOIS
 	}
 	rpl(RPL_WHOISUSER, arg[0] + " " + target->getUsername(), target->getRealname());
 	rpl(RPL_WHOISSERVER, arg[0]);
-	if (target->isOper())
+	if (target->_is_op)
 		rpl(RPL_WHOISOPERATOR, arg[0]);
 	rpl(RPL_WHOISCHANNELS, arg[0], listeChannel);
 	rpl(RPL_ENDOFWHOIS, arg[0]);

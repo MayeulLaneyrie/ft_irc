@@ -74,7 +74,6 @@ class Chan {
 		int isOp(User * user) const;
 
 		void invite(User * user);
-		void uninvite(User * user);
 		int isInvited(User * user) const;
 
 		void setPasswd(str const & passwd);
@@ -87,8 +86,6 @@ class Chan {
 
 		void setTopic(str topic);
 		str getTopic( void ) const;
-
-		str getName( void ) const;
 
 		void setLimit(int limit);
 		int getLimit( void ) const;
