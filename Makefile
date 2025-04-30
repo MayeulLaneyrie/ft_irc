@@ -62,14 +62,14 @@ all		:	obj $(NAME)
 -include	$(DEP)
 
 $(NAME)	:	$(OBJ)
-			@ echo "\n\e[3mLinking...\e[0m\n"
+			@ echo -e "\n\e[3mLinking...\e[0m\n"
 			@ $(CC) $(CFLAGS) -o $(NAME) $(SRC)
-			@ echo "\e[1mDone!\e[0m"
+			@ echo -e "\e[1mDone!\e[0m"
 
 bot		:	$(BOT_OBJ)
-			@ echo "\n\e[3mLinking...\e[0m\n"
+			@ echo -e "\n\e[3mLinking...\e[0m\n"
 			@ $(CC) $(CFLAGS) -D BOT -o bot $(BOT_SRC)
-			@ echo "\e[1mDone!\e[0m"
+			@ echo -e "\e[1mDone!\e[0m"
 
 obj		:
 			@ mkdir -p .obj/src
@@ -77,18 +77,18 @@ obj		:
 			@ mkdir -p .obj/bot_src
 
 .obj/%.o	:	%.cpp
-			@ echo "\e[3mCompiling $<...\e[0m"
+			@ echo -e "\e[3mCompiling $<...\e[0m"
 			@ $(CC) -o $@ -c $< $(CFLAGS) $(CDEP)
 
 clean	:
-			@ echo "\e[3mCleaning...\e[0m"
+			@ echo -e "\e[3mCleaning...\e[0m"
 			@ $(RM) $(OBJ) $(BOT_OBJ)
 			@ $(RM) .obj
 
 fclean	:	clean
-			@ echo "\e[3mRemoving $(NAME)...\e[0m"
+			@ echo -e "\e[3mRemoving $(NAME)...\e[0m"
 			@ $(RM) $(NAME)
-			@ echo "\e[3mRemoving bot...\e[0m"
+			@ echo -e "\e[3mRemoving bot...\e[0m"
 			@ $(RM) bot
 
 re		:	fclean all
